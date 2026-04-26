@@ -9,7 +9,7 @@ namespace EventServer.Core.Services;
 public class EventService : IEventService
 {
     private readonly List<Event> events = [];
-
+    private int lastIndex = 0;
 
     /// <inheritdoc/>
     public List<Event> Get()
@@ -24,9 +24,12 @@ public class EventService : IEventService
     }
 
     /// <inheritdoc/>
-    public void Add(Event model)
+    public void Add(EventRequest model)
     {
-        events.Add(model);
+        lastIndex++;
+
+        events.Add(new Event(lastIndex, model.Title, model.Description, (DateTime)model.StartAt, (DateTime)model.EndAt));
+
     }
 
     /// <inheritdoc/>
@@ -47,7 +50,7 @@ public class EventService : IEventService
     
 
     /// <inheritdoc/>
-    public bool Update(int id, UpdateRequest data)
+    public bool Update(int id, EventRequest data)
     {
         bool result = false;
         var model = events.FirstOrDefault(s => s.Id == id); ;
@@ -55,8 +58,8 @@ public class EventService : IEventService
         {
             model.Title = data.Title;
             model.Description = data.Description;
-            model.StartAt = data.StartAt;
-            model.EndAt = data.EndAt;
+            model.StartAt = (DateTime)data.StartAt;
+            model.EndAt = (DateTime)data.EndAt;
 
             result = true;
         }

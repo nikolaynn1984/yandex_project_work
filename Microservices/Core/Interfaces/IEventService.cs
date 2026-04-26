@@ -22,13 +22,13 @@ public interface IEventService
     /// Добавить событие
     /// </summary>
     /// <param name="model">Объектная модель Event</param>
-    void Add(Event model);
+    void Add(EventRequest model);
     /// <summary>
     /// Обновичть событие
     /// </summary>
     /// <param name="id">Идентификатор</param>
     /// <param name="data">Объектная модель Event</param>
-    bool Update(int id, UpdateRequest data);
+    bool Update(int id, EventRequest data);
     /// <summary>
     /// Удалить событие по идентификатору
     /// </summary>

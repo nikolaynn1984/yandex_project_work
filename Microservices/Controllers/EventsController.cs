@@ -51,7 +51,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     /// <param name="model">Модель Event</param>
     /// <response code="201">Успешное добавление</response>
     [HttpPost]
-    public IActionResult Post(Event model)
+    public IActionResult Post(EventRequest model)
     {
         eventService.Add(model);
         return new CreatedResult();
@@ -65,7 +65,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     /// <response code="204">Успешное обновление</response>
     /// <response code="404">Событие не найдено</response>
     [HttpPut("{id}")]
-    public IActionResult Put(int id, UpdateRequest model)
+    public IActionResult Put(int id, EventRequest model)
     {
         bool result =  eventService.Update(id, model);
 
