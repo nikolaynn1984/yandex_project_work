@@ -12,7 +12,7 @@ namespace EventServer.Models
         /// Титл
         /// </summary>
         [Required(ErrorMessage = "Свойство Title обязательно для заполнения")]
-        public string Title { get; set; }
+        public required string Title { get; set; }
         /// <summary>
         /// Описание
         /// </summary>

@@ -24,7 +24,7 @@ namespace EventServer.Core
         /// <param name="value">Значение</param>
         /// <param name="validationContext">Контекст</param>
         /// <returns></returns>
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
             if(value == null) return new ValidationResult("Свойство не должно быть пустым");
 
@@ -42,8 +42,8 @@ namespace EventServer.Core
             {
                 return new ValidationResult(ErrorMessage ?? "Дата и время начала не может быть больше даты окончания.");
             }
-
-            return ValidationResult.Success;
+            
+            return  ValidationResult.Success;
         }
     }
 }

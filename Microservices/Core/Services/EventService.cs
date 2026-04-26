@@ -28,7 +28,9 @@ public class EventService : IEventService
     {
         lastIndex++;
 
+#pragma warning disable CS8629 // Тип значения, допускающего NULL, может быть NULL.
         events.Add(new Event(lastIndex, model.Title, model.Description, (DateTime)model.StartAt, (DateTime)model.EndAt));
+#pragma warning restore CS8629 // Тип значения, допускающего NULL, может быть NULL.
 
     }
 
