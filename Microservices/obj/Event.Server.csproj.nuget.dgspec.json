@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Обучение\\Яндекс Практикум\\Progects\\yandex_project_work\\Microservices\\Event.Server.csproj": {}
+    "D:\\Обучение\\Яндекс Практикум\\Projects\\yandex_project_work\\Microservices\\Event.Server.csproj": {}
   },
   "projects": {
-    "D:\\Обучение\\Яндекс Практикум\\Progects\\yandex_project_work\\Microservices\\Event.Server.csproj": {
+    "D:\\Обучение\\Яндекс Практикум\\Projects\\yandex_project_work\\Microservices\\Event.Server.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Обучение\\Яндекс Практикум\\Progects\\yandex_project_work\\Microservices\\Event.Server.csproj",
+        "projectUniqueName": "D:\\Обучение\\Яндекс Практикум\\Projects\\yandex_project_work\\Microservices\\Event.Server.csproj",
         "projectName": "Event.Server",
-        "projectPath": "D:\\Обучение\\Яндекс Практикум\\Progects\\yandex_project_work\\Microservices\\Event.Server.csproj",
+        "projectPath": "D:\\Обучение\\Яндекс Практикум\\Projects\\yandex_project_work\\Microservices\\Event.Server.csproj",
         "packagesPath": "C:\\Users\\nikol\\.nuget\\packages\\",
-        "outputPath": "D:\\Обучение\\Яндекс Практикум\\Progects\\yandex_project_work\\Microservices\\obj\\",
+        "outputPath": "D:\\Обучение\\Яндекс Практикум\\Projects\\yandex_project_work\\Microservices\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -31,6 +31,7 @@
         },
         "frameworks": {
           "net10.0": {
+            "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {}
           }
@@ -49,6 +50,7 @@
       },
       "frameworks": {
         "net10.0": {
+          "framework": "net10.0",
           "targetAlias": "net10.0",
           "dependencies": {
             "Microsoft.AspNetCore.OpenApi": {

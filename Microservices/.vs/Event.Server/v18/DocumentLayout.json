@@ -1,0 +1,126 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\\u041E\u0431\u0443\u0447\u0435\u043D\u0438\u0435\\\u042F\u043D\u0434\u0435\u043A\u0441 \u041F\u0440\u0430\u043A\u0442\u0438\u043A\u0443\u043C\\Projects\\yandex_project_work\\Microservices\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{632C1C2B-1047-CB36-86CD-083F9A64A397}|EventServer.csproj|d:\\\u043E\u0431\u0443\u0447\u0435\u043D\u0438\u0435\\\u044F\u043D\u0434\u0435\u043A\u0441 \u043F\u0440\u0430\u043A\u0442\u0438\u043A\u0443\u043C\\projects\\yandex_project_work\\microservices\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{632C1C2B-1047-CB36-86CD-083F9A64A397}|EventServer.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{632C1C2B-1047-CB36-86CD-083F9A64A397}|EventServer.csproj|d:\\\u043E\u0431\u0443\u0447\u0435\u043D\u0438\u0435\\\u044F\u043D\u0434\u0435\u043A\u0441 \u043F\u0440\u0430\u043A\u0442\u0438\u043A\u0443\u043C\\projects\\yandex_project_work\\microservices\\controllers\\eventscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{632C1C2B-1047-CB36-86CD-083F9A64A397}|EventServer.csproj|solutionrelative:controllers\\eventscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{632C1C2B-1047-CB36-86CD-083F9A64A397}|EventServer.csproj|d:\\\u043E\u0431\u0443\u0447\u0435\u043D\u0438\u0435\\\u044F\u043D\u0434\u0435\u043A\u0441 \u043F\u0440\u0430\u043A\u0442\u0438\u043A\u0443\u043C\\projects\\yandex_project_work\\microservices\\eventserver.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{632C1C2B-1047-CB36-86CD-083F9A64A397}|EventServer.csproj|solutionrelative:eventserver.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{632C1C2B-1047-CB36-86CD-083F9A64A397}|EventServer.csproj|d:\\\u043E\u0431\u0443\u0447\u0435\u043D\u0438\u0435\\\u044F\u043D\u0434\u0435\u043A\u0441 \u043F\u0440\u0430\u043A\u0442\u0438\u043A\u0443\u043C\\projects\\yandex_project_work\\microservices\\models\\event.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{632C1C2B-1047-CB36-86CD-083F9A64A397}|EventServer.csproj|solutionrelative:models\\event.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{632C1C2B-1047-CB36-86CD-083F9A64A397}|EventServer.csproj|d:\\\u043E\u0431\u0443\u0447\u0435\u043D\u0438\u0435\\\u044F\u043D\u0434\u0435\u043A\u0441 \u043F\u0440\u0430\u043A\u0442\u0438\u043A\u0443\u043C\\projects\\yandex_project_work\\microservices\\core\\services\\eventservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{632C1C2B-1047-CB36-86CD-083F9A64A397}|EventServer.csproj|solutionrelative:core\\services\\eventservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "EventServer",
+              "DocumentMoniker": "D:\\\u041E\u0431\u0443\u0447\u0435\u043D\u0438\u0435\\\u042F\u043D\u0434\u0435\u043A\u0441 \u041F\u0440\u0430\u043A\u0442\u0438\u043A\u0443\u043C\\Projects\\yandex_project_work\\Microservices\\EventServer.csproj",
+              "RelativeDocumentMoniker": "EventServer.csproj",
+              "ToolTip": "D:\\\u041E\u0431\u0443\u0447\u0435\u043D\u0438\u0435\\\u042F\u043D\u0434\u0435\u043A\u0441 \u041F\u0440\u0430\u043A\u0442\u0438\u043A\u0443\u043C\\Projects\\yandex_project_work\\Microservices\\EventServer.csproj",
+              "RelativeToolTip": "EventServer.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-26T09:06:43.093Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\\u041E\u0431\u0443\u0447\u0435\u043D\u0438\u0435\\\u042F\u043D\u0434\u0435\u043A\u0441 \u041F\u0440\u0430\u043A\u0442\u0438\u043A\u0443\u043C\\Projects\\yandex_project_work\\Microservices\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "D:\\\u041E\u0431\u0443\u0447\u0435\u043D\u0438\u0435\\\u042F\u043D\u0434\u0435\u043A\u0441 \u041F\u0440\u0430\u043A\u0442\u0438\u043A\u0443\u043C\\Projects\\yandex_project_work\\Microservices\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T08:56:41.032Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "EventsController.cs",
+              "DocumentMoniker": "D:\\\u041E\u0431\u0443\u0447\u0435\u043D\u0438\u0435\\\u042F\u043D\u0434\u0435\u043A\u0441 \u041F\u0440\u0430\u043A\u0442\u0438\u043A\u0443\u043C\\Projects\\yandex_project_work\\Microservices\\Controllers\\EventsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\EventsController.cs",
+              "ToolTip": "D:\\\u041E\u0431\u0443\u0447\u0435\u043D\u0438\u0435\\\u042F\u043D\u0434\u0435\u043A\u0441 \u041F\u0440\u0430\u043A\u0442\u0438\u043A\u0443\u043C\\Projects\\yandex_project_work\\Microservices\\Controllers\\EventsController.cs",
+              "RelativeToolTip": "Controllers\\EventsController.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAADwv1AAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T08:26:17.305Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "EventService.cs",
+              "DocumentMoniker": "D:\\\u041E\u0431\u0443\u0447\u0435\u043D\u0438\u0435\\\u042F\u043D\u0434\u0435\u043A\u0441 \u041F\u0440\u0430\u043A\u0442\u0438\u043A\u0443\u043C\\Projects\\yandex_project_work\\Microservices\\Core\\Services\\EventService.cs",
+              "RelativeDocumentMoniker": "Core\\Services\\EventService.cs",
+              "ToolTip": "D:\\\u041E\u0431\u0443\u0447\u0435\u043D\u0438\u0435\\\u042F\u043D\u0434\u0435\u043A\u0441 \u041F\u0440\u0430\u043A\u0442\u0438\u043A\u0443\u043C\\Projects\\yandex_project_work\\Microservices\\Core\\Services\\EventService.cs",
+              "RelativeToolTip": "Core\\Services\\EventService.cs",
+              "ViewState": "AgIAACMAAAAAAAAAAAAIwDQAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T08:12:53.19Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "FloatingWindowState": {
+        "Id": "c950f6fd-5e12-4fcf-b958-e6905e1cdba9",
+        "Display": 2,
+        "X": 197,
+        "Y": 158,
+        "Width": 2247,
+        "Height": 684,
+        "WindowState": 2
+      },
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Event.cs",
+              "DocumentMoniker": "D:\\\u041E\u0431\u0443\u0447\u0435\u043D\u0438\u0435\\\u042F\u043D\u0434\u0435\u043A\u0441 \u041F\u0440\u0430\u043A\u0442\u0438\u043A\u0443\u043C\\Projects\\yandex_project_work\\Microservices\\Models\\Event.cs",
+              "RelativeDocumentMoniker": "Models\\Event.cs",
+              "ToolTip": "D:\\\u041E\u0431\u0443\u0447\u0435\u043D\u0438\u0435\\\u042F\u043D\u0434\u0435\u043A\u0441 \u041F\u0440\u0430\u043A\u0442\u0438\u043A\u0443\u043C\\Projects\\yandex_project_work\\Microservices\\Models\\Event.cs",
+              "RelativeToolTip": "Models\\Event.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T08:50:09.929Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
