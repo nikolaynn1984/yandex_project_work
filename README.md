@@ -7,8 +7,8 @@
  2. Перейти в парку yandex_project_work/Microservices
 
 - Запуск с консоли
-  dotnet build EventServer.csproj
-  dotnet run EventServer.csproj
+  ```dotnet build EventServer.csproj```
+ ```dotnet run EventServer.csproj```
 
 - Запуск в IDE среде Visual Studio
   Запустить файл Event.Server.sln
@@ -19,7 +19,7 @@
  для запуска SwaggerUI требуется открыть браузер и указать адресс http://localhost:5185/swagger/index.html
 
 ## Описание
- 	Реализуемые эндпоинты REST API
+ Реализуемые эндпоинты REST API
   o	GET /events — получить список всех событий (Ответ 200)
   o	GET /events/{id} — получить событие по id;
   o	POST /events — создать событие
