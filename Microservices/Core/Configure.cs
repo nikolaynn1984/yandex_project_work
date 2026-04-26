@@ -1,0 +1,34 @@
+﻿using System.Reflection;
+using System.Text.Json.Serialization;
+
+namespace EventServer.Core;
+
+/// <summary>
+/// Конфигурация приложения
+/// </summary>
+public static class Configure
+{
+    /// <summary>
+    /// Базовая конфигурация приложения
+    /// </summary>
+    /// <param name="services"></param>
+    public static void AddBaseConfiguration(this IServiceCollection services)
+    {
+        services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+            options.JsonSerializerOptions.PropertyNamingPolicy = null;
+            options.JsonSerializerOptions.WriteIndented = true;
+            options.JsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.Strict | JsonNumberHandling.WriteAsString;
+        });
+
+
+        services.AddSwaggerGen(options =>
+        {
+            // Путь к XML-файлу с документацией
+            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            options.IncludeXmlComments(xmlPath);
+        });
+    }
+}

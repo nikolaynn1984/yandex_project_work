@@ -3,31 +3,38 @@ using EventServer.Models;
 
 namespace EventServer.Core.Services;
 
+/// <summary>
+/// Сервси событий
+/// </summary>
 public class EventService : IEventService
 {
     private readonly List<Event> events = [];
 
 
-
+    /// <inheritdoc/>
     public List<Event> Get()
     {
         return events;
     }
 
-    public Event Get(int id)
+    /// <inheritdoc/>
+    public Event? Get(int id)
     {
-        return events[id];
+        return events.FirstOrDefault(s => s.Id == id); ;
     }
+
+    /// <inheritdoc/>
     public void Add(Event model)
     {
         events.Add(model);
     }
 
+    /// <inheritdoc/>
     public bool Delete(int id)
     {
         bool result = false;
 
-        var model = events[id];
+        var model = events.FirstOrDefault(s => s.Id == id);
         if(model != null)
         {
             this.events.Remove(model);
@@ -39,10 +46,11 @@ public class EventService : IEventService
 
     
 
+    /// <inheritdoc/>
     public bool Update(int id, UpdateRequest data)
     {
         bool result = false;
-        var model = events[id];
+        var model = events.FirstOrDefault(s => s.Id == id); ;
         if (model != null)
         {
             model.Title = data.Title;

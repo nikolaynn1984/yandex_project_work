@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EventServer.Controllers;
 
+/// <summary>
+/// Эендпоинт событий
+/// </summary>
+/// <param name="eventService"></param>
 [Route("api/[controller]")]
 [ApiController]
 public class EventsController(IEventService eventService) : ControllerBase

@@ -17,7 +17,7 @@ public interface IEventService
     /// </summary>
     /// <param name="id">Идентификатор</param>
     /// <returns></returns>
-    Event Get(int id);
+    Event? Get(int id);
     /// <summary>
     /// Добавить событие
     /// </summary>
