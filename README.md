@@ -6,11 +6,11 @@
  1. Скачать на рабочую станцию репозиторий
  2. Перейти в парку yandex_project_work/Microservices
 
-- Запуск с консоли
+> Запуск с консоли
   ```dotnet build EventServer.csproj```
  ```dotnet run EventServer.csproj```
 
-- Запуск в IDE среде Visual Studio
+> Запуск в IDE среде Visual Studio
   Запустить файл Event.Server.sln
   Нажать F5
 
