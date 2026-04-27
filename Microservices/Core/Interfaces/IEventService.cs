@@ -22,7 +22,7 @@ public interface IEventService
     /// Добавить событие
     /// </summary>
     /// <param name="model">Объектная модель Event</param>
-    void Add(EventRequest model);
+    int Add(EventRequest model);
     /// <summary>
     /// Обновичть событие
     /// </summary>

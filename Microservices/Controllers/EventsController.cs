@@ -1,5 +1,6 @@
 ﻿using EventServer.Core.Interfaces;
 using EventServer.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -10,8 +11,9 @@ namespace EventServer.Controllers;
 /// Эендпоинт событий
 /// </summary>
 /// <param name="eventService"></param>
-[Route("api/[controller]")]
+[Route("api/events")]
 [ApiController]
+[Tags("api/events")]
 public class EventsController(IEventService eventService) : ControllerBase
 {
     /// <summary>
@@ -53,8 +55,9 @@ public class EventsController(IEventService eventService) : ControllerBase
     [HttpPost]
     public IActionResult Post(EventRequest model)
     {
-        eventService.Add(model);
-        return new CreatedResult();
+        int id = eventService.Add(model);
+        var result = new AddResult() { Id = id };
+        return  Created("api/events", result);
     }
 
     /// <summary>
@@ -71,7 +74,7 @@ public class EventsController(IEventService eventService) : ControllerBase
 
         if (result == false) return new NotFoundResult(); 
 
-        return new NoContentResult();
+        return new OkResult();
     }
 
     /// <summary>

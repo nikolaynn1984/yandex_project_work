@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Microsoft.OpenApi;
+using System.Reflection;
 using System.Text.Json.Serialization;
 
 namespace EventServer.Core;
@@ -29,6 +30,14 @@ public static class Configure
             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
             options.IncludeXmlComments(xmlPath);
+
+            options.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Version = "v1",
+                Title = "Сервер событий",
+                Description = "CRUD запросы событий",
+                
+            });
         });
     }
 }
