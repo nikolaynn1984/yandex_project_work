@@ -11,9 +11,8 @@ namespace EventServer.Controllers;
 /// Эендпоинт событий
 /// </summary>
 /// <param name="eventService"></param>
-[Route("api/events")]
+[Route("events")]
 [ApiController]
-[Tags("api/events")]
 public class EventsController(IEventService eventService) : ControllerBase
 {
     /// <summary>
