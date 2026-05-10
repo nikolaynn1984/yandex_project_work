@@ -4,7 +4,7 @@
 ## Запуск
  Для запуска приложения: 
  1. Скачать на рабочую станцию репозиторий
- 2. Перейти в парку yandex_project_work\Microservices\Microservices\EventServer
+ 2. Перейти в папку yandex_project_work\Microservices\EventServer
 
 > Запуск с консоли
   ```bash
@@ -15,7 +15,7 @@ dotnet run EventServer.csproj
  ```
 
 > Запуск в IDE среде Visual Studio
-  - Запустить файл yandex_project_work\Microservices\Microservices\Microservices.slnx
+  - Запустить файл yandex_project_work\Microservices\Microservices.slnx
   - Нажать F5
 
 ## Тестирование
