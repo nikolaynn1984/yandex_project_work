@@ -1,24 +1,24 @@
-﻿using EventServer.Core.Interfaces;
-using EventServer.Models;
+﻿using Event.Domain.Interfaces;
+using Event.Domain.Models;
 
-namespace EventServer.Core.Services;
+namespace Event.Domain.Services;
 
 /// <summary>
 /// Сервси событий
 /// </summary>
-public class EventService : IEventService
+internal class EventService : IEventService
 {
-    private readonly List<Event> events = [];
+    private readonly List<Events> events = [];
     private int lastIndex = 0;
 
     /// <inheritdoc/>
-    public List<Event> Get()
+    public List<Events> Get()
     {
         return events;
     }
 
     /// <inheritdoc/>
-    public Event? Get(int id)
+    public Events? Get(int id)
     {
         return events.FirstOrDefault(s => s.Id == id); ;
     }
@@ -29,7 +29,7 @@ public class EventService : IEventService
         lastIndex++;
 
 #pragma warning disable CS8629 // Тип значения, допускающего NULL, может быть NULL.
-        events.Add(new Event(lastIndex, model.Title, model.Description, (DateTime)model.StartAt, (DateTime)model.EndAt));
+        events.Add(new Events(lastIndex, model.Title, model.Description, (DateTime)model.StartAt, (DateTime)model.EndAt));
 #pragma warning restore CS8629 // Тип значения, допускающего NULL, может быть NULL.
         return lastIndex;
     }
@@ -40,16 +40,16 @@ public class EventService : IEventService
         bool result = false;
 
         var model = events.FirstOrDefault(s => s.Id == id);
-        if(model != null)
+        if (model != null)
         {
             this.events.Remove(model);
             result = true;
         }
 
-        return  result;
+        return result;
     }
 
-    
+
 
     /// <inheritdoc/>
     public bool Update(int id, EventRequest data)
@@ -60,12 +60,14 @@ public class EventService : IEventService
         {
             model.Title = data.Title;
             model.Description = data.Description;
+#pragma warning disable CS8629 // Тип значения, допускающего NULL, может быть NULL.
             model.StartAt = (DateTime)data.StartAt;
             model.EndAt = (DateTime)data.EndAt;
+#pragma warning restore CS8629 // Тип значения, допускающего NULL, может быть NULL.
 
             result = true;
         }
-        
+
 
         return result;
     }

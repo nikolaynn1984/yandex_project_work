@@ -1,4 +1,4 @@
-﻿namespace EventServer.Models;
+﻿namespace Event.Domain.Models;
 
 /// <summary>
 /// Результат ответа добавления
@@ -8,5 +8,5 @@ public class AddResult
     /// <summary>
     /// Идентификатор
     /// </summary>
-    public int Id {  get; set; }
+    public int Id { get; set; }
 }

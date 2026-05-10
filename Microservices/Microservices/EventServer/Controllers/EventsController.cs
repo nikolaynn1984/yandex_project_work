@@ -1,6 +1,5 @@
-﻿using EventServer.Core.Interfaces;
-using EventServer.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Event.Domain.Interfaces;
+using Event.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -19,10 +18,10 @@ public class EventsController(IEventService eventService) : ControllerBase
     /// Получить список событий
     /// </summary>
     /// <response code="200">Список событие</response>
-    [ProducesResponseType(typeof(List<Event>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<Events>), StatusCodes.Status200OK)]
     [Produces("application/json")]
     [HttpGet]
-    public ActionResult<IEnumerable<Event>> Get()
+    public ActionResult<IEnumerable<Events>> Get()
     {
         return eventService.Get();
     }
@@ -33,10 +32,10 @@ public class EventsController(IEventService eventService) : ControllerBase
     /// <param name="id">Идентификатор события</param>
     /// <response code="200">Возвращается JSON-структура Event с деталями ответа</response>
     /// <response code="404">Событие не найдено</response>
-    [ProducesResponseType(typeof(Event), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Events), StatusCodes.Status200OK)]
     [Produces("application/json")]
     [HttpGet("{id}")]
-    public ActionResult<Event> Get(int id)
+    public ActionResult<Events> Get(int id)
     {
         var result = eventService.Get(id);
 
@@ -56,7 +55,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     {
         int id = eventService.Add(model);
         var result = new AddResult() { Id = id };
-        return  Created("api/events", result);
+        return Created("api/events", result);
     }
 
     /// <summary>
@@ -69,9 +68,9 @@ public class EventsController(IEventService eventService) : ControllerBase
     [HttpPut("{id}")]
     public IActionResult Put(int id, EventRequest model)
     {
-        bool result =  eventService.Update(id, model);
+        bool result = eventService.Update(id, model);
 
-        if (result == false) return new NotFoundResult(); 
+        if (result == false) return new NotFoundResult();
 
         return new OkResult();
     }
@@ -85,9 +84,9 @@ public class EventsController(IEventService eventService) : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
-        bool result =  eventService.Delete(id);
+        bool result = eventService.Delete(id);
 
-        if(result == false) return new NotFoundResult();
+        if (result == false) return new NotFoundResult();
 
         return new OkResult();
     }

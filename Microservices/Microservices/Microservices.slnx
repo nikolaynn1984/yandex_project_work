@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="EventDomain/EventDomain.csproj" />
+  <Project Path="EventServer/EventServer.csproj" />
+</Solution>

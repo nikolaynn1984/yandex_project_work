@@ -1,4 +1,4 @@
-﻿namespace EventServer.Models;
+﻿namespace Event.Domain.Models;
 
 /// <summary>
 /// Событие
@@ -11,7 +11,7 @@
 /// <param name="Description">Описание</param>
 /// <param name="StartAt">Начало</param>
 /// <param name="EndAt">Конец</param>
-public class Event(int Id, string Title, string? Description, DateTime StartAt, DateTime EndAt)
+public class Events(int Id, string Title, string? Description, DateTime StartAt, DateTime EndAt)
 {
 
     /// <summary>

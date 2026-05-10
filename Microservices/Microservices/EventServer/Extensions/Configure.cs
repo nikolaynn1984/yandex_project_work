@@ -36,7 +36,7 @@ public static class Configure
                 Version = "v1",
                 Title = "Сервер событий",
                 Description = "CRUD запросы событий",
-                
+
             });
         });
     }

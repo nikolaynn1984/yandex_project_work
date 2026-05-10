@@ -1,7 +1,5 @@
-
+using Event.Domain.Extentions;
 using EventServer.Core;
-using EventServer.Core.Interfaces;
-using EventServer.Core.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +9,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddBaseConfiguration();
 
-builder.Services.AddSingleton<IEventService, EventService>();
+builder.Services.AddEventService();
 
 var app = builder.Build();
 
@@ -20,7 +18,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseSwagger();   
+app.UseSwagger();
 app.UseSwaggerUI(); //swagger/index.html
 
 app.MapControllers();
@@ -28,5 +26,3 @@ app.MapControllers();
 
 
 app.Run();
-
-

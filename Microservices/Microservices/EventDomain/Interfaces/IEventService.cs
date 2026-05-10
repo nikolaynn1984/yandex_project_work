@@ -1,6 +1,6 @@
-﻿using EventServer.Models;
+﻿using Event.Domain.Models;
 
-namespace EventServer.Core.Interfaces;
+namespace Event.Domain.Interfaces;
 
 /// <summary>
 /// Сервис событий
@@ -11,13 +11,13 @@ public interface IEventService
     /// Получить полный список
     /// </summary>
     /// <returns></returns>
-    List<Event> Get();
+    List<Events> Get();
     /// <summary>
     /// Получить событие по идентификатору
     /// </summary>
     /// <param name="id">Идентификатор</param>
     /// <returns></returns>
-    Event? Get(int id);
+    Events? Get(int id);
     /// <summary>
     /// Добавить событие
     /// </summary>
