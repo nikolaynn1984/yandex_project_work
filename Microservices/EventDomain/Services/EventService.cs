@@ -16,8 +16,8 @@ internal class EventService : IEventService
     /// <inheritdoc/>
     public PaginatedResult Get(string? title, DateTime? from, DateTime? to, int page = 1, int pageSize = 10)
     {
-        var pageList = Pagination(events, page, pageSize);
-        var filters = Filter(pageList, title, from, to).ToList();
+        var pageList = events.Pagination( page, pageSize);
+        var filters = pageList.Filter( title, from, to).ToList();
         return new PaginatedResult()
         {
             TotalItems = events.Count,
@@ -82,41 +82,7 @@ internal class EventService : IEventService
 
     }
 
-    /// <summary>
-    /// Получить спискок с пагинацией
-    /// </summary>
-    /// <param name="events">Список событий</param>
-    /// <param name="page">Страница</param>
-    /// <param name="pageSize">Количество записей в странице</param>
-    /// <returns>Список</returns>
-    private IEnumerable<Events> Pagination(IEnumerable<Events> events, int page, int pageSize)
-    {
-        return events.Skip((page - 1) * pageSize).Take(pageSize);
-    }
+    
 
-    /// <summary>
-    /// Фильтр списка
-    /// </summary>
-    /// <param name="events">Список событий</param>
-    /// <param name="title">Наименование</param>
-    /// <param name="from">Дата начала</param>
-    /// <param name="to">Дата окончания</param>
-    /// <returns>Список</returns>
-    private IEnumerable<Events> Filter(IEnumerable<Events> events, string? title, DateTime? from,  DateTime? to)
-    {
-
-        var result = events;
-
-        if(!string.IsNullOrEmpty(title))
-            result = events.Where(s => s.Title == title);
-
-        if(from != null)
-            result = events.Where(s => s.StartAt >= from);
-
-        if(to != null)
-            result = events.Where(s => s.EndAt <= to);
-
-
-        return result;
-    }
+    
 }
