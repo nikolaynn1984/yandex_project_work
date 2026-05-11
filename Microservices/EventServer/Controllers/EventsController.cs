@@ -3,6 +3,7 @@ using Event.Domain.Models;
 using EventDomain.Extentions;
 using EventDomain.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.InteropServices;
 
 
 
@@ -20,15 +21,15 @@ public class EventsController(IEventService eventService) : ControllerBase
     /// Получить список событий
     /// </summary>
     /// <param name="title">поиск по названию (не обязательный параметр) </param>
-    /// <param name="from">поиск по дате начала события (не обязательный параметр)</param>
-    /// <param name="to">посик по дате окончания события (не обязательный параметр)</param>
+    /// <param name="from">поиск по дате начала события (не обязательный параметр) формат - 2026-05-11T11:41:33.182Z</param>
+    /// <param name="to">посик по дате окончания события (не обязательный параметр) формат - 2026-05-11T11:41:33.182Z</param>
     /// <param name="page">Страница которую требуется вернуть, по умолчанию 1</param>
     /// <param name="pageSize">Количество элементов в странице, по умолчанию 10</param>
     /// <response code="200">Список событие</response>
     [ProducesResponseType(typeof(PaginatedResult), StatusCodes.Status200OK)]
     [Produces("application/json")]
-    [HttpGet("{title?}/{from?}/{to?}/{page?}/{pageSize?}")]
-    public ActionResult<PaginatedResult> Get(string? title, DateTime? from, DateTime? to, int? page, int? pageSize)
+    [HttpGet] //("{title?}/{from?}/{to?}/{page?}/{pageSize?}")
+    public ActionResult<PaginatedResult> Get(string? title = null, DateTime? from = null, DateTime? to = null, int? page = 1, int? pageSize = 10)
     {
         return eventService.Get(title, from, to, page, pageSize);
     }
@@ -83,6 +84,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     /// <param name="id">Идентификатор события</param>
     /// <response code="200">Успешное удаление</response>
     /// <response code="404">Событие не найдено</response>
+    [ProducesResponseType(typeof(EventException), StatusCodes.Status404NotFound)]
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
