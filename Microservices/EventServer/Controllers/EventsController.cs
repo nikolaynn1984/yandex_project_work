@@ -1,5 +1,7 @@
 ﻿using Event.Domain.Interfaces;
 using Event.Domain.Models;
+using EventDomain.Extentions;
+using EventDomain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -17,13 +19,18 @@ public class EventsController(IEventService eventService) : ControllerBase
     /// <summary>
     /// Получить список событий
     /// </summary>
+    /// <param name="title">поиск по названию (не обязательный параметр) </param>
+    /// <param name="from">поиск по дате начала события (не обязательный параметр)</param>
+    /// <param name="to">посик по дате окончания события (не обязательный параметр)</param>
+    /// <param name="page">Страница которую требуется вернуть, по умолчанию 1</param>
+    /// <param name="pageSize">Количество элементов в странице, по умолчанию 10</param>
     /// <response code="200">Список событие</response>
-    [ProducesResponseType(typeof(List<Events>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PaginatedResult), StatusCodes.Status200OK)]
     [Produces("application/json")]
-    [HttpGet]
-    public ActionResult<IEnumerable<Events>> Get()
+    [HttpGet("{title?}/{from?}/{to?}/{page?}/{pageSize?}")]
+    public ActionResult<PaginatedResult> Get(string? title, DateTime? from, DateTime? to, int? page, int? pageSize)
     {
-        return eventService.Get();
+        return eventService.Get(title, from, to, page, pageSize);
     }
 
     /// <summary>
@@ -33,6 +40,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     /// <response code="200">Возвращается JSON-структура Event с деталями ответа</response>
     /// <response code="404">Событие не найдено</response>
     [ProducesResponseType(typeof(Events), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(EventException), StatusCodes.Status404NotFound)]
     [Produces("application/json")]
     [HttpGet("{id}")]
     public ActionResult<Events> Get(int id)
@@ -60,6 +68,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     /// <param name="model">Параметры запроса</param>
     /// <response code="204">Успешное обновление</response>
     /// <response code="404">Событие не найдено</response>
+    [ProducesResponseType(typeof(EventException), StatusCodes.Status404NotFound)]
     [HttpPut("{id}")]
     public IActionResult Put(int id, EventRequest model)
     {

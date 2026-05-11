@@ -1,6 +1,7 @@
 ﻿using Event.Domain.Interfaces;
 using Event.Domain.Models;
 using EventDomain.Extentions;
+using EventDomain.Models;
 
 namespace Event.Domain.Services;
 
@@ -13,9 +14,13 @@ internal class EventService : IEventService
     private int lastIndex = 0;
 
     /// <inheritdoc/>
-    public List<Events> Get()
+    public PaginatedResult Get(string? title, DateTime? from, DateTime? to, int? page = 1, int? pageSize = 10)
     {
-        return events;
+        return new PaginatedResult()
+        {
+            TotalItems = events.Count,
+            Items = events,
+        };
     }
 
     /// <inheritdoc/>
