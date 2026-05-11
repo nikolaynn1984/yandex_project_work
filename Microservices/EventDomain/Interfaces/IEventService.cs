@@ -17,7 +17,7 @@ public interface IEventService
     /// <param name="page">Страница которую требуется вернуть</param>
     /// <param name="pageSize">Колчество элементов в странице</param>
     /// <returns></returns>
-    PaginatedResult Get(string? title, DateTime? from, DateTime? to, int? page = 1, int? pageSize = 10);
+    PaginatedResult Get(string? title, DateTime? from, DateTime? to, int page = 1, int pageSize = 10);
     /// <summary>
     /// Получить событие по идентификатору
     /// </summary>

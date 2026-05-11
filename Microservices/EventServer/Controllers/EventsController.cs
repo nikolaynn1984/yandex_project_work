@@ -29,7 +29,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     [ProducesResponseType(typeof(PaginatedResult), StatusCodes.Status200OK)]
     [Produces("application/json")]
     [HttpGet] //("{title?}/{from?}/{to?}/{page?}/{pageSize?}")
-    public ActionResult<PaginatedResult> Get(string? title = null, DateTime? from = null, DateTime? to = null, int? page = 1, int? pageSize = 10)
+    public ActionResult<PaginatedResult> Get(string? title = null, DateTime? from = null, DateTime? to = null, int page = 1, int pageSize = 10)
     {
         return eventService.Get(title, from, to, page, pageSize);
     }
