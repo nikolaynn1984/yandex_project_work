@@ -1,5 +1,7 @@
 ﻿using Event.Domain.Interfaces;
 using Event.Domain.Services;
+using EventDomain.Extentions;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Event.Domain.Extentions
@@ -16,6 +18,16 @@ namespace Event.Domain.Extentions
         public static void AddEventService(this IServiceCollection services)
         {
             services.AddSingleton<IEventService, EventService>();
+        }
+
+        /// <summary>
+        /// Промежуточное ПО обработки исключений
+        /// </summary>
+        /// <param name="builder">Строитель</param>
+        /// <returns>Строитель</returns>
+        public static void UseGlobalExceptionHandler(this IApplicationBuilder builder)
+        {
+            builder.UseMiddleware<GlobalExceptionHandlingMiddleware>();
         }
     }
 }

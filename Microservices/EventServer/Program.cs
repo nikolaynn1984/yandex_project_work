@@ -13,10 +13,14 @@ builder.Services.AddEventService();
 
 var app = builder.Build();
 
+
+app.UseGlobalExceptionHandler();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
 
 app.UseSwagger();
 app.UseSwaggerUI(); //swagger/index.html

@@ -37,12 +37,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     [HttpGet("{id}")]
     public ActionResult<Events> Get(int id)
     {
-        var result = eventService.Get(id);
-
-        if (result == null) return new NotFoundResult();
-
-
-        return result;
+        return eventService.Get(id);
     }
 
     /// <summary>
@@ -68,9 +63,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     [HttpPut("{id}")]
     public IActionResult Put(int id, EventRequest model)
     {
-        bool result = eventService.Update(id, model);
-
-        if (result == false) return new NotFoundResult();
+        eventService.Update(id, model);
 
         return new OkResult();
     }
@@ -84,9 +77,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
-        bool result = eventService.Delete(id);
-
-        if (result == false) return new NotFoundResult();
+        eventService.Delete(id);
 
         return new OkResult();
     }

@@ -17,7 +17,7 @@ public interface IEventService
     /// </summary>
     /// <param name="id">Идентификатор</param>
     /// <returns></returns>
-    Events? Get(int id);
+    Events Get(int id);
     /// <summary>
     /// Добавить событие
     /// </summary>
@@ -28,10 +28,10 @@ public interface IEventService
     /// </summary>
     /// <param name="id">Идентификатор</param>
     /// <param name="data">Объектная модель Event</param>
-    bool Update(int id, EventRequest data);
+    void Update(int id, EventRequest data);
     /// <summary>
     /// Удалить событие по идентификатору
     /// </summary>
     /// <param name="id">Идентификатор</param>
-    bool Delete(int id);
+    void Delete(int id);
 }
