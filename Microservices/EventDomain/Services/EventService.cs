@@ -16,14 +16,15 @@ public class EventService : IEventService
     /// <inheritdoc/>
     public PaginatedResult Get(string? title = null, DateTime? from = null, DateTime? to = null, int page = 1, int pageSize = 10)
     {
-        var pageList = events.Pagination( page, pageSize);
-        var filters = pageList.Filter( title, from, to).ToList();
+        var filters = events.Filter(title, from, to);
+        var pageList = filters.Pagination( page, pageSize).ToList();
         return new PaginatedResult()
         {
             TotalItems = events.Count,
-            Items = filters,
-            TotalPages = filters.Count,
-            CurrentPage = page
+            Items = pageList,
+            TotalPages = events.Count.GetTotalPages(pageSize),
+            CurrentPage = page,
+            CurrentCount = pageList.Count
         };
     }
 

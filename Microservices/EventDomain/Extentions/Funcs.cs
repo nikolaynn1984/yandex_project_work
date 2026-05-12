@@ -1,6 +1,7 @@
 ﻿using Event.Domain.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace EventDomain.Extentions
@@ -33,16 +34,29 @@ namespace EventDomain.Extentions
             var result = events;
 
             if (!string.IsNullOrEmpty(title))
-                result = events.Where(s => s.Title.Contains(title, StringComparison.OrdinalIgnoreCase));
+                result = result.Where(s => s.Title.Contains(title, StringComparison.OrdinalIgnoreCase));
 
             if (from != null)
-                result = events.Where(s => s.StartAt >= from);
+                result = result.Where(s => s.StartAt >= from);
+
 
             if (to != null)
-                result = events.Where(s => s.EndAt <= to);
+            {
+                if(from != null && from > to)
+                        throw new ValidationException("Дата окончания должна быть после даты начала");
+
+                result = result.Where(s => s.EndAt <= to);
+            }
+                
 
 
             return result;
+        }
+
+
+        public static int GetTotalPages(this int totalItems, int pageSize)
+        {
+            return (int)Math.Ceiling((double)totalItems / pageSize); // Округляем до ближайшего целого вверх
         }
     }
 }

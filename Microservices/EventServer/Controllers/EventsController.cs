@@ -3,7 +3,6 @@ using Event.Domain.Models;
 using EventDomain.Extentions;
 using EventDomain.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.InteropServices;
 
 
 

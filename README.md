@@ -33,11 +33,20 @@ dotnet run EventServer.csproj
 
 ## Описание
  Реализуемые эндпоинты REST API
-  -	GET /events/{title?}/{from?}/{to?}/{page?}/{pageSize?} — получить список всех событий с пагинацией (Ответ 200)
+  -	GET /events?title=value1&from=value2&to=value3&page=value4&pageSize=value5 — получить список всех событий с пагинацией (Ответ 200) - Формат передачи даты для парметров from, to = 2026-05-11T11:41:33.182Z
   -	GET /events/{id} — получить событие по id;
   -	POST /events — создать событие
   -	PUT /events/{id} — обновить событие целиком
   -	DELETE /events/{id} — удалить событие
+
+
+## Формат ошибки 400, 404, 500
+   Problem Details (RFC 7807)
+
+  - title — краткое человеческое описание типа проблемы;
+  - status — HTTP-код состояния;
+  - detail — подробное описание для человека;
+  - instance — URI конкретного экземпляра ошибки 
 
 ## Технологии (Стек)
 - [C#]

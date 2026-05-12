@@ -1,5 +1,5 @@
-﻿using EventDomain.Models;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
@@ -52,33 +52,34 @@ namespace EventDomain.Extentions
 
             var error = MapStatusCode(ex);
 
-            httpContext.Response.StatusCode = error.StatusCode;
+            httpContext.Response.StatusCode = error.Status ?? 0;
             httpContext.Response.ContentType = "application/json";
 
-            error.Message = ex.Message;
+            error.Detail = ex.Message;
+            error.Instance = httpContext.Request.Path;
 
 
             await httpContext.Response.WriteAsync(JsonSerializer.Serialize(error));
 
         }
 
-        private ErrorResponce MapStatusCode(Exception ex)
+        private ProblemDetails MapStatusCode(Exception ex)
         {
-            var result = new ErrorResponce();
+            var result = new ProblemDetails();
 
             switch (ex)
             {
                 case ValidationException ve:  
-                    result.StatusCode = StatusCodes.Status400BadRequest;
-                    result.ErrorType = StatusCodes.Status400BadRequest.ToString();
+                    result.Status = StatusCodes.Status400BadRequest;
+                    result.Title = "Status400BadRequest";
                     break;
                 case EventException eve:
-                    result.StatusCode = StatusCodes.Status404NotFound;
-                    result.ErrorType = StatusCodes.Status404NotFound.ToString();
+                    result.Status = StatusCodes.Status404NotFound;
+                    result.Title = "Status404NotFound";
                     break;
                 default:
-                    result.StatusCode = StatusCodes.Status500InternalServerError;
-                    result.ErrorType = StatusCodes.Status500InternalServerError.ToString();
+                    result.Status = StatusCodes.Status500InternalServerError;
+                    result.Title = "Status500InternalServerError";
                     break;
 
             }
