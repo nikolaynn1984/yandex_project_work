@@ -22,9 +22,18 @@ dotnet run EventServer.csproj
  > По умолчанию в конфигурации applicationUrl = http://localhost:5185
  * для запуска SwaggerUI требуется открыть браузер и указать адресс http://localhost:5185/swagger/index.html
 
+ Для запуска модульных тестов
+  * перейти в папку yandex_project_work\Microservices\EventServiceTests
+
+  > Запустить в консоли
+    ```bash
+  dotnet test EventServiceTests.csproj
+```
+
+
 ## Описание
  Реализуемые эндпоинты REST API
-  -	GET /events — получить список всех событий (Ответ 200)
+  -	GET /events/{title?}/{from?}/{to?}/{page?}/{pageSize?} — получить список всех событий с пагинацией (Ответ 200)
   -	GET /events/{id} — получить событие по id;
   -	POST /events — создать событие
   -	PUT /events/{id} — обновить событие целиком
