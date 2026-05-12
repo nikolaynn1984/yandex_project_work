@@ -8,13 +8,13 @@ namespace Event.Domain.Services;
 /// <summary>
 /// Сервси событий
 /// </summary>
-internal class EventService : IEventService
+public class EventService : IEventService
 {
     private readonly List<Events> events = [];
     private int lastIndex = 0;
 
     /// <inheritdoc/>
-    public PaginatedResult Get(string? title, DateTime? from, DateTime? to, int page = 1, int pageSize = 10)
+    public PaginatedResult Get(string? title = null, DateTime? from = null, DateTime? to = null, int page = 1, int pageSize = 10)
     {
         var pageList = events.Pagination( page, pageSize);
         var filters = pageList.Filter( title, from, to).ToList();

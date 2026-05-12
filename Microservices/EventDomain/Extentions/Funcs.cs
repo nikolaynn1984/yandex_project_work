@@ -5,7 +5,7 @@ using System.Text;
 
 namespace EventDomain.Extentions
 {
-    internal static class Funcs
+    public static class Funcs
     {
         /// <summary>
         /// Получить спискок с пагинацией
@@ -14,7 +14,7 @@ namespace EventDomain.Extentions
         /// <param name="page">Страница</param>
         /// <param name="pageSize">Количество записей в странице</param>
         /// <returns>Список</returns>
-        internal static IEnumerable<Events> Pagination(this IEnumerable<Events> events, int page, int pageSize)
+        public static IEnumerable<Events> Pagination(this IEnumerable<Events> events, int page, int pageSize)
         {
             return events.Skip((page - 1) * pageSize).Take(pageSize);
         }
@@ -27,13 +27,13 @@ namespace EventDomain.Extentions
         /// <param name="from">Дата начала</param>
         /// <param name="to">Дата окончания</param>
         /// <returns>Список</returns>
-        internal static IEnumerable<Events> Filter(this IEnumerable<Events> events, string? title, DateTime? from, DateTime? to)
+        public static IEnumerable<Events> Filter(this IEnumerable<Events> events, string? title, DateTime? from, DateTime? to)
         {
 
             var result = events;
 
             if (!string.IsNullOrEmpty(title))
-                result = events.Where(s => s.Title == title);
+                result = events.Where(s => s.Title.Contains(title, StringComparison.OrdinalIgnoreCase));
 
             if (from != null)
                 result = events.Where(s => s.StartAt >= from);
