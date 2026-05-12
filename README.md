@@ -26,15 +26,15 @@ dotnet run EventServer.csproj
   * перейти в папку yandex_project_work\Microservices\EventServiceTests
 
   > Запустить в консоли
-    ```bash
+ ```bash
 dotnet test EventServiceTests.csproj
-```
+ ```
 
 
 ## Описание
  Реализуемые эндпоинты REST API
 -	GET /events?title=value1&from=value2&to=value3&page=value4&pageSize=value5 — получить список всех событий с пагинацией (Ответ 200) - Формат передачи даты для парметров from, to = 2026-05-11T11:41:33.182Z
--	GET /events/{id} — получить событие по id;
+-	GET /events/{id} — получить событие по id
 -	POST /events — создать событие
 -	PUT /events/{id} — обновить событие целиком
 -	DELETE /events/{id} — удалить событие
