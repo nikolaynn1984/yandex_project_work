@@ -25,7 +25,9 @@ public class EventsController(IEventService eventService) : ControllerBase
     /// <param name="page">Страница которую требуется вернуть, по умолчанию 1</param>
     /// <param name="pageSize">Количество элементов в странице, по умолчанию 10</param>
     /// <response code="200">Список событие</response>
+    /// <response code="400">Ошибка запроса</response>
     [ProducesResponseType(typeof(PaginatedResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [Produces("application/json")]
     [HttpGet] //("{title?}/{from?}/{to?}/{page?}/{pageSize?}")
     public ActionResult<PaginatedResult> Get(string? title = null, DateTime? from = null, DateTime? to = null, int page = 1, int pageSize = 10)
@@ -40,7 +42,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     /// <response code="200">Возвращается JSON-структура Event с деталями ответа</response>
     /// <response code="404">Событие не найдено</response>
     [ProducesResponseType(typeof(Events), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(EventException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [Produces("application/json")]
     [HttpGet("{id}")]
     public ActionResult<Events> Get(int id)
@@ -53,6 +55,8 @@ public class EventsController(IEventService eventService) : ControllerBase
     /// </summary>
     /// <param name="model">Модель Event</param>
     /// <response code="201">Успешное добавление</response>
+    /// <response code="400">Ошибка запроса</response>
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [HttpPost]
     public IActionResult Post(EventRequest model)
     {
@@ -67,8 +71,10 @@ public class EventsController(IEventService eventService) : ControllerBase
     /// <param name="id">Идентификатор события</param>
     /// <param name="model">Параметры запроса</param>
     /// <response code="204">Успешное обновление</response>
+    /// <response code="400">Ошибка запроса</response>
     /// <response code="404">Событие не найдено</response>
-    [ProducesResponseType(typeof(EventException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [HttpPut("{id}")]
     public IActionResult Put(int id, EventRequest model)
     {
@@ -83,7 +89,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     /// <param name="id">Идентификатор события</param>
     /// <response code="200">Успешное удаление</response>
     /// <response code="404">Событие не найдено</response>
-    [ProducesResponseType(typeof(EventException), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
