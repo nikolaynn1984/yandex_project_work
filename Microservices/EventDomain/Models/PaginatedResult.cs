@@ -23,8 +23,4 @@ public class PaginatedResult
     /// Общее количество страниц
     /// </summary>
     public int TotalPages { get; set; } = 0;
-    /// <summary>
-    /// Количество на текущей странице
-    /// </summary>
-    public int CurrentCount {  get; set; } = 0;
 }

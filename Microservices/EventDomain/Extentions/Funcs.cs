@@ -17,6 +17,8 @@ namespace EventDomain.Extentions
         /// <returns>Список</returns>
         public static IEnumerable<Events> Pagination(this IEnumerable<Events> events, int page, int pageSize)
         {
+            PageValid(page, "page");
+            PageValid(pageSize, "pageSize");
             return events.Skip((page - 1) * pageSize).Take(pageSize);
         }
 
@@ -51,6 +53,12 @@ namespace EventDomain.Extentions
 
 
             return result;
+        }
+
+        private static void PageValid(int value, string name)
+        {
+            if (value <= 0)
+                throw new ValidationException($"Свйоство {name} не должно быть меньше 1");
         }
 
 

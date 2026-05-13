@@ -18,13 +18,15 @@ public class EventService : IEventService
     {
         var filters = events.Filter(title, from, to);
         var pageList = filters.Pagination( page, pageSize).ToList();
+
+        int totalPage = filters.Count().GetTotalPages(pageSize);
+
         return new PaginatedResult()
         {
-            TotalItems = events.Count,
+            TotalItems = filters.Count(),
             Items = pageList,
-            TotalPages = events.Count.GetTotalPages(pageSize),
-            CurrentPage = page,
-            CurrentCount = pageList.Count
+            TotalPages = filters.Count().GetTotalPages(pageSize),
+            CurrentPage = totalPage > page ? page : totalPage ,
         };
     }
 
