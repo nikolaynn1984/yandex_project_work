@@ -71,15 +71,15 @@ namespace EventDomain.Extentions
             {
                 case ValidationException ve:  
                     result.Status = StatusCodes.Status400BadRequest;
-                    result.Title = "Status400BadRequest";
+                    result.Title = "Ошибка 400 (Неверный запрос)";
                     break;
                 case EventException eve:
                     result.Status = StatusCodes.Status404NotFound;
-                    result.Title = "Status404NotFound";
+                    result.Title = "Ошибка 404 (Не найдено)";
                     break;
                 default:
                     result.Status = StatusCodes.Status500InternalServerError;
-                    result.Title = "Status500InternalServerError";
+                    result.Title = "Ошибка  500  (Ошибки в сервере)";
                     break;
 
             }
