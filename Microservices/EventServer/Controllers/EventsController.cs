@@ -62,7 +62,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     {
         int id = eventService.Add(model);
         var result = new AddResult() { Id = id };
-        return Created("api/events", result);
+        return Created(HttpContext.Request.Path, result);
     }
 
     /// <summary>

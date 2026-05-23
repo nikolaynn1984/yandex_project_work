@@ -20,12 +20,12 @@ public class EventService : IEventService
         var pageList = filters.Pagination( page, pageSize).ToList();
 
         int totalPage = filters.Count().GetTotalPages(pageSize);
-
+        int count = filters.Count();
         return new PaginatedResult()
         {
-            TotalItems = filters.Count(),
+            TotalItems = count,
             Items = pageList,
-            TotalPages = filters.Count().GetTotalPages(pageSize),
+            TotalPages = count.GetTotalPages(pageSize),
             CurrentPage = totalPage > page ? page : totalPage ,
         };
     }
