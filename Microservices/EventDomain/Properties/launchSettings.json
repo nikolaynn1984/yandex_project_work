@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "EventDomain": {
+      "commandName": "Project"
+    }
+  }
+}
