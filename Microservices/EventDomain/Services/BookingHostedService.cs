@@ -34,13 +34,14 @@ namespace EventDomain.Services
 
 
                         booking.Status = BookingStatus.Confirmed;
+                        booking.ProcessedAt = DateTime.Now;
 
 
                         logger.LogInformation("Бронирование {Id} обработано", booking.Id);
                     }
                 }catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
                 {
-                    break;
+                    break; 
                 }
                 catch (Exception ex)
                 {

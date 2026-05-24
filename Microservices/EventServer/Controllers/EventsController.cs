@@ -29,9 +29,9 @@ public class EventsController(IEventService eventService, IBookingService bookin
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [Produces("application/json")]
     [HttpGet] //("{title?}/{from?}/{to?}/{page?}/{pageSize?}")
-    public ActionResult<PaginatedResult> Get(string? title = null, DateTime? from = null, DateTime? to = null, int page = 1, int pageSize = 10)
+    public async Task<ActionResult<PaginatedResult>> Get(string? title = null, DateTime? from = null, DateTime? to = null, int page = 1, int pageSize = 10)
     {
-        return eventService.Get(title, from, to, page, pageSize, HttpContext.RequestAborted);
+        return await eventService.Get(title, from, to, page, pageSize, HttpContext.RequestAborted);
     }
 
     /// <summary>
@@ -44,9 +44,9 @@ public class EventsController(IEventService eventService, IBookingService bookin
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [Produces("application/json")]
     [HttpGet("{id}")]
-    public ActionResult<Events> Get(Guid id)
+    public async Task<ActionResult<Events>> Get(Guid id)
     {
-        return eventService.Get(id, HttpContext.RequestAborted);
+        return await eventService.Get(id, HttpContext.RequestAborted);
     }
 
 
@@ -60,7 +60,7 @@ public class EventsController(IEventService eventService, IBookingService bookin
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [Produces("application/json")]
     [HttpPost("{id}/book")]
-    public async Task<ActionResult<AddBookingResult>> CreateBook(Guid id)
+    public async Task<ActionResult<AddBookingResult>> CreateBooking(Guid id)
     {
         var result = await bookingService.CreateBookingAsync(id, HttpContext.RequestAborted);
 
@@ -75,9 +75,9 @@ public class EventsController(IEventService eventService, IBookingService bookin
     /// <response code="400">Ошибка запроса</response>
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [HttpPost]
-    public IActionResult Post(EventRequest model)
+    public async Task<IActionResult> Post(EventRequest model)
     {
-        Guid id = eventService.Add(model, HttpContext.RequestAborted);
+        Guid id =  await eventService.Add(model, HttpContext.RequestAborted);
         var result = new AddResult() { Id = id };
         return Created(HttpContext.Request.Path, result);
     }
@@ -93,9 +93,9 @@ public class EventsController(IEventService eventService, IBookingService bookin
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [HttpPut("{id}")]
-    public IActionResult Put(Guid id, EventRequest model)
+    public async Task<IActionResult> Put(Guid id, EventRequest model)
     {
-        eventService.Update(id, model, HttpContext.RequestAborted);
+        await eventService.Update(id, model, HttpContext.RequestAborted);
 
         return new OkResult();
     }
@@ -108,9 +108,9 @@ public class EventsController(IEventService eventService, IBookingService bookin
     /// <response code="404">Событие не найдено</response>
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [HttpDelete("{id}")]
-    public IActionResult Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id)
     {
-        eventService.Delete(id, HttpContext.RequestAborted);
+        await eventService.Delete(id, HttpContext.RequestAborted);
 
         return new OkResult();
     }

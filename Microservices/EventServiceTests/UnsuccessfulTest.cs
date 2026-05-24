@@ -24,18 +24,23 @@ namespace EventServiceTests
         }
 
         [Fact]
-        public void Event_GetById_Throw()
+        public async Task Event_GetById_Throw()
         {
-            Assert.Throws<EventException>(() => this.service.Get(Guid.NewGuid()));
+            var id = Guid.NewGuid();
+            var exception = await Assert.ThrowsAsync<EventException>(() => this.service.Get(id));
+
+            Assert.Equal($"Событие с идентификатором {id} не найден", exception.Message);
         }
 
         [Fact]
-        public void Event_Update_Throw()
+        public async Task Event_Update_Throw()
         {
             var eventItem = new EventRequest() { Title = "Test 6", Description = "Описание 6", StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
+            var id = Guid.NewGuid();
 
+            var exception = await Assert.ThrowsAsync<EventException>(() => this.service.Update(id, eventItem));
 
-            Assert.Throws<EventException>(() => this.service.Update(Guid.NewGuid(), eventItem));
+            Assert.Equal($"Событие с идентификатором {id} не найден", exception.Message);
         }
     }
 }
