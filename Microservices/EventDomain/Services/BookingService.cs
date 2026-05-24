@@ -31,13 +31,16 @@ namespace EventDomain.Services
                 {
                     this.eventService.Get(eventId);
 
-                    var id = Guid.NewGuid();
+                    if (cancellationToken.IsCancellationRequested)
+                    {
 
-                    var booking = new Booking(id, eventId);
+                    }
+                        
 
-                    var result = new AddBookingResult(id);
+                    var booking = Add(eventId);
 
-                    tsc.TrySetResult(result);
+
+                    tsc.TrySetResult(new AddBookingResult(booking.Id, eventId, booking.Status));
 
                 }
                 catch(EventException exe)
@@ -48,6 +51,24 @@ namespace EventDomain.Services
 
            return await tsc.Task;
         }
+
+        /// <summary>
+        /// Добавление планирования
+        /// </summary>
+        /// <param name="eventId">Идентификатор события</param>
+        /// <returns>Объектная модель бронирования</returns>
+        private Booking Add(Guid eventId)
+        {
+
+            var id = Guid.NewGuid();
+
+            var booking = new Booking(id, eventId);
+
+            this.bookings.Add(booking);
+
+            return booking;
+        }
+
         /// <inheritdoc/>
         public async Task<Booking> GetBookingByIdAsync(Guid bookingId, CancellationToken cancellationToken = default)
         {

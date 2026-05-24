@@ -1,5 +1,6 @@
 ﻿using Event.Domain.Interfaces;
 using Event.Domain.Models;
+using EventDomain.Interfaces;
 using EventDomain.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,10 +9,11 @@ namespace EventServer.Controllers;
 /// <summary>
 /// Эендпоинт событий
 /// </summary>
-/// <param name="eventService"></param>
+/// <param name="eventService">Сервис событий</param>
+/// <param name="bookingService">Сервис бронирований</param>
 [Route("events")]
 [ApiController]
-public class EventsController(IEventService eventService) : ControllerBase
+public class EventsController(IEventService eventService, IBookingService bookingService) : ControllerBase
 {
     /// <summary>
     /// Получить список событий
@@ -29,7 +31,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     [HttpGet] //("{title?}/{from?}/{to?}/{page?}/{pageSize?}")
     public ActionResult<PaginatedResult> Get(string? title = null, DateTime? from = null, DateTime? to = null, int page = 1, int pageSize = 10)
     {
-        return eventService.Get(title, from, to, page, pageSize);
+        return eventService.Get(title, from, to, page, pageSize, HttpContext.RequestAborted);
     }
 
     /// <summary>
@@ -44,7 +46,23 @@ public class EventsController(IEventService eventService) : ControllerBase
     [HttpGet("{id}")]
     public ActionResult<Events> Get(Guid id)
     {
-        return eventService.Get(id);
+        return eventService.Get(id, HttpContext.RequestAborted);
+    }
+
+
+    /// <summary>
+    /// Добавления планирования события
+    /// </summary>
+    /// <param name="id">Идентификатор события</param>
+    /// <response code="200">Возвращается JSON-структура AddBookingResult с деталями ответа</response>
+    /// <response code="404">Событие не найдено</response>
+    [ProducesResponseType(typeof(AddBookingResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [Produces("application/json")]
+    [HttpPost("{id}/book")]
+    public async Task<ActionResult<AddBookingResult>> CreateBook(Guid id)
+    {
+        return await bookingService.CreateBookingAsync(id, HttpContext.RequestAborted);
     }
 
     /// <summary>
@@ -57,7 +75,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     [HttpPost]
     public IActionResult Post(EventRequest model)
     {
-        Guid id = eventService.Add(model);
+        Guid id = eventService.Add(model, HttpContext.RequestAborted);
         var result = new AddResult() { Id = id };
         return Created(HttpContext.Request.Path, result);
     }
@@ -75,7 +93,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     [HttpPut("{id}")]
     public IActionResult Put(Guid id, EventRequest model)
     {
-        eventService.Update(id, model);
+        eventService.Update(id, model, HttpContext.RequestAborted);
 
         return new OkResult();
     }
@@ -90,7 +108,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(Guid id)
     {
-        eventService.Delete(id);
+        eventService.Delete(id, HttpContext.RequestAborted);
 
         return new OkResult();
     }

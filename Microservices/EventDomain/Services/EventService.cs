@@ -11,10 +11,9 @@ namespace Event.Domain.Services;
 public class EventService : IEventService
 {
     private readonly List<Events> events = [];
-    private int lastIndex = 0;
 
     /// <inheritdoc/>
-    public PaginatedResult Get(string? title = null, DateTime? from = null, DateTime? to = null, int page = 1, int pageSize = 10)
+    public PaginatedResult Get(string? title = null, DateTime? from = null, DateTime? to = null, int page = 1, int pageSize = 10, CancellationToken cancellationToken = default)
     {
         var filters = events.Filter(title, from, to);
         var pageList = filters.Pagination( page, pageSize).ToList();
@@ -31,7 +30,7 @@ public class EventService : IEventService
     }
 
     /// <inheritdoc/>
-    public Events Get(Guid id)
+    public Events Get(Guid id, CancellationToken cancellationToken = default)
     {
         var model = events.FirstOrDefault(s => s.Id == id);
         if (model == null)
@@ -41,7 +40,7 @@ public class EventService : IEventService
     }
 
     /// <inheritdoc/>
-    public Guid Add(EventRequest model)
+    public Guid Add(EventRequest model, CancellationToken token = default)
     {
         var id = Guid.NewGuid();
 
@@ -52,7 +51,7 @@ public class EventService : IEventService
     }
 
     /// <inheritdoc/>
-    public void Delete(Guid id)
+    public void Delete(Guid id, CancellationToken token = default)
     {
         var model = events.FirstOrDefault(s => s.Id == id);
 
@@ -68,7 +67,7 @@ public class EventService : IEventService
 
 
     /// <inheritdoc/>
-    public void Update(Guid id, EventRequest data)
+    public void Update(Guid id, EventRequest data, CancellationToken cancellationToken = default)
     {
         var model = events.FirstOrDefault(s => s.Id == id);
 
