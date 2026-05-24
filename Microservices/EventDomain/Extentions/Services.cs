@@ -20,7 +20,13 @@ namespace Event.Domain.Extentions
         public static void AddEventService(this IServiceCollection services)
         {
             services.AddSingleton<IEventService, EventService>();
+        }
+
+        public static void AddBookingService(this IServiceCollection services)
+        {
             services.AddSingleton<IBookingService, BookingService>();
+            services.AddSingleton<IBookingQueueService, BookingQueueService>();
+            services.AddHostedService<BookingHostedService>();
         }
 
         /// <summary>

@@ -13,11 +13,13 @@ namespace EventDomain.Services
     {
         private readonly ConcurrentBag<Booking> bookings;
         private readonly IEventService eventService;
+        private readonly IBookingQueueService bookingQueueService;
 
-        public BookingService(IEventService eventService)
+        public BookingService(IEventService eventService, IBookingQueueService bookingQueueService)
         {
             this.eventService = eventService;
             this.bookings = new ConcurrentBag<Booking>();
+            this.bookingQueueService = bookingQueueService;
         }
 
         /// <inheritdoc/>
@@ -31,10 +33,7 @@ namespace EventDomain.Services
                 {
                     this.eventService.Get(eventId);
 
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-
-                    }
+                    cancellationToken.ThrowIfCancellationRequested();
                         
 
                     var booking = Add(eventId);
@@ -66,6 +65,8 @@ namespace EventDomain.Services
 
             this.bookings.Add(booking);
 
+            this.bookingQueueService.Enqueue(booking);
+
             return booking;
         }
 
@@ -75,6 +76,10 @@ namespace EventDomain.Services
             var tsc = new TaskCompletionSource<Booking>();
             _ = Task.Run(() =>
             {
+
+                cancellationToken.ThrowIfCancellationRequested();
+
+
                 var book = this.bookings.FirstOrDefault(s => s.Id == bookingId);
                 if (book == null)
                 {
