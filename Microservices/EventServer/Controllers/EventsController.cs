@@ -56,13 +56,15 @@ public class EventsController(IEventService eventService, IBookingService bookin
     /// <param name="id">Идентификатор события</param>
     /// <response code="200">Возвращается JSON-структура AddBookingResult с деталями ответа</response>
     /// <response code="404">Событие не найдено</response>
-    [ProducesResponseType(typeof(AddBookingResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(AddBookingResult), StatusCodes.Status202Accepted)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [Produces("application/json")]
     [HttpPost("{id}/book")]
     public async Task<ActionResult<AddBookingResult>> CreateBook(Guid id)
     {
-        return await bookingService.CreateBookingAsync(id, HttpContext.RequestAborted);
+        var result = await bookingService.CreateBookingAsync(id, HttpContext.RequestAborted);
+
+        return Accepted($"/bookings/{result.Id}", result);
     }
 
     /// <summary>
