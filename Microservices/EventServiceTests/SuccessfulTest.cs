@@ -32,7 +32,10 @@ namespace EventServiceTests
         [Fact]
         public void Event_GetById_model()
         {
-            var item = this.service.Get(5);
+            var request = new EventRequest() { Title = "AddTestById", Description = "Тестовое добаление", StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
+            var id = this.service.Add(request);
+
+            var item = this.service.Get(id);
 
             Assert.NotNull(item);
         }
@@ -52,23 +55,27 @@ namespace EventServiceTests
         [Fact]
         public void Event_Update_true()
         {
-            int id = 3;
-            var request = new EventRequest() { Title = "UpdateTest", Description = "Тестовое добаление", StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
-            this.service.Update(id, request);
+            var requestAdd = new EventRequest() { Title = "AddTest", Description = "Тестовое добаление", StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
+            var id = this.service.Add(requestAdd);
+
+            var requestEdit = new EventRequest() { Title = "UpdateTest", Description = "Тестовое изменение", StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
+            this.service.Update(id, requestEdit);
 
             var item = this.service.Get(id);
 
-            Assert.Equal(request.Title, item.Title);
+            Assert.Equal(requestEdit.Title, item.Title);
         }
 
 
         [Fact]
         public void Event_Delete_exception()
         {
-            int id = 1;
+            var requestAdd = new EventRequest() { Title = "AddTest", Description = "Тестовое добаление для удаления", StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
+            var id = this.service.Add(requestAdd);
+
+
             this.service.Delete(id);
 
-            //var item = this.service.Get(id);
 
             Assert.Throws<EventException>(() => this.service.Get(id));
         }

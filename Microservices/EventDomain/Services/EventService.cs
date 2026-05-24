@@ -31,7 +31,7 @@ public class EventService : IEventService
     }
 
     /// <inheritdoc/>
-    public Events Get(int id)
+    public Events Get(Guid id)
     {
         var model = events.FirstOrDefault(s => s.Id == id);
         if (model == null)
@@ -41,18 +41,18 @@ public class EventService : IEventService
     }
 
     /// <inheritdoc/>
-    public int Add(EventRequest model)
+    public Guid Add(EventRequest model)
     {
-        lastIndex++;
+        var id = Guid.NewGuid();
 
 #pragma warning disable CS8629 // Тип значения, допускающего NULL, может быть NULL.
-        events.Add(new Events(lastIndex, model.Title, model.Description, (DateTime)model.StartAt, (DateTime)model.EndAt));
+        events.Add(new Events(id, model.Title, model.Description, (DateTime)model.StartAt, (DateTime)model.EndAt));
 #pragma warning restore CS8629 // Тип значения, допускающего NULL, может быть NULL.
-        return lastIndex;
+        return id;
     }
 
     /// <inheritdoc/>
-    public void Delete(int id)
+    public void Delete(Guid id)
     {
         var model = events.FirstOrDefault(s => s.Id == id);
 
@@ -68,7 +68,7 @@ public class EventService : IEventService
 
 
     /// <inheritdoc/>
-    public void Update(int id, EventRequest data)
+    public void Update(Guid id, EventRequest data)
     {
         var model = events.FirstOrDefault(s => s.Id == id);
 

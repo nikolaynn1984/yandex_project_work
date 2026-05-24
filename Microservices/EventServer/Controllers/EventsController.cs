@@ -1,10 +1,7 @@
 ﻿using Event.Domain.Interfaces;
 using Event.Domain.Models;
-using EventDomain.Extentions;
 using EventDomain.Models;
 using Microsoft.AspNetCore.Mvc;
-
-
 
 namespace EventServer.Controllers;
 
@@ -45,7 +42,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [Produces("application/json")]
     [HttpGet("{id}")]
-    public ActionResult<Events> Get(int id)
+    public ActionResult<Events> Get(Guid id)
     {
         return eventService.Get(id);
     }
@@ -60,7 +57,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     [HttpPost]
     public IActionResult Post(EventRequest model)
     {
-        int id = eventService.Add(model);
+        Guid id = eventService.Add(model);
         var result = new AddResult() { Id = id };
         return Created(HttpContext.Request.Path, result);
     }
@@ -76,7 +73,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [HttpPut("{id}")]
-    public IActionResult Put(int id, EventRequest model)
+    public IActionResult Put(Guid id, EventRequest model)
     {
         eventService.Update(id, model);
 
@@ -91,7 +88,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     /// <response code="404">Событие не найдено</response>
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public IActionResult Delete(Guid id)
     {
         eventService.Delete(id);
 

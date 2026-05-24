@@ -26,17 +26,16 @@ namespace EventServiceTests
         [Fact]
         public void Event_GetById_Throw()
         {
-
-            Assert.Throws<EventException>(() => this.service.Get(8));
+            Assert.Throws<EventException>(() => this.service.Get(Guid.NewGuid()));
         }
 
         [Fact]
         public void Event_Update_Throw()
         {
             var eventItem = new EventRequest() { Title = "Test 6", Description = "Описание 6", StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
-            int id = 9;
 
-            Assert.Throws<EventException>(() => this.service.Update(id, eventItem));
+
+            Assert.Throws<EventException>(() => this.service.Update(Guid.NewGuid(), eventItem));
         }
     }
 }

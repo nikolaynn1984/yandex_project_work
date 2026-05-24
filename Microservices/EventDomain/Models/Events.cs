@@ -11,13 +11,13 @@
 /// <param name="Description">Описание</param>
 /// <param name="StartAt">Начало</param>
 /// <param name="EndAt">Конец</param>
-public class Events(int Id, string Title, string? Description, DateTime StartAt, DateTime EndAt)
+public class Events(Guid Id, string Title, string? Description, DateTime StartAt, DateTime EndAt)
 {
 
     /// <summary>
     /// Идентифкатор
     /// </summary>
-    public int Id { get; set; } = Id;
+    public Guid Id { get; set; } = Id;
     /// <summary>
     /// Титл
     /// </summary>

@@ -24,21 +24,21 @@ public interface IEventService
     /// 
     /// <param name="id">Идентификатор</param>
     /// <returns></returns>
-    Events Get(int id);
+    Events Get(Guid id);
     /// <summary>
     /// Добавить событие
     /// </summary>
     /// <param name="model">Объектная модель Event</param>
-    int Add(EventRequest model);
+    Guid Add(EventRequest model);
     /// <summary>
     /// Обновичть событие
     /// </summary>
     /// <param name="id">Идентификатор</param>
     /// <param name="data">Объектная модель Event</param>
-    void Update(int id, EventRequest data);
+    void Update(Guid id, EventRequest data);
     /// <summary>
     /// Удалить событие по идентификатору
     /// </summary>
     /// <param name="id">Идентификатор</param>
-    void Delete(int id);
+    void Delete(Guid id);
 }
