@@ -25,30 +25,31 @@ namespace EventDomain.Services
         /// <inheritdoc/>
         public async Task<AddBookingResult> CreateBookingAsync(Guid eventId, CancellationToken cancellationToken = default)
         {
-            var tsc = new TaskCompletionSource<AddBookingResult>();
+            var tcs = new TaskCompletionSource<AddBookingResult>();
 
-            _ = Task.Run(() =>
+            _ = Task.Run(async () =>
             {
                 try
                 {
-                    this.eventService.Get(eventId);
+                    await this.eventService.Get(eventId);
 
-                    cancellationToken.ThrowIfCancellationRequested();
-                        
+                    if (cancellationToken.IsCancellationRequested)
+                        tcs.TrySetCanceled();
+
 
                     var booking = Add(eventId);
 
 
-                    tsc.TrySetResult(new AddBookingResult(booking.Id, eventId, booking.Status));
+                    tcs.TrySetResult(new AddBookingResult(booking.Id, eventId, booking.Status));
 
                 }
                 catch(EventException exe)
                 {
-                    tsc.TrySetException(exe);
+                    tcs.TrySetException(exe);
                 }
             });
 
-           return await tsc.Task;
+           return await tcs.Task;
         }
 
         /// <summary>
@@ -73,27 +74,28 @@ namespace EventDomain.Services
         /// <inheritdoc/>
         public async Task<Booking> GetBookingByIdAsync(Guid bookingId, CancellationToken cancellationToken = default)
         {
-            var tsc = new TaskCompletionSource<Booking>();
+            var tcs = new TaskCompletionSource<Booking>();
             _ = Task.Run(() =>
             {
 
-                cancellationToken.ThrowIfCancellationRequested();
+                if (cancellationToken.IsCancellationRequested)
+                    tcs.TrySetCanceled();
 
 
                 var book = this.bookings.FirstOrDefault(s => s.Id == bookingId);
                 if (book == null)
                 {
-                    tsc.TrySetException(new EventException($"Бронирование с идентификатором {bookingId} не найден"));
+                    tcs.TrySetException(new EventException($"Бронирование с идентификатором {bookingId} не найден"));
                 }
 
 
 #pragma warning disable CS8604 // Возможно, аргумент-ссылка, допускающий значение NULL.
-                tsc.TrySetResult(book);
+                tcs.TrySetResult(book);
 #pragma warning restore CS8604 // Возможно, аргумент-ссылка, допускающий значение NULL.
-            });
+            }, cancellationToken);
 
 
-            return await tsc.Task;
+            return await tcs.Task;
         }
     }
 }

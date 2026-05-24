@@ -3,7 +3,6 @@ using Event.Domain.Models;
 using Event.Domain.Services;
 using EventDomain.Extentions;
 using System.Diagnostics;
-using static System.Net.WebRequestMethods;
 
 namespace EventServiceTests
 {
@@ -14,20 +13,34 @@ namespace EventServiceTests
         public SuccessfulTest()
         {
             this.service = new EventService();
-            this.service.Add(new EventRequest() { Title = "Test 1", Description = "Описание 1", StartAt = new DateTime(2025, 05, 11), EndAt = new DateTime(2025, 05, 12) });
-            this.service.Add(new EventRequest() { Title = "Test 2", Description = "Описание 2", StartAt = new DateTime(2025, 05, 12), EndAt = new DateTime(2025, 05, 13) });
-            this.service.Add(new EventRequest() { Title = "Test 3", Description = "Описание 3", StartAt = new DateTime(2025, 05, 13), EndAt = new DateTime(2025, 05, 14) });
-            this.service.Add(new EventRequest() { Title = "Test 4", Description = "Описание 4", StartAt = new DateTime(2025, 05, 14), EndAt = new DateTime(2025, 05, 15) });
-            this.service.Add(new EventRequest() { Title = "Test 5", Description = "Описание 5", StartAt = new DateTime(2025, 05, 15), EndAt = new DateTime(2025, 05, 16) });
-            this.service.Add(new EventRequest() { Title = "Test 6", Description = "Описание 6", StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) });
+
+            Task[] tasks =
+            [
+                this.service.Add(new EventRequest() { Title = "Test 1", Description = "Описание 1", StartAt = new DateTime(2025, 05, 11), EndAt = new DateTime(2025, 05, 12) }),
+                this.service.Add(new EventRequest() { Title = "Test 2", Description = "Описание 2", StartAt = new DateTime(2025, 05, 12), EndAt = new DateTime(2025, 05, 13) }),
+                this.service.Add(new EventRequest() { Title = "Test 3", Description = "Описание 3", StartAt = new DateTime(2025, 05, 13), EndAt = new DateTime(2025, 05, 14) }),
+                this.service.Add(new EventRequest() { Title = "Test 4", Description = "Описание 4", StartAt = new DateTime(2025, 05, 14), EndAt = new DateTime(2025, 05, 15) }),
+                this.service.Add(new EventRequest() { Title = "Test 5", Description = "Описание 5", StartAt = new DateTime(2025, 05, 15), EndAt = new DateTime(2025, 05, 16) }),
+                this.service.Add(new EventRequest() { Title = "Test 6", Description = "Описание 6", StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) }),
+            ];
+            Task.WaitAll(tasks);
         }
 
         [Fact]
         public async Task Event_GetAll_list()
         {
-            var list = await this.service.Get();
+            var serviceAll = new EventService();
+            await serviceAll.Add(new EventRequest() { Title = "Test 1", Description = "Описание 1", StartAt = new DateTime(2025, 05, 11), EndAt = new DateTime(2025, 05, 12) });
+            await serviceAll.Add(new EventRequest() { Title = "Test 2", Description = "Описание 2", StartAt = new DateTime(2025, 05, 12), EndAt = new DateTime(2025, 05, 13) });
+            await serviceAll.Add(new EventRequest() { Title = "Test 3", Description = "Описание 3", StartAt = new DateTime(2025, 05, 13), EndAt = new DateTime(2025, 05, 14) });
+            await serviceAll.Add(new EventRequest() { Title = "Test 4", Description = "Описание 4", StartAt = new DateTime(2025, 05, 14), EndAt = new DateTime(2025, 05, 15) });
+            await serviceAll.Add(new EventRequest() { Title = "Test 5", Description = "Описание 5", StartAt = new DateTime(2025, 05, 15), EndAt = new DateTime(2025, 05, 16) });
+            await serviceAll.Add(new EventRequest() { Title = "Test 6", Description = "Описание 6", StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) });
 
-            Assert.True((list.Items.Count() >= 6));
+
+            var list = await serviceAll.Get();
+
+            Assert.True((list.Items.Count() == 6));
         }
 
         [Fact]
