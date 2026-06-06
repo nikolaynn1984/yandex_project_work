@@ -1,20 +1,19 @@
 ﻿using Event.Domain.Interfaces;
 using Event.Domain.Models;
-using EventDomain.Extentions;
+using EventDomain.Interfaces;
 using EventDomain.Models;
 using Microsoft.AspNetCore.Mvc;
-
-
 
 namespace EventServer.Controllers;
 
 /// <summary>
 /// Эендпоинт событий
 /// </summary>
-/// <param name="eventService"></param>
+/// <param name="eventService">Сервис событий</param>
+/// <param name="bookingService">Сервис бронирований</param>
 [Route("events")]
 [ApiController]
-public class EventsController(IEventService eventService) : ControllerBase
+public class EventsController(IEventService eventService, IBookingService bookingService) : ControllerBase
 {
     /// <summary>
     /// Получить список событий
@@ -30,9 +29,9 @@ public class EventsController(IEventService eventService) : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [Produces("application/json")]
     [HttpGet] //("{title?}/{from?}/{to?}/{page?}/{pageSize?}")
-    public ActionResult<PaginatedResult> Get(string? title = null, DateTime? from = null, DateTime? to = null, int page = 1, int pageSize = 10)
+    public async Task<ActionResult<PaginatedResult>> Get(string? title = null, DateTime? from = null, DateTime? to = null, int page = 1, int pageSize = 10)
     {
-        return eventService.Get(title, from, to, page, pageSize);
+        return await eventService.Get(title, from, to, page, pageSize, HttpContext.RequestAborted);
     }
 
     /// <summary>
@@ -45,9 +44,27 @@ public class EventsController(IEventService eventService) : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [Produces("application/json")]
     [HttpGet("{id}")]
-    public ActionResult<Events> Get(int id)
+    public async Task<ActionResult<Events>> Get(Guid id)
     {
-        return eventService.Get(id);
+        return await eventService.Get(id, HttpContext.RequestAborted);
+    }
+
+
+    /// <summary>
+    /// Добавления планирования события
+    /// </summary>
+    /// <param name="id">Идентификатор события</param>
+    /// <response code="200">Возвращается JSON-структура AddBookingResult с деталями ответа</response>
+    /// <response code="404">Событие не найдено</response>
+    [ProducesResponseType(typeof(AddBookingResult), StatusCodes.Status202Accepted)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [Produces("application/json")]
+    [HttpPost("{id}/book")]
+    public async Task<ActionResult<AddBookingResult>> CreateBooking(Guid id)
+    {
+        var result = await bookingService.CreateBookingAsync(id, HttpContext.RequestAborted);
+
+        return Accepted($"/bookings/{result.Id}", result);
     }
 
     /// <summary>
@@ -58,11 +75,11 @@ public class EventsController(IEventService eventService) : ControllerBase
     /// <response code="400">Ошибка запроса</response>
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [HttpPost]
-    public IActionResult Post(EventRequest model)
+    public async Task<IActionResult> Post(EventRequest model)
     {
-        int id = eventService.Add(model);
+        Guid id =  await eventService.Add(model, HttpContext.RequestAborted);
         var result = new AddResult() { Id = id };
-        return Created("api/events", result);
+        return Created(HttpContext.Request.Path, result);
     }
 
     /// <summary>
@@ -76,9 +93,9 @@ public class EventsController(IEventService eventService) : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [HttpPut("{id}")]
-    public IActionResult Put(int id, EventRequest model)
+    public async Task<IActionResult> Put(Guid id, EventRequest model)
     {
-        eventService.Update(id, model);
+        await eventService.Update(id, model, HttpContext.RequestAborted);
 
         return new OkResult();
     }
@@ -91,9 +108,9 @@ public class EventsController(IEventService eventService) : ControllerBase
     /// <response code="404">Событие не найдено</response>
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(Guid id)
     {
-        eventService.Delete(id);
+        await eventService.Delete(id, HttpContext.RequestAborted);
 
         return new OkResult();
     }

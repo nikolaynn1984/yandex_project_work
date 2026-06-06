@@ -2,6 +2,7 @@
 using Event.Domain.Models;
 using EventDomain.Extentions;
 using EventDomain.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Event.Domain.Services;
 
@@ -11,77 +12,176 @@ namespace Event.Domain.Services;
 public class EventService : IEventService
 {
     private readonly List<Events> events = [];
-    private int lastIndex = 0;
 
     /// <inheritdoc/>
-    public PaginatedResult Get(string? title = null, DateTime? from = null, DateTime? to = null, int page = 1, int pageSize = 10)
+    public async Task<PaginatedResult> Get(string? title = null, DateTime? from = null, DateTime? to = null, int page = 1, int pageSize = 10, CancellationToken cancellationToken = default)
     {
-        var filters = events.Filter(title, from, to);
-        var pageList = filters.Pagination( page, pageSize).ToList();
 
-        int totalPage = filters.Count().GetTotalPages(pageSize);
+        var tcs = new TaskCompletionSource<PaginatedResult>(cancellationToken);
 
-        return new PaginatedResult()
+        _ = Task.Run(() =>
         {
-            TotalItems = filters.Count(),
-            Items = pageList,
-            TotalPages = filters.Count().GetTotalPages(pageSize),
-            CurrentPage = totalPage > page ? page : totalPage ,
-        };
+
+            try
+            {
+
+                if (cancellationToken.IsCancellationRequested)
+                    tcs.TrySetCanceled();
+
+                var filters = events.Filter(title, from, to);
+                var pageList = filters.Pagination(page, pageSize).ToList();
+
+                int totalPage = filters.Count().GetTotalPages(pageSize);
+                int count = filters.Count();
+                var res = new PaginatedResult()
+                {
+                    TotalItems = count,
+                    Items = pageList,
+                    TotalPages = count.GetTotalPages(pageSize),
+                    CurrentPage = totalPage > page ? page : totalPage,
+                };
+
+                tcs.TrySetResult(res);
+            }
+            catch(ValidationException vex)
+            {
+                tcs.TrySetException(vex);
+            }catch(Exception ex)
+            {
+                tcs.TrySetException(ex);
+            }
+
+           
+        }, cancellationToken);
+
+        
+
+
+        return await tcs.Task;
     }
 
     /// <inheritdoc/>
-    public Events Get(int id)
+    public async Task<Events> Get(Guid id, CancellationToken cancellationToken = default)
     {
-        var model = events.FirstOrDefault(s => s.Id == id);
-        if (model == null)
-            throw new EventException($"Событие с идентификатором {id} не найден");
+        var tcs = new TaskCompletionSource<Events>(cancellationToken);
 
-        return model;
+        _ = Task.Run(() =>
+        {
+            var model = events.FirstOrDefault(s => s.Id == id);
+            if (model == null)
+            {
+                tcs.TrySetException(new EventException($"Событие с идентификатором {id} не найден"));
+            }
+            else
+            {
+#pragma warning disable CS8604 // Возможно, аргумент-ссылка, допускающий значение NULL.
+                tcs.TrySetResult(model);
+#pragma warning restore CS8604 // Возможно, аргумент-ссылка, допускающий значение NULL.
+            }
+        });
+
+        
+
+        return await tcs.Task;
     }
 
     /// <inheritdoc/>
-    public int Add(EventRequest model)
+    public async Task<Guid> Add(EventRequest model, CancellationToken cancellationToken = default)
     {
-        lastIndex++;
+        var tcs = new TaskCompletionSource<Guid>(cancellationToken);
+
+        _ = Task.Run(() =>
+        {
+
+            var id = Guid.NewGuid();
+
+            if (cancellationToken.IsCancellationRequested)
+                tcs.TrySetCanceled();
 
 #pragma warning disable CS8629 // Тип значения, допускающего NULL, может быть NULL.
-        events.Add(new Events(lastIndex, model.Title, model.Description, (DateTime)model.StartAt, (DateTime)model.EndAt));
+            events.Add(new Events(id, model.Title, model.Description, (DateTime)model.StartAt, (DateTime)model.EndAt));
 #pragma warning restore CS8629 // Тип значения, допускающего NULL, может быть NULL.
-        return lastIndex;
+
+            tcs.TrySetResult(id);
+        }, cancellationToken);
+
+        return await tcs.Task;
     }
 
     /// <inheritdoc/>
-    public void Delete(int id)
+    public async Task Delete(Guid id, CancellationToken cancellationToken = default)
     {
-        var model = events.FirstOrDefault(s => s.Id == id);
+        var tcs = new TaskCompletionSource(cancellationToken);
 
-        if (model == null) 
-            throw new EventException($"Событие с идентификатором {id} не найден");
+        _ = Task.Run(() =>
+        {
+            
+            if(cancellationToken.IsCancellationRequested)
+                tcs.TrySetCanceled();
+
+            var model = events.FirstOrDefault(s => s.Id == id);
+
+            if (model == null)
+            {
+                tcs.TrySetException(new EventException($"Событие с идентификатором {id} не найден"));
+            }
+            else
+            {
+                this.events.Remove(model);
+                tcs.TrySetResult();
+            }
+                
 
 
-        this.events.Remove(model);
+            
+        }, cancellationToken);
+
        
+       await tcs.Task;
        
     }
 
 
 
     /// <inheritdoc/>
-    public void Update(int id, EventRequest data)
+    public async Task Update(Guid id, EventRequest data, CancellationToken cancellationToken = default)
     {
-        var model = events.FirstOrDefault(s => s.Id == id);
 
-        if (model == null) 
-            throw new EventException($"Событие с идентификатором {id} не найден");
+        var tcs = new TaskCompletionSource(cancellationToken);
 
+        _ = Task.Run(() => {
 
-        model.Title = data.Title;
-        model.Description = data.Description;
+            if (cancellationToken.IsCancellationRequested)
+                tcs.TrySetCanceled();
+
+            var model = events.FirstOrDefault(s => s.Id == id);
+
+            if (model == null)
+            {
+                tcs.TrySetException(new EventException($"Событие с идентификатором {id} не найден"));
+            }
+            else
+            {
+                model.Title = data.Title;
+                model.Description = data.Description;
 #pragma warning disable CS8629 // Тип значения, допускающего NULL, может быть NULL.
-        model.StartAt = (DateTime)data.StartAt;
-        model.EndAt = (DateTime)data.EndAt;
+                model.StartAt = (DateTime)data.StartAt;
+                model.EndAt = (DateTime)data.EndAt;
 #pragma warning restore CS8629 // Тип значения, допускающего NULL, может быть NULL.
+
+                tcs.TrySetResult();
+            }
+
+
+
+
+
+        }, cancellationToken);
+
+       
+
+
+        await tcs.Task;
 
     }
 

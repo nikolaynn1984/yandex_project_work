@@ -10,6 +10,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddBaseConfiguration();
 
 builder.Services.AddEventService();
+builder.Services.AddBookingService();
 
 var app = builder.Build();
 

@@ -77,6 +77,11 @@ namespace EventDomain.Extentions
                     result.Status = StatusCodes.Status404NotFound;
                     result.Title = "Ошибка 404 (Не найдено)";
                     break;
+                    case OperationCanceledException canceledException:
+                        result.Status = StatusCodes.Status400BadRequest;
+                        result.Title = "Отмена операции";
+                    break;
+
                 default:
                     result.Status = StatusCodes.Status500InternalServerError;
                     result.Title = "Ошибка  500  (Ошибки в сервере)";

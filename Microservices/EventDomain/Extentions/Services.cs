@@ -1,6 +1,8 @@
 ﻿using Event.Domain.Interfaces;
 using Event.Domain.Services;
 using EventDomain.Extentions;
+using EventDomain.Interfaces;
+using EventDomain.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,6 +20,13 @@ namespace Event.Domain.Extentions
         public static void AddEventService(this IServiceCollection services)
         {
             services.AddSingleton<IEventService, EventService>();
+        }
+
+        public static void AddBookingService(this IServiceCollection services)
+        {
+            services.AddSingleton<IBookingService, BookingService>();
+            services.AddSingleton<IBookingQueueService, BookingQueueService>();
+            services.AddHostedService<BookingHostedService>();
         }
 
         /// <summary>

@@ -58,7 +58,7 @@ namespace EventDomain.Extentions
         private static void PageValid(int value, string name)
         {
             if (value <= 0)
-                throw new ValidationException($"Свйоство {name} не должно быть меньше 1");
+                throw new ValidationException($"Свойство {name} не должно быть меньше 1");
         }
 
 
