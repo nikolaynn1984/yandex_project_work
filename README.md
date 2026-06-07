@@ -42,8 +42,18 @@ dotnet test EventServiceTests.csproj
   -	POST /events/{id}/book - добавления планирования события
  
 - bookings
-  -	GET /bookings/{Id} — Получение информации бронирования по идентификатору - возвращает  Booking 
+  -	GET /bookings/{Id} — Получение информации бронирования по идентификатору - возвращает  Booking
  
+## Events свойства
+ - Id: Guid - Идентифкатор соыбтия
+ - Title: string - Титл
+ - Description: string - Описание
+ - TotalSeats: int - Общее количество мест
+ - AvailableSeats: int - Текущее количество свободных мест
+ - StartAt: DateTime - Начало
+ - EndAt: DateTime - Окончание 
+
+
 ## Booking свойства 
  - Id: Guid - уникальный идентификатор брони
  - EventId: Guid - идентификатор события, к которому относится бронь
@@ -51,16 +61,24 @@ dotnet test EventServiceTests.csproj
  - CreatedAt: DateTime - дата и время создания брони
  - ProcessedAt:  DateTime? - дата и время обработки брони
 
+
+## EventRequest запрос добавления и обновления события
+ - *Title: string - Титл
+ - Description: string - Описание
+ - *TotalSeats: int - Общее количество мест
+ - *StartAt: DateTime - Начало
+ - *EndAt: DateTime - Окончание 
+
 ## BookingStatus статусы
  - Pending = 1 - бронь создана, ожидает обработки
  - Confirmed = 2 - бронь подтверждена
  - Rejected = 3 - бронь отклонена
 
 ## Сценарий добавления брони
-  1. Создать событие через POST /events
+  1. Создать событие через POST /events. Объектная модель EventRequest
   2. В ответе добавления скопировать Id (идентификатор события)
   3. создать бронь через POST /evets/{id}/book - в поле Id указать скопированное значение
-  4. после получения 202 вы получите модель с данными и Status:1
+  4. после получения 202 вы получите модель с данными и Status:1, если ззапрос прошел успешно. В противном случае 409 Conflict  (Событие не найдено)
   5. скопируйте Id свойство и встравьте в  GET /bookings/{Id}
   6. через пять секунд после добавления статус по текущему идентификатору поменятся на 2
 
