@@ -1,6 +1,6 @@
 ﻿namespace EventDomain.Extentions;
 
-internal class NoAvailableSeatsException : Exception
+public class NoAvailableSeatsException : Exception
 {
     public NoAvailableSeatsException() { }
 

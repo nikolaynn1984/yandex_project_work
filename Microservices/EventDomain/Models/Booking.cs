@@ -35,6 +35,6 @@ public class Booking(Guid Id, Guid EventId)
     public void Reject()
     {
         this.Status = BookingStatus.Rejected;
-        his.ProcessedAt = DateTime.Now;
+        this.ProcessedAt = DateTime.Now;
     }
 }
