@@ -185,7 +185,12 @@ public class EventService : IEventService
 
     }
 
-    
+    public void ReleaseSeats(Guid eventId, int count = 1)
+    {
+        var model = events.FirstOrDefault(s => s.Id == eventId);
+        if(model == null)
+            return;
 
-    
+        model.ReleaseSeats(count);
+    }
 }

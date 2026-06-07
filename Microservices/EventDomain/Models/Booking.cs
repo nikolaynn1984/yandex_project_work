@@ -16,7 +16,7 @@ public class Booking(Guid Id, Guid EventId)
     /// <summary>
     /// Текущий статус брони
     /// </summary>
-    public BookingStatus Status { get; set; } = BookingStatus.Pending;
+    public BookingStatus Status { get; private set; } = BookingStatus.Pending;
     /// <summary>
     /// Дата и время создания брони
     /// </summary>
@@ -25,4 +25,16 @@ public class Booking(Guid Id, Guid EventId)
     /// Дата и время обработки брони
     /// </summary>
     public DateTime? ProcessedAt {  get; set; }
+
+    public void Confirm()
+    {
+        this.Status = BookingStatus.Confirmed;
+        this.ProcessedAt = DateTime.Now;
+    }
+
+    public void Reject()
+    {
+        this.Status = BookingStatus.Rejected;
+        his.ProcessedAt = DateTime.Now;
+    }
 }

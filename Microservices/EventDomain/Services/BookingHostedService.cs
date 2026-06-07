@@ -55,9 +55,7 @@ namespace EventDomain.Services
 
                     await this.eventService.Get(booking.EventId, stoppingToken);
 
-                    booking.Status = BookingStatus.Confirmed;
-                    booking.ProcessedAt = DateTime.Now;
-
+                    booking.Confirm();
 
                     logger.LogInformation("Бронирование {Id} обработано", booking.Id);
                 }
@@ -65,19 +63,21 @@ namespace EventDomain.Services
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
             {
                 logger.LogInformation("Сервис фоновой обработки бронирования остановлен");
-                booking.Status = BookingStatus.Rejected;
-                booking.ProcessedAt = DateTime.Now;
+                booking.Reject();
+                this.eventService.ReleaseSeats(booking.EventId);
                 return;
             }
             catch (EventException ex)
             {
                 logger.LogWarning(ex, "Ошибка при обработки бронирования");
-                booking.Status = BookingStatus.Rejected;
-                booking.ProcessedAt = DateTime.Now;
+                booking.Reject();
+                this.eventService.ReleaseSeats(booking.EventId);
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Ошибка при обработки бронирования");
+                booking.Reject();
+                this.eventService.ReleaseSeats(booking.EventId);
             }
             finally
             {

@@ -56,7 +56,12 @@ public class Events(Guid Id, string Title, string? Description, int TotalSeats, 
         return true;
     }
 
-    public bool ReleaseSeats(int count = 1)
+    /// <summary>
+    /// Освобождение места
+    /// </summary>
+    /// <param name="count">Количество место</param>
+    /// <returns></returns>
+    public void ReleaseSeats(int count = 1)
     {
         lock (locked)
         {
@@ -65,7 +70,6 @@ public class Events(Guid Id, string Title, string? Description, int TotalSeats, 
             if(AvailableSeats > TotalSeats)
                 AvailableSeats = TotalSeats;
         }
-        return true;
     }
 }
 
