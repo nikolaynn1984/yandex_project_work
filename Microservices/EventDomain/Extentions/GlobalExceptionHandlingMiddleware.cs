@@ -81,6 +81,10 @@ namespace EventDomain.Extentions
                         result.Status = StatusCodes.Status400BadRequest;
                         result.Title = "Отмена операции";
                     break;
+                    case NoAvailableSeatsException noAvailableSeatsException:
+                        result.Status= StatusCodes.Status409Conflict;
+                        result.Title = "Отмена операции";
+                    break;
 
                 default:
                     result.Status = StatusCodes.Status500InternalServerError;

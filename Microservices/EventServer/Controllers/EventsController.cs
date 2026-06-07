@@ -56,8 +56,10 @@ public class EventsController(IEventService eventService, IBookingService bookin
     /// <param name="id">Идентификатор события</param>
     /// <response code="202">Возвращается JSON-структура AddBookingResult с деталями ответа</response>
     /// <response code="404">Событие не найдено</response>
+    /// <response code="409">Свободных мест на это мероприятие нет.</response>
     [ProducesResponseType(typeof(AddBookingResult), StatusCodes.Status202Accepted)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
     [Produces("application/json")]
     [HttpPost("{id}/book")]
     public async Task<ActionResult<AddBookingResult>> CreateBooking(Guid id)

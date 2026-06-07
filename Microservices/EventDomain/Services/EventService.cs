@@ -99,7 +99,7 @@ public class EventService : IEventService
                 tcs.TrySetCanceled();
 
 #pragma warning disable CS8629 // Тип значения, допускающего NULL, может быть NULL.
-            events.Add(new Events(id, model.Title, model.Description, (DateTime)model.StartAt, (DateTime)model.EndAt));
+            events.Add(new Events(id, model.Title, model.Description, model.TotalSeats, (DateTime)model.StartAt, (DateTime)model.EndAt));
 #pragma warning restore CS8629 // Тип значения, допускающего NULL, может быть NULL.
 
             tcs.TrySetResult(id);

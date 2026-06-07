@@ -27,11 +27,13 @@ namespace EventDomain.Services
         {
 
 
-             await this.eventService.Get(eventId);
+            var eventItem =  await this.eventService.Get(eventId);
 
              if (cancellationToken.IsCancellationRequested)
                  return null;
 
+            if (eventItem.TryReserveSeats(1) == false)
+                throw new NoAvailableSeatsException("No available seats for this event");
 
              var booking = Add(eventId);
 
