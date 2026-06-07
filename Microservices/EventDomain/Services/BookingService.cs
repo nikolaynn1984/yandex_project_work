@@ -55,7 +55,7 @@ namespace EventDomain.Services
 
             this.bookings.Add(booking);
 
-            this.bookingQueueService.Enqueue(booking);
+            this.bookingQueueService.Add(booking);
 
             return booking;
         }
