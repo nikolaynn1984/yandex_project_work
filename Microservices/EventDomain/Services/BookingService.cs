@@ -23,33 +23,20 @@ namespace EventDomain.Services
         }
 
         /// <inheritdoc/>
-        public async Task<AddBookingResult> CreateBookingAsync(Guid eventId, CancellationToken cancellationToken = default)
+        public async Task<AddBookingResult?> CreateBookingAsync(Guid eventId, CancellationToken cancellationToken = default)
         {
-            var tcs = new TaskCompletionSource<AddBookingResult>();
-
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    await this.eventService.Get(eventId);
-
-                    if (cancellationToken.IsCancellationRequested)
-                        tcs.TrySetCanceled();
 
 
-                    var booking = Add(eventId);
+             await this.eventService.Get(eventId);
+
+             if (cancellationToken.IsCancellationRequested)
+                 return null;
 
 
-                    tcs.TrySetResult(new AddBookingResult(booking.Id, eventId, booking.Status));
+             var booking = Add(eventId);
 
-                }
-                catch(EventException exe)
-                {
-                    tcs.TrySetException(exe);
-                }
-            });
 
-           return await tcs.Task;
+             return new AddBookingResult(booking.Id, eventId, booking.Status);
         }
 
         /// <summary>

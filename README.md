@@ -39,7 +39,7 @@ dotnet test EventServiceTests.csproj
   -	POST /events — создать событие
   -	PUT /events/{id} — обновить событие целиком
   -	DELETE /events/{id} — удалить событие
-  -	POST /evets/{id}/book - добавления планирования события
+  -	POST /events/{id}/book - добавления планирования события
  
 - bookings
   -	GET /bookings/{Id} — Получение информации бронирования по идентификатору - возвращает  Booking 
