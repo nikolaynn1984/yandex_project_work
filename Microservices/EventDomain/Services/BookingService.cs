@@ -14,6 +14,7 @@ namespace EventDomain.Services
         private readonly ConcurrentBag<Booking> bookings;
         private readonly IEventService eventService;
         private readonly IBookingQueueService bookingQueueService;
+        private readonly SemaphoreSlim _bookingLock = new SemaphoreSlim(1,1);
 
         public BookingService(IEventService eventService, IBookingQueueService bookingQueueService)
         {
@@ -25,20 +26,27 @@ namespace EventDomain.Services
         /// <inheritdoc/>
         public async Task<AddBookingResult?> CreateBookingAsync(Guid eventId, CancellationToken cancellationToken = default)
         {
+            try
+            {
+                await _bookingLock.WaitAsync();
+
+                var eventItem = await this.eventService.GetAsync(eventId);
+
+                if (cancellationToken.IsCancellationRequested)
+                    return null;
+
+                if (eventItem.TryReserveSeats(1) == false)
+                    throw new NoAvailableSeatsException("No available seats for this event");
+
+                var booking = Add(eventId);
 
 
-            var eventItem =  await this.eventService.Get(eventId);
-
-             if (cancellationToken.IsCancellationRequested)
-                 return null;
-
-            if (eventItem.TryReserveSeats(1) == false)
-                throw new NoAvailableSeatsException("No available seats for this event");
-
-             var booking = Add(eventId);
-
-
-             return new AddBookingResult(booking.Id, eventId, booking.Status);
+                return new AddBookingResult(booking.Id, eventId, booking.Status);
+            }
+            finally
+            {
+                _bookingLock.Release();
+            } 
         }
 
         /// <summary>

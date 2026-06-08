@@ -21,10 +21,15 @@ public interface IEventService
     /// <summary>
     /// Получить событие по идентификатору
     /// </summary>
-    /// 
     /// <param name="id">Идентификатор</param>
     /// <returns></returns>
-    Task<Events> Get(Guid id, CancellationToken token = default);
+    Task<Events> GetAsync(Guid id, CancellationToken token = default);
+    /// <summary>
+    /// Получить событие по идентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор</param>
+    /// <returns></returns>
+    Events Get(Guid id, CancellationToken token = default);
     /// <summary>
     /// Добавить событие
     /// </summary>

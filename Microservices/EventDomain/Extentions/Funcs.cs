@@ -1,13 +1,12 @@
 ﻿using Event.Domain.Models;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace EventDomain.Extentions
 {
     public static class Funcs
     {
+        public const int ProcessBookingDelaySecond = 5;
+
         /// <summary>
         /// Получить спискок с пагинацией
         /// </summary>

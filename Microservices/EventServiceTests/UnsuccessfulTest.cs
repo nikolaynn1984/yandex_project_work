@@ -29,7 +29,7 @@ namespace EventServiceTests
         public async Task Event_GetById_Throw()
         {
             var id = Guid.NewGuid();
-            var exception = await Assert.ThrowsAsync<EventException>(() => this.service.Get(id));
+            var exception = await Assert.ThrowsAsync<EventException>(() => this.service.GetAsync(id));
 
             Assert.Equal($"Событие с идентификатором {id} не найден", exception.Message);
         }

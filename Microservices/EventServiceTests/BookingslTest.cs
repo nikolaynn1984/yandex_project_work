@@ -140,7 +140,7 @@ namespace EventServiceTests
         public async Task Booking_Add_Сompetition()
         {
             var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add NoAvailableSeats", Description = "Описание 1", TotalSeats = 5, StartAt = new DateTime(2025, 05, 11), EndAt = new DateTime(2025, 05, 12) }, CancellationToken.None);
-            var eventItem = await this.eventService.Get(eventId, CancellationToken.None);
+            var eventItem = await this.eventService.GetAsync(eventId, CancellationToken.None);
 
             var tasks = new Task[20];
             int reserveCount = 0;
@@ -168,6 +168,7 @@ namespace EventServiceTests
 
             Assert.True(reserveCount == 5);
             Assert.True(noValidCount == 15);
+            Assert.True(eventItem.AvailableSeats == 0);
         }
     }
 

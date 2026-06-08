@@ -46,7 +46,7 @@ public class EventsController(IEventService eventService, IBookingService bookin
     [HttpGet("{id}")]
     public async Task<ActionResult<Events>> Get(Guid id)
     {
-        return await eventService.Get(id, HttpContext.RequestAborted);
+        return await eventService.GetAsync(id, HttpContext.RequestAborted);
     }
 
 

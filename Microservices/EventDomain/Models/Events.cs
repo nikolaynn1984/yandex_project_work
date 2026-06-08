@@ -48,7 +48,7 @@ public class Events(Guid Id, string Title, string? Description, int TotalSeats, 
     {
         lock (locked)
         {
-            if(AvailableSeats == 0)
+            if(AvailableSeats == 0 || AvailableSeats < count)
                 return false;
 
             AvailableSeats -= count;

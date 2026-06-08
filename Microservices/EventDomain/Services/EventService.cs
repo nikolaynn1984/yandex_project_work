@@ -61,7 +61,7 @@ public class EventService : IEventService
     }
 
     /// <inheritdoc/>
-    public async Task<Events> Get(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Events> GetAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var tcs = new TaskCompletionSource<Events>(cancellationToken);
 
@@ -83,6 +83,17 @@ public class EventService : IEventService
         
 
         return await tcs.Task;
+    }
+
+    public Events Get(Guid id, CancellationToken token = default)
+    {
+        var model = events.FirstOrDefault(s => s.Id == id);
+        if (model == null)
+        {
+            throw new EventException($"Событие с идентификатором {id} не найден");
+        }
+        
+        return model;
     }
 
     /// <inheritdoc/>
@@ -193,4 +204,6 @@ public class EventService : IEventService
 
         model.ReleaseSeats(count);
     }
+
+    
 }

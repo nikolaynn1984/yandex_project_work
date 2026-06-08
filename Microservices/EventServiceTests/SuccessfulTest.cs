@@ -49,7 +49,7 @@ namespace EventServiceTests
             var request = new EventRequest() { Title = "AddTestById", Description = "Тестовое добаление", TotalSeats = 1, StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
             var id = await this.service.Add(request);
 
-            var item = await this.service.Get(id);
+            var item = await this.service.GetAsync(id);
 
             Assert.NotNull(item);
         }
@@ -61,7 +61,7 @@ namespace EventServiceTests
             var request = new EventRequest() { Title = "AddTest", Description = "Тестовое добаление", TotalSeats = 1, StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
             var id = await this.service.Add(request);
 
-            var item = await this.service.Get(id);
+            var item = await this.service.GetAsync(id);
 
             Assert.Equal(id, item.Id);
         }
@@ -77,7 +77,7 @@ namespace EventServiceTests
                 var requestEdit = new EventRequest() { Title = "UpdateTest", Description = "Тестовое изменение", TotalSeats = 1, StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
                 await this.service.Update(id, requestEdit, CancellationToken.None);
 
-                var item = await this.service.Get(id);
+                var item = await this.service.GetAsync(id);
 
                 Assert.Equal(requestEdit.Title, item.Title);
 
@@ -101,7 +101,7 @@ namespace EventServiceTests
             await this.service.Delete(id);
 
 
-            var exception = await Assert.ThrowsAsync<EventException>(() =>  this.service.Get(id));
+            var exception = await Assert.ThrowsAsync<EventException>(() =>  this.service.GetAsync(id));
 
             string message = $"Событие с идентификатором {id} не найден";
             Assert.True(!string.IsNullOrEmpty(exception.Message));

@@ -49,11 +49,11 @@ namespace EventDomain.Services
                 {
                     logger.LogInformation("Начата обработка бронирования {Id}", booking.Id);
 
-                    await Task.Delay(TimeSpan.FromSeconds(15), stoppingToken);
+                    await Task.Delay(TimeSpan.FromSeconds(Funcs.ProcessBookingDelaySecond), stoppingToken);
 
                     await _processingSemaphore.WaitAsync();
 
-                    await this.eventService.Get(booking.EventId, stoppingToken);
+                    await this.eventService.GetAsync(booking.EventId, stoppingToken);
 
                     booking.Confirm();
 
