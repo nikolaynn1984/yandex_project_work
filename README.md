@@ -1,10 +1,21 @@
 # Название приложения
 Сервер событий
 
+
+
 ## Запуск
  Для запуска приложения: 
  1. Скачать на рабочую станцию репозиторий
  2. Перейти в папку yandex_project_work\Microservices\EventServer
+
+## Работа с базой данных
+
+ 1. Установите базу данных PostgreSQL V16+
+ 2. Перейти в папку yandex_project_work\Microservices\EventServer
+ 3. Откройте файл appsettings.json
+ 4. в свойстве ConnectionStrings:DefaultConnection требуется указать вашу строку подключения
+
+схема и таблицы создаются автоматически при запуске, через EnsureCreated
 
 > Запуск с консоли
   ```bash
@@ -25,6 +36,8 @@ dotnet run EventServer.csproj
  Для запуска модульных тестов
   * перейти в папку yandex_project_work\Microservices\EventServiceTests
 
+  Тестирование реализовано с EF Core через InMemory-провайдер
+   
   > Запустить в консоли
  ```bash
 dotnet test EventServiceTests.csproj
@@ -93,3 +106,8 @@ dotnet test EventServiceTests.csproj
 ## Технологии (Стек)
 - [C#]
 - [NET.Core 10]
+- [PostgreSQL 16+]
+
+
+
+
