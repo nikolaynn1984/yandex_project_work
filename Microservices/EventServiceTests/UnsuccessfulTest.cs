@@ -1,17 +1,33 @@
-﻿using EventDomain.Interfaces;
+﻿using EventDomain.DataAccess;
+using EventDomain.Extentions;
+using EventDomain.Interfaces;
 using EventDomain.Models;
 using EventDomain.Services;
-using EventDomain.Extentions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EventServiceTests
 {
     public class UnsuccessfulTest
     {
+        private readonly ServiceProvider serviceProvider;
+        private readonly IServiceScope scope;
         private readonly IEventService service;
 
         public UnsuccessfulTest()
         {
-            this.service = new EventService();
+            var dbName = Guid.NewGuid().ToString();
+            var services = new ServiceCollection();
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseInMemoryDatabase(dbName));
+            services.AddScoped<IEventService, EventService>();
+            services.AddScoped<IBookingService, BookingService>();
+            services.AddSingleton<IBookingQueueService, BookingQueueService>();
+
+            this.serviceProvider = services.BuildServiceProvider();
+            this.scope = this.serviceProvider.CreateScope();
+
+            this.service = this.scope.ServiceProvider.GetRequiredService<IEventService>();
             this.service.Add(new EventRequest() { Title = "Test 1", Description = "Описание 1", TotalSeats = 1, StartAt = new DateTime(2025, 05, 11), EndAt = new DateTime(2025, 05, 12) });
             this.service.Add(new EventRequest() { Title = "Test 2", Description = "Описание 2", TotalSeats = 1, StartAt = new DateTime(2025, 05, 12), EndAt = new DateTime(2025, 05, 13) });
             this.service.Add(new EventRequest() { Title = "Test 3", Description = "Описание 3", TotalSeats = 1, StartAt = new DateTime(2025, 05, 13), EndAt = new DateTime(2025, 05, 14) });

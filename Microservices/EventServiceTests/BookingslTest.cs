@@ -1,19 +1,36 @@
-﻿using EventDomain.Extentions;
+﻿using EventDomain.DataAccess;
+using EventDomain.Extentions;
 using EventDomain.Interfaces;
 using EventDomain.Models;
 using EventDomain.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EventServiceTests
 {
     public class BookingslTest
     {
+        private readonly ServiceProvider serviceProvider;
+        private readonly IServiceScope scope;
         private readonly IEventService eventService;
         private readonly IBookingService bookingService;
 
         public BookingslTest()
         {
-            this.eventService = new EventService();
-            this.bookingService = new BookingService(this.eventService, new BookingQueueService());
+
+            var dbName = Guid.NewGuid().ToString();
+            var services = new ServiceCollection();
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseInMemoryDatabase(dbName));
+            services.AddScoped<IEventService, EventService>();
+            services.AddScoped<IBookingService, BookingService>();
+            services.AddSingleton<IBookingQueueService, BookingQueueService>();
+
+            this.serviceProvider = services.BuildServiceProvider();
+            this.scope = this.serviceProvider.CreateScope();
+
+            this.eventService = this.scope.ServiceProvider.GetRequiredService<IEventService>();
+            this.bookingService = this.scope.ServiceProvider.GetRequiredService<IBookingService>();
         }
 
         [Fact]

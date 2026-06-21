@@ -13,7 +13,6 @@ public class BookingService : IBookingService
 {
     private readonly IBookingQueueService bookingQueueService;
     private readonly AppDbContext context;
-    private readonly SemaphoreSlim _bookingLock = new SemaphoreSlim(1,1);
 
     public BookingService(IBookingQueueService bookingQueueService, AppDbContext context)
     {
@@ -26,7 +25,7 @@ public class BookingService : IBookingService
     {
         try
         {
-            await _bookingLock.WaitAsync();
+            await Funcs.bookingLock.WaitAsync();
 
             var eventItem = await this.context.Events.FirstOrDefaultAsync(s => s.Id == eventId, cancellationToken);
 
@@ -46,7 +45,7 @@ public class BookingService : IBookingService
         }
         finally
         {
-            _bookingLock.Release();
+            Funcs.bookingLock.Release();
         } 
     }
 

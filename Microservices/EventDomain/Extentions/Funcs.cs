@@ -6,7 +6,7 @@ namespace EventDomain.Extentions;
 public static class Funcs
 {
     public const int ProcessBookingDelaySecond = 5;
-
+    internal static SemaphoreSlim bookingLock = new SemaphoreSlim(1, 1);
     /// <summary>
     /// Получить спискок с пагинацией
     /// </summary>
