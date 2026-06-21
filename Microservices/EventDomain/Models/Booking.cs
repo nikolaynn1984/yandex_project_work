@@ -3,16 +3,26 @@
 /// <summary>
 /// Бронь
 /// </summary>
-public class Booking(Guid Id, Guid EventId)
+public class Booking
 {
+
+    private Booking() { }
+
+    public Booking(Guid Id, Guid EventId)
+    {
+        this.Id = Id;
+        this.EventId = EventId;
+    }
+
+
     /// <summary>
     /// уникальный идентификатор брони
     /// </summary>
-    public Guid Id { get; init; } = Id;
+    public Guid Id { get; init; }
     /// <summary>
     /// идентификатор события, к которому относится бронь
     /// </summary>
-    public Guid EventId {  get; init; } = EventId;
+    public Guid EventId {  get; init; }
     /// <summary>
     /// Текущий статус брони
     /// </summary>

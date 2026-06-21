@@ -3,46 +3,66 @@
 /// <summary>
 /// Событие
 /// </summary>
-/// <remarks>
-/// Конструктор событий
-/// </remarks>
-/// <param name="Id">Идентифкатор</param>
-/// <param name="Title">Титл</param>
-/// <param name="Description">Описание</param>
-/// <param name="TotalSeats">Общее количество мест</param>
-/// <param name="StartAt">Начало</param>
-/// <param name="EndAt">Конец</param>
-public class Event(Guid Id, string Title, string? Description, int TotalSeats, DateTime StartAt, DateTime EndAt)
+public class Event
 {
     readonly object locked = new object();
     /// <summary>
+    /// Конструктор событий
+    /// </summary>
+    private Event() { }
+
+    /// <summary>
+    /// Конструктор событий
+    /// </summary>
+    /// <param name="Id">Идентифкатор</param>
+    /// <param name="Title">Титл</param>
+    /// <param name="Description">Описание</param>
+    /// <param name="TotalSeats">Общее количество мест</param>
+    /// <param name="StartAt">Начало</param>
+    /// <param name="EndAt">Конец</param>
+    public Event(Guid Id, string Title, string? Description, int TotalSeats, DateTime StartAt, DateTime EndAt)
+    {
+        this.Id = Id;
+        this.Title = Title;
+        this.Description = Description;
+        this.TotalSeats = TotalSeats;
+        this.StartAt = StartAt;
+        this.EndAt = EndAt;
+    }
+
+    
+    /// <summary>
     /// Идентифкатор
     /// </summary>
-    public Guid Id { get; set; } = Id;
+    public Guid Id { get; set; }
     /// <summary>
     /// Титл
     /// </summary>
-    public string Title { get; set; } = Title;
+    public required string Title { get; set; }
     /// <summary>
     /// Описание
     /// </summary>
-    public string? Description { get; set; } = Description;
+    public string? Description { get; set; }
     /// <summary>
     /// Общее количество мест на событии
     /// </summary>
-    public int TotalSeats {  get; set; } = TotalSeats;
+    public int TotalSeats {  get; set; }
     /// <summary>
     /// Текущее количество свободных мест
     /// </summary>
-    public int AvailableSeats {  get; private set; } = TotalSeats;
+    public int AvailableSeats {  get; private set; }
     /// <summary>
     /// Начало
     /// </summary>
-    public DateTime StartAt { get; set; } = StartAt;
+    public DateTime StartAt { get; set; }
     /// <summary>
     /// Конец
     /// </summary>
-    public DateTime EndAt { get; set; } = EndAt;
+    public DateTime EndAt { get; set; }
+    /// <summary>
+    /// Брони
+    /// </summary>
+    public ICollection<Booking> Bookings { get; private set; } = [];
 
     public bool TryReserveSeats(int count = 1)
     {
