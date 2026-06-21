@@ -1,4 +1,6 @@
-﻿using EventDomain.Interfaces;
+﻿using Event.Domain.Interfaces;
+using EventDomain.Extentions;
+using EventDomain.Interfaces;
 using EventDomain.Models;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -11,10 +13,13 @@ namespace EventDomain.Services
     public class BookingHostedService : BackgroundService
     {
         private readonly IBookingQueueService bookingQueueService;
+        private readonly IEventService eventService;
         private readonly ILogger<BookingHostedService> logger;
-        public BookingHostedService(IBookingQueueService bookingQueueService, ILogger<BookingHostedService> logger)
+        private readonly SemaphoreSlim _processingSemaphore = new(1, 1);
+        public BookingHostedService(IBookingQueueService bookingQueueService, IEventService eventService, ILogger<BookingHostedService> logger)
         {
             this.bookingQueueService = bookingQueueService;
+            this.eventService = eventService;
             this.logger = logger;
         }
 
@@ -22,34 +27,62 @@ namespace EventDomain.Services
         {
             logger.LogInformation("Сервис фоновой обработки бронирования запущен");
 
-            while (!stoppingToken.IsCancellationRequested)
+            this.bookingQueueService.OnNextEvent += (bookings) => Bookingshandler(bookings, stoppingToken);
+            
+        }
+
+        private async void Bookingshandler(List<Booking> bookings, CancellationToken stoppingToken)
+        {
+            var tasks = bookings.Select(b => ProcessBookingAsync(b, stoppingToken));
+            await Task.WhenAll(tasks);
+
+            await this.bookingQueueService.Next();
+
+        }
+
+        private async Task ProcessBookingAsync(Booking booking, CancellationToken stoppingToken)
+        {
+
+            try
             {
-                try
+                if (!stoppingToken.IsCancellationRequested)
                 {
-                    if(this.bookingQueueService.TryDequeue(out Booking booking))
-                    {
-                        logger.LogInformation("Начата обработка бронирования {Id}", booking.Id);
+                    logger.LogInformation("Начата обработка бронирования {Id}", booking.Id);
 
-                        await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+                    await Task.Delay(TimeSpan.FromSeconds(Funcs.ProcessBookingDelaySecond), stoppingToken);
 
+                    await _processingSemaphore.WaitAsync();
 
-                        booking.Status = BookingStatus.Confirmed;
-                        booking.ProcessedAt = DateTime.Now;
+                    await this.eventService.GetAsync(booking.EventId, stoppingToken);
 
+                    booking.Confirm();
 
-                        logger.LogInformation("Бронирование {Id} обработано", booking.Id);
-                    }
-                }catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
-                {
-                    break; 
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, "Ошибка при обработки бронирования");
+                    logger.LogInformation("Бронирование {Id} обработано", booking.Id);
                 }
             }
-
-            logger.LogInformation("Сервис фоновой обработки бронирования остановлен");
+            catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+            {
+                logger.LogInformation("Сервис фоновой обработки бронирования остановлен");
+                booking.Reject();
+                this.eventService.ReleaseSeats(booking.EventId);
+                return;
+            }
+            catch (EventException ex)
+            {
+                logger.LogWarning(ex, "Ошибка при обработки бронирования");
+                booking.Reject();
+                this.eventService.ReleaseSeats(booking.EventId);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Ошибка при обработки бронирования");
+                booking.Reject();
+                this.eventService.ReleaseSeats(booking.EventId);
+            }
+            finally
+            {
+                this._processingSemaphore.Release();
+            }
         }
     }
 }

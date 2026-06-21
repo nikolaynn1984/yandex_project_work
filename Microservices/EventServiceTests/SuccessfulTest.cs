@@ -16,12 +16,12 @@ namespace EventServiceTests
 
             Task[] tasks =
             [
-                this.service.Add(new EventRequest() { Title = "Test 1", Description = "Описание 1", StartAt = new DateTime(2025, 05, 11), EndAt = new DateTime(2025, 05, 12) }),
-                this.service.Add(new EventRequest() { Title = "Test 2", Description = "Описание 2", StartAt = new DateTime(2025, 05, 12), EndAt = new DateTime(2025, 05, 13) }),
-                this.service.Add(new EventRequest() { Title = "Test 3", Description = "Описание 3", StartAt = new DateTime(2025, 05, 13), EndAt = new DateTime(2025, 05, 14) }),
-                this.service.Add(new EventRequest() { Title = "Test 4", Description = "Описание 4", StartAt = new DateTime(2025, 05, 14), EndAt = new DateTime(2025, 05, 15) }),
-                this.service.Add(new EventRequest() { Title = "Test 5", Description = "Описание 5", StartAt = new DateTime(2025, 05, 15), EndAt = new DateTime(2025, 05, 16) }),
-                this.service.Add(new EventRequest() { Title = "Test 6", Description = "Описание 6", StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) }),
+                this.service.Add(new EventRequest() { Title = "Test 1", Description = "Описание 1",TotalSeats = 1, StartAt = new DateTime(2025, 05, 11), EndAt = new DateTime(2025, 05, 12) }),
+                this.service.Add(new EventRequest() { Title = "Test 2", Description = "Описание 2",TotalSeats = 1, StartAt = new DateTime(2025, 05, 12), EndAt = new DateTime(2025, 05, 13) }),
+                this.service.Add(new EventRequest() { Title = "Test 3", Description = "Описание 3",TotalSeats = 1, StartAt = new DateTime(2025, 05, 13), EndAt = new DateTime(2025, 05, 14) }),
+                this.service.Add(new EventRequest() { Title = "Test 4", Description = "Описание 4",TotalSeats = 1, StartAt = new DateTime(2025, 05, 14), EndAt = new DateTime(2025, 05, 15) }),
+                this.service.Add(new EventRequest() { Title = "Test 5", Description = "Описание 5",TotalSeats = 1, StartAt = new DateTime(2025, 05, 15), EndAt = new DateTime(2025, 05, 16) }),
+                this.service.Add(new EventRequest() { Title = "Test 6", Description = "Описание 6",TotalSeats = 1, StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) }),
             ];
             Task.WaitAll(tasks);
         }
@@ -30,12 +30,12 @@ namespace EventServiceTests
         public async Task Event_GetAll_list()
         {
             var serviceAll = new EventService();
-            await serviceAll.Add(new EventRequest() { Title = "Test 1", Description = "Описание 1", StartAt = new DateTime(2025, 05, 11), EndAt = new DateTime(2025, 05, 12) });
-            await serviceAll.Add(new EventRequest() { Title = "Test 2", Description = "Описание 2", StartAt = new DateTime(2025, 05, 12), EndAt = new DateTime(2025, 05, 13) });
-            await serviceAll.Add(new EventRequest() { Title = "Test 3", Description = "Описание 3", StartAt = new DateTime(2025, 05, 13), EndAt = new DateTime(2025, 05, 14) });
-            await serviceAll.Add(new EventRequest() { Title = "Test 4", Description = "Описание 4", StartAt = new DateTime(2025, 05, 14), EndAt = new DateTime(2025, 05, 15) });
-            await serviceAll.Add(new EventRequest() { Title = "Test 5", Description = "Описание 5", StartAt = new DateTime(2025, 05, 15), EndAt = new DateTime(2025, 05, 16) });
-            await serviceAll.Add(new EventRequest() { Title = "Test 6", Description = "Описание 6", StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) });
+            await serviceAll.Add(new EventRequest() { Title = "Test 1", Description = "Описание 1", TotalSeats = 1, StartAt = new DateTime(2025, 05, 11), EndAt = new DateTime(2025, 05, 12) });
+            await serviceAll.Add(new EventRequest() { Title = "Test 2", Description = "Описание 2", TotalSeats = 1, StartAt = new DateTime(2025, 05, 12), EndAt = new DateTime(2025, 05, 13) });
+            await serviceAll.Add(new EventRequest() { Title = "Test 3", Description = "Описание 3", TotalSeats = 1, StartAt = new DateTime(2025, 05, 13), EndAt = new DateTime(2025, 05, 14) });
+            await serviceAll.Add(new EventRequest() { Title = "Test 4", Description = "Описание 4", TotalSeats = 1, StartAt = new DateTime(2025, 05, 14), EndAt = new DateTime(2025, 05, 15) });
+            await serviceAll.Add(new EventRequest() { Title = "Test 5", Description = "Описание 5", TotalSeats = 1, StartAt = new DateTime(2025, 05, 15), EndAt = new DateTime(2025, 05, 16) });
+            await serviceAll.Add(new EventRequest() { Title = "Test 6", Description = "Описание 6", TotalSeats = 1, StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) });
 
 
             var list = await serviceAll.Get();
@@ -46,10 +46,10 @@ namespace EventServiceTests
         [Fact]
         public async Task Event_GetById_model()
         {
-            var request = new EventRequest() { Title = "AddTestById", Description = "Тестовое добаление", StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
+            var request = new EventRequest() { Title = "AddTestById", Description = "Тестовое добаление", TotalSeats = 1, StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
             var id = await this.service.Add(request);
 
-            var item = await this.service.Get(id);
+            var item = await this.service.GetAsync(id);
 
             Assert.NotNull(item);
         }
@@ -58,10 +58,10 @@ namespace EventServiceTests
         [Fact]
         public async Task Event_Created_id()
         {
-            var request = new EventRequest() { Title = "AddTest", Description = "Тестовое добаление", StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
+            var request = new EventRequest() { Title = "AddTest", Description = "Тестовое добаление", TotalSeats = 1, StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
             var id = await this.service.Add(request);
 
-            var item = await this.service.Get(id);
+            var item = await this.service.GetAsync(id);
 
             Assert.Equal(id, item.Id);
         }
@@ -71,13 +71,13 @@ namespace EventServiceTests
         {
             try
             {
-                var requestAdd = new EventRequest() { Title = "AddTestUpdate", Description = "Тестовое добаление для обновления", StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
+                var requestAdd = new EventRequest() { Title = "AddTestUpdate", Description = "Тестовое добаление для обновления", TotalSeats = 1, StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
                 var id = await this.service.Add(requestAdd, CancellationToken.None);
 
-                var requestEdit = new EventRequest() { Title = "UpdateTest", Description = "Тестовое изменение", StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
+                var requestEdit = new EventRequest() { Title = "UpdateTest", Description = "Тестовое изменение", TotalSeats = 1, StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
                 await this.service.Update(id, requestEdit, CancellationToken.None);
 
-                var item = await this.service.Get(id);
+                var item = await this.service.GetAsync(id);
 
                 Assert.Equal(requestEdit.Title, item.Title);
 
@@ -94,14 +94,14 @@ namespace EventServiceTests
         [Fact]
         public async Task Event_Delete_exception()
         {
-            var requestAdd = new EventRequest() { Title = "AddTest", Description = "Тестовое добаление для удаления", StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
+            var requestAdd = new EventRequest() { Title = "AddTest", Description = "Тестовое добаление для удаления", TotalSeats = 1, StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
             var id = await this.service.Add(requestAdd);
 
 
             await this.service.Delete(id);
 
 
-            var exception = await Assert.ThrowsAsync<EventException>(() =>  this.service.Get(id));
+            var exception = await Assert.ThrowsAsync<EventException>(() =>  this.service.GetAsync(id));
 
             string message = $"Событие с идентификатором {id} не найден";
             Assert.True(!string.IsNullOrEmpty(exception.Message));

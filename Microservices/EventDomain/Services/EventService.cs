@@ -61,7 +61,7 @@ public class EventService : IEventService
     }
 
     /// <inheritdoc/>
-    public async Task<Events> Get(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Events> GetAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var tcs = new TaskCompletionSource<Events>(cancellationToken);
 
@@ -85,6 +85,17 @@ public class EventService : IEventService
         return await tcs.Task;
     }
 
+    public Events Get(Guid id, CancellationToken token = default)
+    {
+        var model = events.FirstOrDefault(s => s.Id == id);
+        if (model == null)
+        {
+            throw new EventException($"Событие с идентификатором {id} не найден");
+        }
+        
+        return model;
+    }
+
     /// <inheritdoc/>
     public async Task<Guid> Add(EventRequest model, CancellationToken cancellationToken = default)
     {
@@ -99,7 +110,7 @@ public class EventService : IEventService
                 tcs.TrySetCanceled();
 
 #pragma warning disable CS8629 // Тип значения, допускающего NULL, может быть NULL.
-            events.Add(new Events(id, model.Title, model.Description, (DateTime)model.StartAt, (DateTime)model.EndAt));
+            events.Add(new Events(id, model.Title, model.Description, model.TotalSeats, (DateTime)model.StartAt, (DateTime)model.EndAt));
 #pragma warning restore CS8629 // Тип значения, допускающего NULL, может быть NULL.
 
             tcs.TrySetResult(id);
@@ -185,7 +196,14 @@ public class EventService : IEventService
 
     }
 
-    
+    public void ReleaseSeats(Guid eventId, int count = 1)
+    {
+        var model = events.FirstOrDefault(s => s.Id == eventId);
+        if(model == null)
+            return;
+
+        model.ReleaseSeats(count);
+    }
 
     
 }

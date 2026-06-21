@@ -46,7 +46,7 @@ public class EventsController(IEventService eventService, IBookingService bookin
     [HttpGet("{id}")]
     public async Task<ActionResult<Events>> Get(Guid id)
     {
-        return await eventService.Get(id, HttpContext.RequestAborted);
+        return await eventService.GetAsync(id, HttpContext.RequestAborted);
     }
 
 
@@ -54,17 +54,19 @@ public class EventsController(IEventService eventService, IBookingService bookin
     /// Добавления планирования события
     /// </summary>
     /// <param name="id">Идентификатор события</param>
-    /// <response code="200">Возвращается JSON-структура AddBookingResult с деталями ответа</response>
+    /// <response code="202">Возвращается JSON-структура AddBookingResult с деталями ответа</response>
     /// <response code="404">Событие не найдено</response>
+    /// <response code="409">Свободных мест на это мероприятие нет.</response>
     [ProducesResponseType(typeof(AddBookingResult), StatusCodes.Status202Accepted)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
     [Produces("application/json")]
     [HttpPost("{id}/book")]
     public async Task<ActionResult<AddBookingResult>> CreateBooking(Guid id)
     {
         var result = await bookingService.CreateBookingAsync(id, HttpContext.RequestAborted);
 
-        return Accepted($"/bookings/{result.Id}", result);
+        return Accepted($"/bookings/{result?.Id}", result);
     }
 
     /// <summary>

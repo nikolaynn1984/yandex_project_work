@@ -18,6 +18,12 @@ public class EventRequest
     /// </summary>
     public string? Description { get; set; }
     /// <summary>
+    /// Общее количество мест на событии
+    /// </summary>
+    [Required(ErrorMessage = "Свойство TotalSeats обязательно для заполнения")]
+    [Range(1, int.MaxValue, ErrorMessage = "Свойство TotalSeats не может быть меньше 1")]
+    public int TotalSeats { get; set; }
+    /// <summary>
     /// Начало
     /// </summary>
     [Required(ErrorMessage = "Свойство StartAt обязательно для заполнения")]

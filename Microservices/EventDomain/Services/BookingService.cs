@@ -14,6 +14,7 @@ namespace EventDomain.Services
         private readonly ConcurrentBag<Booking> bookings;
         private readonly IEventService eventService;
         private readonly IBookingQueueService bookingQueueService;
+        private readonly SemaphoreSlim _bookingLock = new SemaphoreSlim(1,1);
 
         public BookingService(IEventService eventService, IBookingQueueService bookingQueueService)
         {
@@ -23,33 +24,29 @@ namespace EventDomain.Services
         }
 
         /// <inheritdoc/>
-        public async Task<AddBookingResult> CreateBookingAsync(Guid eventId, CancellationToken cancellationToken = default)
+        public async Task<AddBookingResult?> CreateBookingAsync(Guid eventId, CancellationToken cancellationToken = default)
         {
-            var tcs = new TaskCompletionSource<AddBookingResult>();
-
-            _ = Task.Run(async () =>
+            try
             {
-                try
-                {
-                    await this.eventService.Get(eventId);
+                await _bookingLock.WaitAsync();
 
-                    if (cancellationToken.IsCancellationRequested)
-                        tcs.TrySetCanceled();
+                var eventItem = await this.eventService.GetAsync(eventId);
+
+                if (cancellationToken.IsCancellationRequested)
+                    return null;
+
+                if (eventItem.TryReserveSeats(1) == false)
+                    throw new NoAvailableSeatsException("No available seats for this event");
+
+                var booking = Add(eventId);
 
 
-                    var booking = Add(eventId);
-
-
-                    tcs.TrySetResult(new AddBookingResult(booking.Id, eventId, booking.Status));
-
-                }
-                catch(EventException exe)
-                {
-                    tcs.TrySetException(exe);
-                }
-            });
-
-           return await tcs.Task;
+                return new AddBookingResult(booking.Id, eventId, booking.Status);
+            }
+            finally
+            {
+                _bookingLock.Release();
+            } 
         }
 
         /// <summary>
@@ -66,7 +63,7 @@ namespace EventDomain.Services
 
             this.bookings.Add(booking);
 
-            this.bookingQueueService.Enqueue(booking);
+            this.bookingQueueService.Add(booking);
 
             return booking;
         }

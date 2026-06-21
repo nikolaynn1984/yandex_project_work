@@ -5,14 +5,18 @@ namespace EventDomain.Interfaces;
 public interface IBookingQueueService
 {
     /// <summary>
+    /// Событие обработки
+    /// </summary>
+    event Action<List<Booking>>? OnNextEvent;
+    /// <summary>
     /// Добавить в очередь обработки бронирования
     /// </summary>
     /// <param name="booking">Модель бронирования</param>
-    public void Enqueue(Booking booking);
+    public void Add(Booking booking);
     /// <summary>
     /// Получить последнее бронирование
     /// </summary>
     /// <param name="booking">Бронирование</param>
     /// <returns>true  если имеется значение, в противном случае false</returns>
-    bool TryDequeue(out Booking booking);
+    Task Next();
 }
