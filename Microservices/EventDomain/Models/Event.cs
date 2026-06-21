@@ -27,6 +27,7 @@ public class Event
         this.Title = Title;
         this.Description = Description;
         this.TotalSeats = TotalSeats;
+        this.AvailableSeats = TotalSeats;
         this.StartAt = StartAt;
         this.EndAt = EndAt;
     }

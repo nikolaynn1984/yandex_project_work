@@ -1,3 +1,4 @@
+using EventDomain.DataAccess;
 using EventDomain.Extentions;
 using EventServer.Core;
 
@@ -22,6 +23,11 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated();
+}
 
 app.UseSwagger();
 app.UseSwaggerUI(); //swagger/index.html

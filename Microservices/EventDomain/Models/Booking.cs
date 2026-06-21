@@ -12,41 +12,42 @@ public class Booking
     {
         this.Id = Id;
         this.EventId = EventId;
+        this.ProcessedAt = null;
     }
 
 
     /// <summary>
     /// уникальный идентификатор брони
     /// </summary>
-    public Guid Id { get; init; }
+    public Guid Id { get; internal set; }
     /// <summary>
     /// идентификатор события, к которому относится бронь
     /// </summary>
-    public Guid EventId {  get; init; }
+    public Guid EventId {  get; internal set; }
     /// <summary>
     /// Текущий статус брони
     /// </summary>
-    public BookingStatus Status { get; private set; } = BookingStatus.Pending;
+    public BookingStatus Status { get; internal set; } = BookingStatus.Pending;
     /// <summary>
     /// Дата и время создания брони
     /// </summary>
-    public DateTime CreatedAt {  get; init; } = DateTime.Now;
+    public DateTime CreatedAt {  get; internal set; } = DateTime.UtcNow;
     /// <summary>
     /// Дата и время обработки брони
     /// </summary>
     public DateTime? ProcessedAt {  get; set; }
 
-    internal Event? Event { get; private set; }
+    internal Event? Event { get; set; }
 
     public void Confirm()
     {
         this.Status = BookingStatus.Confirmed;
-        this.ProcessedAt = DateTime.Now;
+        this.ProcessedAt = DateTime.UtcNow;
     }
 
     public void Reject()
     {
         this.Status = BookingStatus.Rejected;
-        this.ProcessedAt = DateTime.Now;
+        this.ProcessedAt = DateTime.UtcNow;
     }
 }
