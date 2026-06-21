@@ -36,6 +36,8 @@ public class Booking
     /// </summary>
     public DateTime? ProcessedAt {  get; set; }
 
+    internal Event? Event { get; private set; }
+
     public void Confirm()
     {
         this.Status = BookingStatus.Confirmed;
