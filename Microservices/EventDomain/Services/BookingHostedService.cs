@@ -81,7 +81,8 @@ namespace EventDomain.Services
             }
             finally
             {
-                this._processingSemaphore.Release();
+                if(_processingSemaphore.CurrentCount == 0)
+                   this._processingSemaphore.Release();
             }
         }
     }
