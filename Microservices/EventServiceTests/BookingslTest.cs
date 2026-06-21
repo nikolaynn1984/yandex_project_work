@@ -156,32 +156,21 @@ namespace EventServiceTests
             var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add NoAvailableSeats", Description = "Описание 1", TotalSeats = 5, StartAt = new DateTime(2025, 05, 11), EndAt = new DateTime(2025, 05, 12) }, CancellationToken.None);
             var eventItem = await this.eventService.GetAsync(eventId, CancellationToken.None);
 
-            var tasks = new Task[20];
-            int reserveCount = 0;
-            int noValidCount = 0;
-             
+            var tasks = new Task<bool>[20];         
 
             for (int i = 0; i < tasks.Length; i++)
             {
                 tasks[i] = Task.Run(() =>
                 {
 
-                     var res = eventItem.TryReserveSeats();
-                     if (res == true)
-                     {
-                         Interlocked.Increment(ref reserveCount);
-                     }
-                     else
-                     {
-                         Interlocked.Increment(ref noValidCount);
-                     }
+                     return eventItem.TryReserveSeats();
                 });
             }
 
-            await Task.WhenAll(tasks);
+            var taskResults = await Task.WhenAll(tasks);
 
-            Assert.True(reserveCount == 5);
-            Assert.True(noValidCount == 15);
+            Assert.True(5 == taskResults.Where(s => s == true).Count());
+            Assert.True(15 == taskResults.Where(s => s == false).Count());
             Assert.True(eventItem.AvailableSeats == 0);
         }
     }
