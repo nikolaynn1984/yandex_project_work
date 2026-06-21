@@ -1,7 +1,7 @@
-﻿using Event.Domain.Interfaces;
-using Event.Domain.Models;
-using Event.Domain.Services;
-using EventDomain.Extentions;
+﻿using EventDomain.Extentions;
+using EventDomain.Interfaces;
+using EventDomain.Models;
+using EventDomain.Services;
 using System.Diagnostics;
 
 namespace EventServiceTests

@@ -1,4 +1,4 @@
-﻿namespace Event.Domain.Models;
+﻿namespace EventDomain.Models;
 
 /// <summary>
 /// Результат ответа добавления

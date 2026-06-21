@@ -1,4 +1,4 @@
-﻿namespace Event.Domain.Models;
+﻿namespace EventDomain.Models;
 
 /// <summary>
 /// Событие
@@ -12,7 +12,7 @@
 /// <param name="TotalSeats">Общее количество мест</param>
 /// <param name="StartAt">Начало</param>
 /// <param name="EndAt">Конец</param>
-public class Events(Guid Id, string Title, string? Description, int TotalSeats, DateTime StartAt, DateTime EndAt)
+public class Event(Guid Id, string Title, string? Description, int TotalSeats, DateTime StartAt, DateTime EndAt)
 {
     readonly object locked = new object();
     /// <summary>

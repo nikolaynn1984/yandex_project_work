@@ -1,17 +1,16 @@
-﻿using Event.Domain.Interfaces;
-using Event.Domain.Models;
-using EventDomain.Extentions;
+﻿using EventDomain.Interfaces;
 using EventDomain.Models;
+using EventDomain.Extentions;
 using System.ComponentModel.DataAnnotations;
 
-namespace Event.Domain.Services;
+namespace EventDomain.Services;
 
 /// <summary>
 /// Сервси событий
 /// </summary>
 public class EventService : IEventService
 {
-    private readonly List<Events> events = [];
+    private readonly List<Models.Event> events = [];
 
     /// <inheritdoc/>
     public async Task<PaginatedResult> Get(string? title = null, DateTime? from = null, DateTime? to = null, int page = 1, int pageSize = 10, CancellationToken cancellationToken = default)
@@ -61,9 +60,9 @@ public class EventService : IEventService
     }
 
     /// <inheritdoc/>
-    public async Task<Events> GetAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Models.Event> GetAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var tcs = new TaskCompletionSource<Events>(cancellationToken);
+        var tcs = new TaskCompletionSource<Models.Event>(cancellationToken);
 
         _ = Task.Run(() =>
         {
@@ -85,7 +84,7 @@ public class EventService : IEventService
         return await tcs.Task;
     }
 
-    public Events Get(Guid id, CancellationToken token = default)
+    public Models.Event Get(Guid id, CancellationToken token = default)
     {
         var model = events.FirstOrDefault(s => s.Id == id);
         if (model == null)
@@ -110,7 +109,7 @@ public class EventService : IEventService
                 tcs.TrySetCanceled();
 
 #pragma warning disable CS8629 // Тип значения, допускающего NULL, может быть NULL.
-            events.Add(new Events(id, model.Title, model.Description, model.TotalSeats, (DateTime)model.StartAt, (DateTime)model.EndAt));
+            events.Add(new Event(id, model.Title, model.Description, model.TotalSeats, (DateTime)model.StartAt, (DateTime)model.EndAt));
 #pragma warning restore CS8629 // Тип значения, допускающего NULL, может быть NULL.
 
             tcs.TrySetResult(id);

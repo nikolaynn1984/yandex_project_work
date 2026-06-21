@@ -1,6 +1,5 @@
-﻿using Event.Domain.Interfaces;
+﻿using EventDomain.Interfaces;
 using EventDomain.Extentions;
-using EventDomain.Interfaces;
 using EventDomain.Models;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;

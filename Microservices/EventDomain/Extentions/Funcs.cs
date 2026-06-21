@@ -1,4 +1,4 @@
-﻿using Event.Domain.Models;
+﻿using EventDomain.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace EventDomain.Extentions
@@ -14,7 +14,7 @@ namespace EventDomain.Extentions
         /// <param name="page">Страница</param>
         /// <param name="pageSize">Количество записей в странице</param>
         /// <returns>Список</returns>
-        public static IEnumerable<Events> Pagination(this IEnumerable<Events> events, int page, int pageSize)
+        public static IEnumerable<EventDomain.Models.Event> Pagination(this IEnumerable<EventDomain.Models.Event> events, int page, int pageSize)
         {
             PageValid(page, "page");
             PageValid(pageSize, "pageSize");
@@ -29,7 +29,7 @@ namespace EventDomain.Extentions
         /// <param name="from">Дата начала</param>
         /// <param name="to">Дата окончания</param>
         /// <returns>Список</returns>
-        public static IEnumerable<Events> Filter(this IEnumerable<Events> events, string? title, DateTime? from, DateTime? to)
+        public static IEnumerable<EventDomain.Models.Event> Filter(this IEnumerable<EventDomain.Models.Event> events, string? title, DateTime? from, DateTime? to)
         {
 
             var result = events;

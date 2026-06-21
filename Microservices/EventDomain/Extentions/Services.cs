@@ -1,12 +1,9 @@
-﻿using Event.Domain.Interfaces;
-using Event.Domain.Services;
-using EventDomain.Extentions;
-using EventDomain.Interfaces;
+﻿using EventDomain.Interfaces;
 using EventDomain.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Event.Domain.Extentions
+namespace EventDomain.Extentions
 {
     /// <summary>
     /// Сервисы

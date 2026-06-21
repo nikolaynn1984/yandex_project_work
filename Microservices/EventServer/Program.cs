@@ -1,4 +1,4 @@
-using Event.Domain.Extentions;
+using EventDomain.Extentions;
 using EventServer.Core;
 
 var builder = WebApplication.CreateBuilder(args);
