@@ -1,7 +1,8 @@
 ﻿using EventDomain.Interfaces;
 using EventDomain.Models;
 using EventDomain.Extentions;
-using System.ComponentModel.DataAnnotations;
+using EventDomain.DataAccess;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventDomain.Services;
 
@@ -10,145 +11,90 @@ namespace EventDomain.Services;
 /// </summary>
 public class EventService : IEventService
 {
-    private readonly List<Models.Event> events = [];
+    private readonly AppDbContext context;
+
+    public EventService(AppDbContext context)
+    {
+        this.context = context;
+    }
 
     /// <inheritdoc/>
     public async Task<PaginatedResult> Get(string? title = null, DateTime? from = null, DateTime? to = null, int page = 1, int pageSize = 10, CancellationToken cancellationToken = default)
     {
 
-        var tcs = new TaskCompletionSource<PaginatedResult>(cancellationToken);
 
-        _ = Task.Run(() =>
-        {
+         cancellationToken.ThrowIfCancellationRequested();
 
-            try
-            {
+         var events = await this.context.Events.AsNoTracking().ToListAsync(cancellationToken);
 
-                if (cancellationToken.IsCancellationRequested)
-                    tcs.TrySetCanceled();
+         var filters = events.Filter(title, from, to);
+         var pageList = filters.Pagination(page, pageSize).ToList();
 
-                var filters = events.Filter(title, from, to);
-                var pageList = filters.Pagination(page, pageSize).ToList();
+         int totalPage = filters.Count().GetTotalPages(pageSize);
+         int count = filters.Count();
+         var res = new PaginatedResult()
+         {
+             TotalItems = count,
+             Items = pageList,
+             TotalPages = count.GetTotalPages(pageSize),
+             CurrentPage = totalPage > page ? page : totalPage,
+         };
 
-                int totalPage = filters.Count().GetTotalPages(pageSize);
-                int count = filters.Count();
-                var res = new PaginatedResult()
-                {
-                    TotalItems = count,
-                    Items = pageList,
-                    TotalPages = count.GetTotalPages(pageSize),
-                    CurrentPage = totalPage > page ? page : totalPage,
-                };
-
-                tcs.TrySetResult(res);
-            }
-            catch(ValidationException vex)
-            {
-                tcs.TrySetException(vex);
-            }catch(Exception ex)
-            {
-                tcs.TrySetException(ex);
-            }
-
-           
-        }, cancellationToken);
-
-        
-
-
-        return await tcs.Task;
+         return res;
     }
 
     /// <inheritdoc/>
-    public async Task<Models.Event> GetAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Event?> GetAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var tcs = new TaskCompletionSource<Models.Event>(cancellationToken);
-
-        _ = Task.Run(() =>
-        {
-            var model = events.FirstOrDefault(s => s.Id == id);
-            if (model == null)
-            {
-                tcs.TrySetException(new EventException($"Событие с идентификатором {id} не найден"));
-            }
-            else
-            {
-#pragma warning disable CS8604 // Возможно, аргумент-ссылка, допускающий значение NULL.
-                tcs.TrySetResult(model);
-#pragma warning restore CS8604 // Возможно, аргумент-ссылка, допускающий значение NULL.
-            }
-        });
-
-        
-
-        return await tcs.Task;
-    }
-
-    public Models.Event Get(Guid id, CancellationToken token = default)
-    {
-        var model = events.FirstOrDefault(s => s.Id == id);
+        var model = await this.context.Events.FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
         if (model == null)
         {
-            throw new EventException($"Событие с идентификатором {id} не найден");
+           throw new EventException($"Событие с идентификатором {id} не найден");
         }
-        
         return model;
+
     }
+
+
 
     /// <inheritdoc/>
     public async Task<Guid> Add(EventRequest model, CancellationToken cancellationToken = default)
     {
-        var tcs = new TaskCompletionSource<Guid>(cancellationToken);
+         var id = Guid.NewGuid();
 
-        _ = Task.Run(() =>
-        {
+         cancellationToken.ThrowIfCancellationRequested();
 
-            var id = Guid.NewGuid();
-
-            if (cancellationToken.IsCancellationRequested)
-                tcs.TrySetCanceled();
 
 #pragma warning disable CS8629 // Тип значения, допускающего NULL, может быть NULL.
-            events.Add(new Event(id, model.Title, model.Description, model.TotalSeats, (DateTime)model.StartAt, (DateTime)model.EndAt));
+        var item = new Event(id, model.Title, model.Description, model.TotalSeats, (DateTime)model.StartAt, (DateTime)model.EndAt) { Title = model.Title, };
 #pragma warning restore CS8629 // Тип значения, допускающего NULL, может быть NULL.
 
-            tcs.TrySetResult(id);
-        }, cancellationToken);
+        await this.context.Events.AddAsync(item, cancellationToken);
 
-        return await tcs.Task;
+        await this.context.SaveChangesAsync(cancellationToken);
+
+        return id;
     }
 
     /// <inheritdoc/>
     public async Task Delete(Guid id, CancellationToken cancellationToken = default)
     {
-        var tcs = new TaskCompletionSource(cancellationToken);
 
-        _ = Task.Run(() =>
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var model =  await this.context.Events.FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
+
+        if (model == null)
         {
-            
-            if(cancellationToken.IsCancellationRequested)
-                tcs.TrySetCanceled();
+            throw new EventException($"Событие с идентификатором {id} не найден");
+        }
 
-            var model = events.FirstOrDefault(s => s.Id == id);
-
-            if (model == null)
-            {
-                tcs.TrySetException(new EventException($"Событие с идентификатором {id} не найден"));
-            }
-            else
-            {
-                this.events.Remove(model);
-                tcs.TrySetResult();
-            }
-                
+#pragma warning disable CS8604 // Возможно, аргумент-ссылка, допускающий значение NULL.
+        this.context.Events.Remove(model);
+#pragma warning restore CS8604 // Возможно, аргумент-ссылка, допускающий значение NULL.
 
 
-            
-        }, cancellationToken);
-
-       
-       await tcs.Task;
-       
+        await this.context.SaveChangesAsync();
     }
 
 
@@ -157,51 +103,35 @@ public class EventService : IEventService
     public async Task Update(Guid id, EventRequest data, CancellationToken cancellationToken = default)
     {
 
-        var tcs = new TaskCompletionSource(cancellationToken);
 
-        _ = Task.Run(() => {
+        cancellationToken.ThrowIfCancellationRequested();
 
-            if (cancellationToken.IsCancellationRequested)
-                tcs.TrySetCanceled();
+        var model = await this.context.Events.FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
 
-            var model = events.FirstOrDefault(s => s.Id == id);
-
-            if (model == null)
-            {
-                tcs.TrySetException(new EventException($"Событие с идентификатором {id} не найден"));
-            }
-            else
-            {
-                model.Title = data.Title;
-                model.Description = data.Description;
+        if (model == null)
+        {
+            throw new EventException($"Событие с идентификатором {id} не найден");
+        }
+        
+        model.Title = data.Title;
+        model.Description = data.Description;
 #pragma warning disable CS8629 // Тип значения, допускающего NULL, может быть NULL.
-                model.StartAt = (DateTime)data.StartAt;
-                model.EndAt = (DateTime)data.EndAt;
+        model.StartAt = (DateTime)data.StartAt;
+        model.EndAt = (DateTime)data.EndAt;
 #pragma warning restore CS8629 // Тип значения, допускающего NULL, может быть NULL.
 
-                tcs.TrySetResult();
-            }
-
-
-
-
-
-        }, cancellationToken);
-
-       
-
-
-        await tcs.Task;
-
+        await this.context.SaveChangesAsync(cancellationToken);
     }
 
-    public void ReleaseSeats(Guid eventId, int count = 1)
+    public async Task ReleaseSeats(Guid eventId, int count = 1)
     {
-        var model = events.FirstOrDefault(s => s.Id == eventId);
-        if(model == null)
+        var model = await this.context.Events.FirstOrDefaultAsync(s => s.Id == eventId);
+        if (model == null)
             return;
 
         model.ReleaseSeats(count);
+
+        await this.context.SaveChangesAsync();
     }
 
     

@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.AddBaseConfiguration();
+builder.Services.AddBaseConfiguration(builder);
 
 builder.Services.AddEventService();
 builder.Services.AddBookingService();

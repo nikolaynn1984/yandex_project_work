@@ -9,7 +9,7 @@ public class Event
     /// <summary>
     /// Конструктор событий
     /// </summary>
-    private Event() { }
+    private Event() { Title = null!; }
 
     /// <summary>
     /// Конструктор событий
@@ -22,6 +22,7 @@ public class Event
     /// <param name="EndAt">Конец</param>
     public Event(Guid Id, string Title, string? Description, int TotalSeats, DateTime StartAt, DateTime EndAt)
     {
+
         this.Id = Id;
         this.Title = Title;
         this.Description = Description;

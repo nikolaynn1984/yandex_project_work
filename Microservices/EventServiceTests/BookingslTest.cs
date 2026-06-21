@@ -123,7 +123,7 @@ namespace EventServiceTests
             }
 
 
-            this.eventService.ReleaseSeats(eventId);
+            await this.eventService.ReleaseSeats(eventId);
 
 
 

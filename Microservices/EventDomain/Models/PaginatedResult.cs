@@ -14,7 +14,7 @@ public class PaginatedResult
     /// <summary>
     /// МСобытия
     /// </summary>
-    public IEnumerable<EventDomain.Models.Event> Items { get; set; } = new List<EventDomain.Models.Event>();
+    public IEnumerable<Event> Items { get; set; } = new List<Event>();
     /// <summary>
     /// Текущая страница
     /// </summary>

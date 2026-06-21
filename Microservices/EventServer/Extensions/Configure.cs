@@ -1,4 +1,6 @@
-﻿using Microsoft.OpenApi;
+﻿using EventDomain.DataAccess;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -13,7 +15,7 @@ public static class Configure
     /// Базовая конфигурация приложения
     /// </summary>
     /// <param name="services"></param>
-    public static void AddBaseConfiguration(this IServiceCollection services)
+    public static void AddBaseConfiguration(this IServiceCollection services, WebApplicationBuilder builder)
     {
         services.AddControllers().AddJsonOptions(options =>
         {
@@ -39,5 +41,13 @@ public static class Configure
 
             });
         });
+
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+           ?? throw new InvalidOperationException("Connection string 'Default' not found.");
+        
+        services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+
+        //services.AddDbContextFactory<AppDbContext>(options => options.UseNpgsql(connectionString));
+
     }
 }

@@ -22,13 +22,7 @@ public interface IEventService
     /// </summary>
     /// <param name="id">Идентификатор</param>
     /// <returns></returns>
-    Task<Models.Event> GetAsync(Guid id, CancellationToken token = default);
-    /// <summary>
-    /// Получить событие по идентификатору
-    /// </summary>
-    /// <param name="id">Идентификатор</param>
-    /// <returns></returns>
-    Models.Event Get(Guid id, CancellationToken token = default);
+    Task<Event> GetAsync(Guid id, CancellationToken token = default);
     /// <summary>
     /// Добавить событие
     /// </summary>
@@ -51,5 +45,5 @@ public interface IEventService
     /// <param name="eventId"></param>
     /// <param name="count"></param>
     /// <returns></returns>
-    void ReleaseSeats(Guid eventId, int count = 1);
+    Task ReleaseSeats(Guid eventId, int count = 1);
 }
