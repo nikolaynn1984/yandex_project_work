@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventDomain.DataAccess;
 
-public sealed class AppDbContext : DbContext
+public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
