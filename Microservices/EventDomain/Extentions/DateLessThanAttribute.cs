@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Event.Domain.Extentions;
+namespace EventDomain.Extentions;
 
 /// <summary>
 /// Валидация даты меньше чем

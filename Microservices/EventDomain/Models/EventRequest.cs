@@ -1,7 +1,7 @@
-﻿using Event.Domain.Extentions;
+﻿using EventDomain.Extentions;
 using System.ComponentModel.DataAnnotations;
 
-namespace Event.Domain.Models;
+namespace EventDomain.Models;
 
 /// <summary>
 /// Запрос обновления события

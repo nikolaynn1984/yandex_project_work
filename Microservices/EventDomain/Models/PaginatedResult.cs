@@ -1,4 +1,4 @@
-﻿using Event.Domain.Models;
+﻿using EventDomain.Models;
 
 namespace EventDomain.Models;
 
@@ -14,7 +14,7 @@ public class PaginatedResult
     /// <summary>
     /// МСобытия
     /// </summary>
-    public IEnumerable<Events> Items { get; set; } = new List<Events>();
+    public IEnumerable<Event> Items { get; set; } = new List<Event>();
     /// <summary>
     /// Текущая страница
     /// </summary>

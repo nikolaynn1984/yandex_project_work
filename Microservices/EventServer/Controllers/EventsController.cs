@@ -1,6 +1,4 @@
-﻿using Event.Domain.Interfaces;
-using Event.Domain.Models;
-using EventDomain.Interfaces;
+﻿using EventDomain.Interfaces;
 using EventDomain.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,11 +38,11 @@ public class EventsController(IEventService eventService, IBookingService bookin
     /// <param name="id">Идентификатор события</param>
     /// <response code="200">Возвращается JSON-структура Event с деталями ответа</response>
     /// <response code="404">Событие не найдено</response>
-    [ProducesResponseType(typeof(Events), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Event), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [Produces("application/json")]
     [HttpGet("{id}")]
-    public async Task<ActionResult<Events>> Get(Guid id)
+    public async Task<ActionResult<Event>> Get(Guid id)
     {
         return await eventService.GetAsync(id, HttpContext.RequestAborted);
     }

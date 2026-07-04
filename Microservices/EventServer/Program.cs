@@ -1,4 +1,5 @@
-using Event.Domain.Extentions;
+using EventDomain.DataAccess;
+using EventDomain.Extentions;
 using EventServer.Core;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.AddBaseConfiguration();
+builder.Services.AddBaseConfiguration(builder);
 
 builder.Services.AddEventService();
 builder.Services.AddBookingService();
@@ -22,6 +23,11 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated();
+}
 
 app.UseSwagger();
 app.UseSwaggerUI(); //swagger/index.html
