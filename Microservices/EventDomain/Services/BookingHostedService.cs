@@ -1,8 +1,6 @@
-﻿using EventDomain.DataAccess;
-using EventDomain.Extentions;
+﻿using EventDomain.Extentions;
 using EventDomain.Interfaces;
 using EventDomain.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -53,21 +51,18 @@ public class BookingHostedService : BackgroundService
                 await Task.Delay(TimeSpan.FromSeconds(Funcs.ProcessBookingDelaySecond), stoppingToken);
                 using (var scope = this.scopeFactory.CreateScope())
                 {
-                    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                    var eventRepository = scope.ServiceProvider.GetRequiredService<IEventRepository>();
+                    var bookingRepository = scope.ServiceProvider.GetRequiredService<IBookingRepository>();
 
-
-                    var booking = await context.Bookings.FirstOrDefaultAsync(b => b.Id == bookingId, stoppingToken);
+                    var booking = await bookingRepository.GetById(bookingId, stoppingToken);
                     if (booking == null || booking.Status != BookingStatus.Pending)
                         return;
 
-                    var @event = await context.Events.AsNoTracking().FirstOrDefaultAsync(s => s.Id == booking.EventId, stoppingToken);
-                    if (@event == null)
-                        throw new EventException($"Событие с идентификатором {booking.EventId} не найден");
-
+                     await eventRepository.GetById(booking.EventId, stoppingToken);
 
                     booking.Confirm();
 
-                    await context.SaveChangesAsync(stoppingToken);
+                    await bookingRepository.SaveChangesAsync(stoppingToken);
 
                     logger.LogInformation("Бронирование {Id} обработано", booking.Id);
                     
@@ -99,18 +94,23 @@ public class BookingHostedService : BackgroundService
         {
             using (var scope = this.scopeFactory.CreateScope())
             {
-                var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                //var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                var eventRepository = scope.ServiceProvider.GetRequiredService<IEventRepository>();
+                var bookingRepository = scope.ServiceProvider.GetRequiredService<IBookingRepository>();
 
-                var booking = await context.Bookings.FirstOrDefaultAsync(b => b.Id == bookingId, cancelationToken);
+                var booking = await bookingRepository.GetById(bookingId, cancelationToken);
                 if (booking != null)
                 {
                     booking.Reject();
 
-                    var @event = await context.Events.FirstOrDefaultAsync(e => e.Id == booking.EventId, cancelationToken);
-                    if (@event != null)
-                        @event.ReleaseSeats();
+                    var @event = await eventRepository.GetById(booking.EventId, cancelationToken);
+                    
+                    if(@event != null)
+                       @event.ReleaseSeats();
 
-                    await context.SaveChangesAsync(cancelationToken);
+                    await eventRepository.SaveChangesAsync(cancelationToken);
+
+                    await bookingRepository.SaveChangesAsync(cancelationToken);
                 }
             }
         }catch(Exception ex)

@@ -1,8 +1,6 @@
-﻿using EventDomain.DataAccess;
-using EventDomain.Extentions;
+﻿using EventDomain.Extentions;
 using EventDomain.Interfaces;
 using EventDomain.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace EventDomain.Services;
 
@@ -12,12 +10,14 @@ namespace EventDomain.Services;
 public class BookingService : IBookingService
 {
     private readonly IBookingQueueService bookingQueueService;
-    private readonly AppDbContext context;
+    private readonly IEventRepository eventRepository;
+    private readonly IBookingRepository bookingRepository;
 
-    public BookingService(IBookingQueueService bookingQueueService, AppDbContext context)
+    public BookingService(IBookingQueueService bookingQueueService, IEventRepository eventRepository, IBookingRepository bookingRepository)
     {
         this.bookingQueueService = bookingQueueService;
-        this.context = context;
+        this.eventRepository = eventRepository;
+        this.bookingRepository = bookingRepository;
     }
 
     /// <inheritdoc/>
@@ -27,16 +27,18 @@ public class BookingService : IBookingService
         {
             await Funcs.bookingLock.WaitAsync();
 
-            var eventItem = await this.context.Events.FirstOrDefaultAsync(s => s.Id == eventId, cancellationToken);
-
-            if (eventItem == null)
-                throw new EventException($"Событие с идентификатором {eventId} не найден");
+            var eventItem = await this.eventRepository.GetById(eventId, cancellationToken);
 
             if (cancellationToken.IsCancellationRequested)
                 return null;
 
+
+#pragma warning disable CS8602 // Разыменование вероятной пустой ссылки.
             if (eventItem.TryReserveSeats(1) == false)
-                throw new NoAvailableSeatsException("No available seats for this event");
+                throw new NoAvailableSeatsException("Свободных мест на это мероприятие нет.");
+#pragma warning restore CS8602 // Разыменование вероятной пустой ссылки.
+
+            await this.eventRepository.SaveChangesAsync(cancellationToken);
 
             var booking = await Add(eventId, cancellationToken);
 
@@ -61,9 +63,8 @@ public class BookingService : IBookingService
 
         var booking = new Booking(id, eventId);
 
-        await this.context.Bookings.AddAsync(booking, cancellationToken);
-
-        await this.context.SaveChangesAsync(cancellationToken);
+        await this.bookingRepository.Add(booking, cancellationToken);
+        
         this.bookingQueueService.Add(booking);
 
         return booking;
@@ -74,12 +75,6 @@ public class BookingService : IBookingService
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var book = await this.context.Bookings.FirstOrDefaultAsync(s => s.Id == bookingId, cancellationToken);
-        if(book == null)
-        {
-            throw new EventException($"Бронирование с идентификатором {bookingId} не найден");
-        }
-
-        return book;
+        return await this.bookingRepository.GetById(bookingId, cancellationToken);
     }
 }

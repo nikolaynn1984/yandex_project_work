@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="EventApiIntegrationTests/EventApiIntegrationTests.csproj" Id="39b959a4-2583-4b20-9a77-ac8262bbe37a" />
   <Project Path="EventDomain/EventDomain.csproj" />
   <Project Path="EventServer/EventServer.csproj" />
   <Project Path="EventServiceTests/EventServiceTests.csproj" Id="d46e3f9f-936b-4d22-ad2e-5b7e9fb3cbfd" />

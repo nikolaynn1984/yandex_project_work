@@ -29,7 +29,7 @@ public static class Funcs
     /// <param name="from">Дата начала</param>
     /// <param name="to">Дата окончания</param>
     /// <returns>Список</returns>
-    public static IEnumerable<Event> Filter(this IEnumerable<Event> events, string? title, DateTime? from, DateTime? to)
+    public static IQueryable<Event> Filter(this IQueryable<Event> events, string? title, DateTime? from, DateTime? to)
     {
 
         var result = events;

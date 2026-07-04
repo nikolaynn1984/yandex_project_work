@@ -1,4 +1,5 @@
 ﻿using EventDomain.Interfaces;
+using EventDomain.Repository;
 using EventDomain.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,8 @@ public static class Services
     public static void AddBookingService(this IServiceCollection services)
     {
         services.AddScoped<IBookingService, BookingService>();
+        services.AddScoped<IEventRepository, EventRepository>();
+        services.AddScoped<IBookingRepository, BookingRepository>();
         services.AddSingleton<IBookingQueueService, BookingQueueService>();
         services.AddHostedService<BookingHostedService>();
     }
