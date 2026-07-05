@@ -1,20 +1,14 @@
 ﻿using EventDomain.DataAccess;
-using EventDomain.Extentions;
 using EventDomain.Models;
 using EventDomain.Repository;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Testcontainers.PostgreSql;
 
 namespace EventServiceIntegrationTests
 {
     public class BookingsRepositoryTest : IAsyncLifetime
     {
-        private readonly PostgreSqlContainer container = new PostgreSqlBuilder()
-        .WithImage("postgres:16-alpine")
+        private readonly PostgreSqlContainer container = new PostgreSqlBuilder("postgres:16-alpine")
         .Build();
 
         public async Task DisposeAsync()
@@ -130,7 +124,7 @@ namespace EventServiceIntegrationTests
                 Assert.NotNull(exception);
 
             }
-            catch (Exception ex)
+            catch
             {
                 Assert.True(false);
             }

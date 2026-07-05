@@ -15,7 +15,6 @@ namespace EventServiceTests
         private readonly ServiceProvider serviceProvider;
         private readonly IServiceScope scope;
         private readonly IEventService service;
-        private readonly IBookingService bookingService;
 
         public SuccessfulTest()
         {
@@ -210,7 +209,8 @@ namespace EventServiceTests
                     using var scope = this.serviceProvider.CreateScope();
                     var bookingService = scope.ServiceProvider.GetRequiredService<IBookingService>();
                     var booking = await bookingService.CreateBookingAsync(eventId);
-                    bookingIds.Add(booking.Id);
+                    if(booking != null)
+                       bookingIds.Add(booking.Id);
                 }));
 
             await Task.WhenAll(tasks);

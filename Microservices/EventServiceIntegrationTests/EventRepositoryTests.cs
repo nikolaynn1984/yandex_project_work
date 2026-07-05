@@ -3,18 +3,15 @@ using EventDomain.Extentions;
 using EventDomain.Models;
 using EventDomain.Repository;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using Testcontainers.PostgreSql;
 
 namespace EventServiceIntegrationTests;
 
 public class EventRepositoryTests : IAsyncLifetime
 {
-    private readonly PostgreSqlContainer container = new PostgreSqlBuilder()
-        .WithImage("postgres:16-alpine")
+
+    private readonly PostgreSqlContainer container = new PostgreSqlBuilder("postgres:16-alpine")
         .Build();
 
     public async Task DisposeAsync()
@@ -124,7 +121,7 @@ public class EventRepositoryTests : IAsyncLifetime
         var item = await repository.GetById(id);
 
         // Assert
-        Assert.Equal(id, item.Id);
+        Assert.Equal(id, item?.Id);
     }
 
 
@@ -149,14 +146,14 @@ public class EventRepositoryTests : IAsyncLifetime
 
             var eventEditItem = await repository.GetById(id);
             // Act
-            eventEditItem.Title = "EditTestUpdate";
+            eventEditItem?.Title = "EditTestUpdate";
 
             await repository.SaveChangesAsync();
 
             var item = await repository.GetById(id);
 
             // Assert
-            Assert.Equal("EditTestUpdate", item.Title);
+            Assert.Equal("EditTestUpdate", item?.Title);
 
         }
         catch (Exception ex)
@@ -188,8 +185,8 @@ public class EventRepositoryTests : IAsyncLifetime
 
             var eventItem = await repository.GetById(id);
             // Act
-
-            await repository.Delete(eventItem);
+            if(eventItem != null)
+              await repository.Delete(eventItem);
 
 
             // Assert
