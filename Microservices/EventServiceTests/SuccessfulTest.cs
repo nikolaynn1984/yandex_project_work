@@ -2,6 +2,7 @@
 using EventDomain.Extentions;
 using EventDomain.Interfaces;
 using EventDomain.Models;
+using EventDomain.Repository;
 using EventDomain.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,9 @@ namespace EventServiceTests
             var services = new ServiceCollection();
             services.AddDbContext<AppDbContext>(options =>
                 options.UseInMemoryDatabase(dbName));
+
+            services.AddScoped<IEventRepository, EventRepository>();
+            services.AddScoped<IBookingRepository, BookingRepository>();
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<IBookingService, BookingService>();
             services.AddSingleton<IBookingQueueService, BookingQueueService>();
@@ -31,17 +35,6 @@ namespace EventServiceTests
 
             this.service = this.scope.ServiceProvider.GetRequiredService<IEventService>();
 
-
-            //Task[] tasks =
-            //[
-            //    this.service.Add(new EventRequest() { Title = "Test 1", Description = "Описание 1",TotalSeats = 1, StartAt = new DateTime(2025, 05, 11), EndAt = new DateTime(2025, 05, 12) }),
-            //    this.service.Add(new EventRequest() { Title = "Test 2", Description = "Описание 2",TotalSeats = 1, StartAt = new DateTime(2025, 05, 12), EndAt = new DateTime(2025, 05, 13) }),
-            //    this.service.Add(new EventRequest() { Title = "Test 3", Description = "Описание 3",TotalSeats = 1, StartAt = new DateTime(2025, 05, 13), EndAt = new DateTime(2025, 05, 14) }),
-            //    this.service.Add(new EventRequest() { Title = "Test 4", Description = "Описание 4",TotalSeats = 1, StartAt = new DateTime(2025, 05, 14), EndAt = new DateTime(2025, 05, 15) }),
-            //    this.service.Add(new EventRequest() { Title = "Test 5", Description = "Описание 5",TotalSeats = 1, StartAt = new DateTime(2025, 05, 15), EndAt = new DateTime(2025, 05, 16) }),
-            //    this.service.Add(new EventRequest() { Title = "Test 6", Description = "Описание 6",TotalSeats = 1, StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) }),
-            //];
-            //Task.WaitAll(tasks);
         }
 
         [Fact]
@@ -133,10 +126,9 @@ namespace EventServiceTests
             var expectedResult = new List<string> { "Test 2", "Test 3", "Test 4", "Test 5", "Test 6" };
 
 
-            var list = await this.service.Get();
-            var filter = list.Items.Filter(titleSearch, null, null).ToList();
+            var list = await this.service.Get(titleSearch);
 
-            Assert.All(filter, events => expectedResult.Contains(events.Title));
+            Assert.All(list.Items, events => expectedResult.Contains(events.Title));
         }
 
         [Fact]
@@ -146,10 +138,9 @@ namespace EventServiceTests
             var expectedResult = new List<DateTime> { new DateTime(2025, 05, 13), new DateTime(2025, 05, 14), new DateTime(2025, 05, 15), new DateTime(2025, 05, 16) };
 
 
-            var list = await this.service.Get();
-            var filter = list.Items.Filter(null, new DateTime(2025, 05, 13), new DateTime(2025, 05, 16)).ToList();
+            var list = await this.service.Get(null, new DateTime(2025, 05, 13), new DateTime(2025, 05, 16));
 
-            Assert.All(filter, events => expectedResult.Any(s => s == events.StartAt || s == events.EndAt));
+            Assert.All(list.Items, events => expectedResult.Any(s => s == events.StartAt || s == events.EndAt));
         }
 
         [Fact]
