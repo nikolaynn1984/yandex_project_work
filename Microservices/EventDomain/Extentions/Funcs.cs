@@ -36,7 +36,7 @@ public static class Funcs
         var result = events;
 
         if (!string.IsNullOrEmpty(title))
-            result = result.Where(s => EF.Functions.Like(s.Title, $"%{title}%"));// s.Title.Contains(title, StringComparison.OrdinalIgnoreCase));
+            result = result.Where(s => EF.Functions.Like(s.Title, $"%{title}%"));
 
         if (from != null)
             result = result.Where(s => s.StartAt >= from);
