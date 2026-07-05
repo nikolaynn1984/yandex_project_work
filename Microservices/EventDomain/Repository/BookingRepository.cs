@@ -25,6 +25,17 @@ namespace EventDomain.Repository
 
             return book;
         }
+
+        public async Task<List<Booking>> GetByEventId(Guid EventId, CancellationToken cancellationToken = default)
+        {
+            var books = await this.context.Bookings.Where(s => s.EventId == EventId).ToListAsync(cancellationToken);
+            if (books == null)
+            {
+                throw new EventException($"Бронированиz с идентификатором собяти {EventId} не найден");
+            }
+
+            return books;
+        }
         public async Task Add(Booking booking, CancellationToken cancellationToken = default)
         {
             await this.context.AddAsync(booking, cancellationToken);

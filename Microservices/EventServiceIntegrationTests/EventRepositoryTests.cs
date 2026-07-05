@@ -50,18 +50,22 @@ public class EventRepositoryTests : IAsyncLifetime
         // Arrange
         await ResetDatabaseAsync();
         await using var context = CreateContext();
-
+        var repository = new EventRepository(context);
         var event1 = new Event(Guid.NewGuid(), "Test 1", "Описание 1", 5, new DateTime(2025, 05, 11).ToUniversalTime(), new DateTime(2025, 05, 12).ToUniversalTime()) { Title = "Test 1" };
         var event2 = new Event(Guid.NewGuid(), "Test 2", "Описание 2", 5, new DateTime(2025, 05, 11).ToUniversalTime(), new DateTime(2025, 05, 12).ToUniversalTime()) { Title = "Test 1" };
         var event3 = new Event(Guid.NewGuid(), "Test 3", "Описание 3", 5, new DateTime(2025, 05, 11).ToUniversalTime(), new DateTime(2025, 05, 12).ToUniversalTime()) { Title = "Test 1" };
         var event4 = new Event(Guid.NewGuid(), "Test 4", "Описание 4", 5, new DateTime(2025, 05, 11).ToUniversalTime(), new DateTime(2025, 05, 12).ToUniversalTime()) { Title = "Test 1" };
         var event5 = new Event(Guid.NewGuid(), "Test 5", "Описание 5", 5, new DateTime(2025, 05, 11).ToUniversalTime(), new DateTime(2025, 05, 12).ToUniversalTime()) { Title = "Test 1" };
 
-        context.Events.AddRange(event1, event2, event3, event4, event5);
+        await repository.Add(event1);
+        await repository.Add(event2);
+        await repository.Add(event3);
+        await repository.Add(event4);
+        await repository.Add(event5);
 
-        await context.SaveChangesAsync();
+        await repository.SaveChangesAsync();
 
-        var repository = new EventRepository(context);
+        
 
         //Act
         var events = await repository.Get();
@@ -76,18 +80,22 @@ public class EventRepositoryTests : IAsyncLifetime
         // Arrange
         await ResetDatabaseAsync();
         await using var context = CreateContext();
-
+        var repository = new EventRepository(context);
         var event1 = new Event(Guid.NewGuid(), "Filter 1", "Описание 1", 5, new DateTime(2025, 05, 11).ToUniversalTime(), new DateTime(2025, 05, 12).ToUniversalTime()) { Title = "Filter 1" };
         var event2 = new Event(Guid.NewGuid(), "Filter 2", "Описание 2", 5, new DateTime(2025, 05, 11).ToUniversalTime(), new DateTime(2025, 05, 12).ToUniversalTime()) { Title = "Filter 1" };
         var event3 = new Event(Guid.NewGuid(), "Test 3", "Описание 3", 5, new DateTime(2025, 05, 11).ToUniversalTime(), new DateTime(2025, 05, 12).ToUniversalTime()) { Title = "Test 3" };
         var event4 = new Event(Guid.NewGuid(), "Test 4", "Описание 4", 5, new DateTime(2025, 05, 11).ToUniversalTime(), new DateTime(2025, 05, 12).ToUniversalTime()) { Title = "Test 4" };
         var event5 = new Event(Guid.NewGuid(), "Test 5", "Описание 5", 5, new DateTime(2025, 05, 11).ToUniversalTime(), new DateTime(2025, 05, 12).ToUniversalTime()) { Title = "Test 5" };
 
-        context.Events.AddRange(event1, event2, event3, event4, event5);
+        await repository.Add(event1);
+        await repository.Add(event2);
+        await repository.Add(event3);
+        await repository.Add(event4);
+        await repository.Add(event5);
 
-        await context.SaveChangesAsync();
+        await repository.SaveChangesAsync();
 
-        var repository = new EventRepository(context);
+        
 
         //Act
         var events = await repository.Get("Filter");
@@ -102,15 +110,15 @@ public class EventRepositoryTests : IAsyncLifetime
         await ResetDatabaseAsync();
         await using var context = CreateContext();
         var id = Guid.NewGuid();
-
+        var repository = new EventRepository(context);
         var event1 = new Event(id, "тест 1", "Описание 1", 5, new DateTime(2025, 05, 11).ToUniversalTime(), new DateTime(2025, 05, 12).ToUniversalTime()) { Title = "Тест 1" };
 
 
-        context.Events.Add(event1);
+         await  repository.Add(event1);
 
         await context.SaveChangesAsync();
 
-        var repository = new EventRepository(context);
+        
 
         //Act
         var item = await repository.GetById(id);
