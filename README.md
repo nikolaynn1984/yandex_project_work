@@ -15,6 +15,15 @@
  3. Откройте файл appsettings.json
  4. в свойстве ConnectionStrings:DefaultConnection требуется указать вашу строку подключения
 
+для создания миграции можно поспользоваться командой 
+```bash
+ dotnet ef migrations add CreateData
+```
+для обновления миграции команда
+```bash
+ dotnet ef database update CreateData
+```
+
 схема и таблицы создаются автоматически миграцией при запуске, через Migration
 
 > Запуск с консоли
@@ -44,17 +53,7 @@ dotnet test EventServiceTests.csproj
  ```
  Для запуска итеграционных тесттов 
   * потребуется установленный и запущен Docker Desktop (Windows/macOS) или Docker Engine (Linux) на вашей машине
-    Для того чтоб убедиться что docker работает требуется запустить docker-compose.yml
- ```bash
-services:
-  postgres:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_DB: bookstore_test
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: secret123
-    ports:
-      - "5432:5432"
+    
  ```
 
  запустить команду 
