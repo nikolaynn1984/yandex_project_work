@@ -6,6 +6,7 @@ using Testcontainers.PostgreSql;
 
 namespace EventServiceIntegrationTests
 {
+    [Collection("Database")]
     public class BookingsRepositoryTest : IAsyncLifetime
     {
         private readonly PostgreSqlContainer container = new PostgreSqlBuilder("postgres:16-alpine")
@@ -24,11 +25,11 @@ namespace EventServiceIntegrationTests
         private AppDbContext CreateContext()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseNpgsql(container.GetConnectionString())
+                .UseNpgsql(container.GetConnectionString(), s => s.MigrationsAssembly("EventServer"))
                 .Options;
 
             var context = new AppDbContext(options);
-            context.Database.EnsureCreated();
+            context.Database.Migrate();
             return context;
         }
 
@@ -66,6 +67,36 @@ namespace EventServiceIntegrationTests
             //Assert
             Assert.NotNull(item);
             Assert.Equal(item.Id, id);
+        }
+
+
+        [Fact]
+        public async Task Booking_AddAndGetByEventId_Bokkings()
+        {
+            // Arrange
+            await ResetDatabaseAsync();
+            await using var context = CreateContext();
+            var repositoryEvent = new EventRepository(context);
+            var repositoryBooking = new BookingRepository(context);
+            var event1 = new Event(Guid.NewGuid(), "Test 1", "Описание 1", 5, new DateTime(2025, 05, 11).ToUniversalTime(), new DateTime(2025, 05, 12).ToUniversalTime()) { Title = "Test 1" };
+
+
+
+
+            await repositoryEvent.Add(event1);
+
+
+            await repositoryBooking.Add(new Booking(Guid.NewGuid(), event1.Id));
+            await repositoryBooking.Add(new Booking(Guid.NewGuid(), event1.Id));
+            //Act 
+
+
+
+            var bookings = await repositoryBooking.GetByEventId(event1.Id);
+
+            //Assert
+            Assert.NotNull(bookings);
+            Assert.True(bookings.Count == 2);
         }
 
         [Fact]

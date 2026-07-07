@@ -1,6 +1,8 @@
 <Solution>
   <Project Path="EventDomain/EventDomain.csproj" />
   <Project Path="EventServer/EventServer.csproj" />
-  <Project Path="EventServiceIntegrationTests/EventServiceIntegrationTests.csproj" Id="4041af43-8a09-4195-9251-b8e6d77595f5" />
+  <Project Path="EventServiceIntegrationTests/EventServiceIntegrationTests.csproj" Id="4041af43-8a09-4195-9251-b8e6d77595f5">
+    <Build Solution="Debug|*" Project="false" />
+  </Project>
   <Project Path="EventServiceTests/EventServiceTests.csproj" Id="d46e3f9f-936b-4d22-ad2e-5b7e9fb3cbfd" />
 </Solution>

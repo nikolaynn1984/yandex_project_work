@@ -8,6 +8,7 @@ using Testcontainers.PostgreSql;
 
 namespace EventServiceIntegrationTests;
 
+[Collection("Database")]
 public class EventRepositoryTests : IAsyncLifetime
 {
 
@@ -27,11 +28,11 @@ public class EventRepositoryTests : IAsyncLifetime
     private AppDbContext CreateContext()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseNpgsql(container.GetConnectionString())
+            .UseNpgsql(container.GetConnectionString(), s => s.MigrationsAssembly("EventServer"))
             .Options;
 
         var context = new AppDbContext(options);
-        context.Database.EnsureCreated();
+        context.Database.Migrate();
         return context;
     }
 
@@ -100,6 +101,38 @@ public class EventRepositoryTests : IAsyncLifetime
         // Assert
         Assert.Equal(2, events.Count());
     }
+
+
+    [Fact]
+    public async Task Event_GetFiltersFromTo_list()
+    {
+        // Arrange
+        await ResetDatabaseAsync();
+        await using var context = CreateContext();
+        var repository = new EventRepository(context);
+        var event1 = new Event(Guid.NewGuid(), "Filter 1", "Описание 1", 5, new DateTime(2025, 05, 11).ToUniversalTime(), new DateTime(2025, 06, 11).ToUniversalTime()) { Title = "Filter 1" };
+        var event2 = new Event(Guid.NewGuid(), "Filter 2", "Описание 2", 5, new DateTime(2025, 05, 11).ToUniversalTime(), new DateTime(2025, 06, 11).ToUniversalTime()) { Title = "Filter 1" };
+        var event3 = new Event(Guid.NewGuid(), "Test 3", "Описание 3", 5, new DateTime(2025, 08, 11).ToUniversalTime(), new DateTime(2025, 09, 12).ToUniversalTime()) { Title = "Test 3" };
+        var event4 = new Event(Guid.NewGuid(), "Test 4", "Описание 4", 5, new DateTime(2025, 08, 11).ToUniversalTime(), new DateTime(2025, 09, 12).ToUniversalTime()) { Title = "Test 4" };
+        var event5 = new Event(Guid.NewGuid(), "Filter 3", "Описание 5", 5, new DateTime(2025, 05, 11).ToUniversalTime(), new DateTime(2025, 06, 11).ToUniversalTime()) { Title = "Test 5" };
+
+        await repository.Add(event1);
+        await repository.Add(event2);
+        await repository.Add(event3);
+        await repository.Add(event4);
+        await repository.Add(event5);
+
+        await repository.SaveChangesAsync();
+
+
+
+        //Act
+        var events = await repository.Get(null, new DateTime(2025, 05, 11).ToUniversalTime(), new DateTime(2025, 06, 11).ToUniversalTime());
+
+        // Assert
+        Assert.Equal(3, events.Count());
+    }
+
     [Fact]
     public async Task Event_Add_GetById()
     {
