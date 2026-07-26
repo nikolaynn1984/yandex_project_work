@@ -1,7 +1,7 @@
-﻿using EventDomain.DataAccess;
-using EventDomain.Extentions;
-using EventDomain.Models;
-using EventDomain.Repository;
+﻿using EventDomain.Entities;
+using EventDomain.Exceptions;
+using EventInfrastructure.DataAccess;
+using EventInfrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using Testcontainers.PostgreSql;
