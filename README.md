@@ -44,7 +44,17 @@ dotnet test EventServiceTests.csproj
  ```
  Для запуска итеграционных тесттов 
   * потребуется установленный и запущен Docker Desktop (Windows/macOS) или Docker Engine (Linux) на вашей машине
-    
+    Для того чтоб убедиться что docker работает требуется запустить docker-compose.yml
+ ```bash
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: bookstore_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret123
+    ports:
+      - "5432:5432"
  ```
 
  запустить команду 
