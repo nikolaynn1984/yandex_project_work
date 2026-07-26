@@ -1,5 +1,7 @@
-﻿using EventDomain.Interfaces;
-using EventDomain.Models;
+﻿using EventApplication.Abstractions.Services;
+using EventApplication.Bookings.DTOs;
+using EventApplication.Events.DTOs;
+using EventDomain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventServer.Controllers;

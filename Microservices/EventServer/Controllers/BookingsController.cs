@@ -1,5 +1,5 @@
-﻿using EventDomain.Interfaces;
-using EventDomain.Models;
+﻿using EventApplication.Abstractions.Services;
+using EventDomain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventServer.Controllers;

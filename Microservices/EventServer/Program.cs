@@ -1,5 +1,5 @@
-using EventDomain.DataAccess;
-using EventDomain.Extentions;
+using EventInfrastructure.DataAccess;
+using EventInfrastructure.Services;
 using EventServer.Core;
 using Microsoft.EntityFrameworkCore;
 

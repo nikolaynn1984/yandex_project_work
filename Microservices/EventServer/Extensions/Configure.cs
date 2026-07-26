@@ -1,4 +1,4 @@
-﻿using EventDomain.DataAccess;
+﻿using EventInfrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using System.Reflection;
