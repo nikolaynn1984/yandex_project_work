@@ -1,8 +1,6 @@
 ﻿using EventDomain.Interfaces;
 using EventDomain.Models;
 using EventDomain.Extentions;
-using EventDomain.DataAccess;
-using Microsoft.EntityFrameworkCore;
 
 namespace EventDomain.Services;
 
@@ -11,11 +9,11 @@ namespace EventDomain.Services;
 /// </summary>
 public class EventService : IEventService
 {
-    private readonly AppDbContext context;
+    private readonly IEventRepository eventRepository;
 
-    public EventService(AppDbContext context)
+    public EventService(IEventRepository eventRepository)
     {
-        this.context = context;
+        this.eventRepository = eventRepository;
     }
 
     /// <inheritdoc/>
@@ -25,9 +23,8 @@ public class EventService : IEventService
 
          cancellationToken.ThrowIfCancellationRequested();
 
-         var events = await this.context.Events.AsNoTracking().ToListAsync(cancellationToken);
+         var filters = await this.eventRepository.Get(title, from, to, cancellationToken);
 
-         var filters = events.Filter(title, from, to);
          var pageList = filters.Pagination(page, pageSize).ToList();
 
          int totalPage = filters.Count().GetTotalPages(pageSize);
@@ -46,12 +43,7 @@ public class EventService : IEventService
     /// <inheritdoc/>
     public async Task<Event?> GetAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var model = await this.context.Events.FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
-        if (model == null)
-        {
-           throw new EventException($"Событие с идентификатором {id} не найден");
-        }
-        return model;
+        return await this.eventRepository.GetById(id, cancellationToken);
 
     }
 
@@ -69,9 +61,7 @@ public class EventService : IEventService
         var item = new Event(id, model.Title, model.Description, model.TotalSeats, (DateTime)model.StartAt, (DateTime)model.EndAt) { Title = model.Title, };
 #pragma warning restore CS8629 // Тип значения, допускающего NULL, может быть NULL.
 
-        await this.context.Events.AddAsync(item, cancellationToken);
-
-        await this.context.SaveChangesAsync(cancellationToken);
+        await this.eventRepository.Add(item, cancellationToken);
 
         return id;
     }
@@ -82,19 +72,13 @@ public class EventService : IEventService
 
         cancellationToken.ThrowIfCancellationRequested();
 
-        var model =  await this.context.Events.FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
+        var model =  await this.eventRepository.GetById(id, cancellationToken);
 
-        if (model == null)
-        {
-            throw new EventException($"Событие с идентификатором {id} не найден");
-        }
 
 #pragma warning disable CS8604 // Возможно, аргумент-ссылка, допускающий значение NULL.
-        this.context.Events.Remove(model);
+        await this.eventRepository.Delete(model, cancellationToken);
 #pragma warning restore CS8604 // Возможно, аргумент-ссылка, допускающий значение NULL.
 
-
-        await this.context.SaveChangesAsync();
     }
 
 
@@ -106,13 +90,8 @@ public class EventService : IEventService
 
         cancellationToken.ThrowIfCancellationRequested();
 
-        var model = await this.context.Events.FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
+        var model = await this.eventRepository.GetById(id, cancellationToken);
 
-        if (model == null)
-        {
-            throw new EventException($"Событие с идентификатором {id} не найден");
-        }
-        
         model.Title = data.Title;
         model.Description = data.Description;
 #pragma warning disable CS8629 // Тип значения, допускающего NULL, может быть NULL.
@@ -120,18 +99,19 @@ public class EventService : IEventService
         model.EndAt = (DateTime)data.EndAt;
 #pragma warning restore CS8629 // Тип значения, допускающего NULL, может быть NULL.
 
-        await this.context.SaveChangesAsync(cancellationToken);
+
+        await this.eventRepository.SaveChangesAsync(cancellationToken);
     }
 
     public async Task ReleaseSeats(Guid eventId, int count = 1)
     {
-        var model = await this.context.Events.FirstOrDefaultAsync(s => s.Id == eventId);
+        var model = await this.eventRepository.GetById(eventId);
         if (model == null)
             return;
 
         model.ReleaseSeats(count);
 
-        await this.context.SaveChangesAsync();
+        await this.eventRepository.SaveChangesAsync();
     }
 
     

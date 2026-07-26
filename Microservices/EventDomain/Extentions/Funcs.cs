@@ -1,4 +1,5 @@
 ﻿using EventDomain.Models;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace EventDomain.Extentions;
@@ -29,13 +30,13 @@ public static class Funcs
     /// <param name="from">Дата начала</param>
     /// <param name="to">Дата окончания</param>
     /// <returns>Список</returns>
-    public static IEnumerable<Event> Filter(this IEnumerable<Event> events, string? title, DateTime? from, DateTime? to)
+    public static IQueryable<Event> Filter(this IQueryable<Event> events, string? title, DateTime? from, DateTime? to)
     {
 
         var result = events;
 
         if (!string.IsNullOrEmpty(title))
-            result = result.Where(s => s.Title.Contains(title, StringComparison.OrdinalIgnoreCase));
+            result = result.Where(s => EF.Functions.Like(s.Title, $"%{title}%"));
 
         if (from != null)
             result = result.Where(s => s.StartAt >= from);

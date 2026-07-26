@@ -2,6 +2,7 @@
 using EventDomain.Extentions;
 using EventDomain.Interfaces;
 using EventDomain.Models;
+using EventDomain.Repository;
 using EventDomain.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +24,8 @@ namespace EventServiceTests
             services.AddDbContext<AppDbContext>(options =>
                 options.UseInMemoryDatabase(dbName));
             services.AddScoped<IEventService, EventService>();
+            services.AddScoped<IEventRepository, EventRepository>();
+            services.AddScoped<IBookingRepository, BookingRepository>();
             services.AddScoped<IBookingService, BookingService>();
             services.AddSingleton<IBookingQueueService, BookingQueueService>();
 
@@ -83,7 +86,7 @@ namespace EventServiceTests
 
             var exception = await Assert.ThrowsAsync<NoAvailableSeatsException>(() => this.bookingService.CreateBookingAsync(eventId, CancellationToken.None));
 
-            Assert.Equal($"No available seats for this event", exception.Message);
+            Assert.Equal($"Свободных мест на это мероприятие нет.", exception.Message);
         }
 
         [Fact]

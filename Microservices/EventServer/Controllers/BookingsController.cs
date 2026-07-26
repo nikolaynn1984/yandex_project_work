@@ -15,7 +15,7 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
     /// <summary>
     /// Получение информации бронирования по идентификатору
     /// </summary>
-    /// <param name="Id">Идентифкатор события</param>
+    /// <param name="Id">Идентифкатор</param>
     /// <returns>Объектная модель Booking</returns>
     [ProducesResponseType(typeof(Booking), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]

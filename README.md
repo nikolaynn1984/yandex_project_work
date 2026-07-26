@@ -42,7 +42,19 @@ dotnet run EventServer.csproj
  ```bash
 dotnet test EventServiceTests.csproj
  ```
+ Для запуска итеграционных тесттов 
+  * потребуется установленный и запущен Docker Desktop (Windows/macOS) или Docker Engine (Linux) на вашей машине
+    
+ ```
 
+ запустить команду 
+ ```bash
+docker compose up -d 
+```
+Если контейнер PostgreSQL запустился — Docker работает корректно. Остановите его 
+```bash
+docker compose down 
+```
 
 ## Описание
  Реализуемые эндпоинты REST API 

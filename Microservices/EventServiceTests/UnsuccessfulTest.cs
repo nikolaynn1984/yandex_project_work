@@ -2,6 +2,7 @@
 using EventDomain.Extentions;
 using EventDomain.Interfaces;
 using EventDomain.Models;
+using EventDomain.Repository;
 using EventDomain.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +21,9 @@ namespace EventServiceTests
             var services = new ServiceCollection();
             services.AddDbContext<AppDbContext>(options =>
                 options.UseInMemoryDatabase(dbName));
+
+            services.AddScoped<IEventRepository, EventRepository>();
+            services.AddScoped<IBookingRepository, BookingRepository>();
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<IBookingService, BookingService>();
             services.AddSingleton<IBookingQueueService, BookingQueueService>();
