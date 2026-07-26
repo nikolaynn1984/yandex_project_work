@@ -15,16 +15,7 @@
  3. Откройте файл appsettings.json
  4. в свойстве ConnectionStrings:DefaultConnection требуется указать вашу строку подключения
 
-для создания миграции можно поспользоваться командой 
-```bash
- dotnet ef migrations add CreateData
-```
-для обновления миграции команда
-```bash
- dotnet ef database update CreateData
-```
-
-схема и таблицы создаются автоматически миграцией при запуске, через Migration
+схема и таблицы создаются миграцией при запуске, через Migration
 
 > Запуск с консоли
   ```bash
