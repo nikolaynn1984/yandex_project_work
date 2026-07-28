@@ -101,6 +101,7 @@ public class EventService : IEventService
 
         model.Title = data.Title;
         model.Description = data.Description;
+        model.TotalSeats = data.TotalSeats;
 #pragma warning disable CS8629 // Тип значения, допускающего NULL, может быть NULL.
         model.StartAt = (DateTime)data.StartAt;
         model.EndAt = (DateTime)data.EndAt;
