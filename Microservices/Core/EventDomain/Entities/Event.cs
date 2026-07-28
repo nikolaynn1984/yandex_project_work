@@ -93,4 +93,16 @@ public class Event
                 AvailableSeats = TotalSeats;
         }
     }
+
+    public bool ValivadeTotalSeat(int count)
+    {
+
+        lock (locked)
+        {
+            if(this.TotalSeats < count && this.AvailableSeats == 0)
+                return false;
+        }
+
+        return true;
+    }
 }

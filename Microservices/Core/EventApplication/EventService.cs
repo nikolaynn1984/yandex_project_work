@@ -2,6 +2,7 @@
 using EventApplication.Abstractions.Services;
 using EventApplication.Events.DTOs;
 using EventDomain.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace EventApplication;
 
@@ -92,6 +93,11 @@ public class EventService : IEventService
         cancellationToken.ThrowIfCancellationRequested();
 
         var model = await this.eventRepository.GetById(id, cancellationToken);
+
+        if (model == null) return;
+
+        if (model.ValivadeTotalSeat(data.TotalSeats) == false)
+            throw new ValidationException("Общее количество мест не должно быть меньше забронированных");
 
         model.Title = data.Title;
         model.Description = data.Description;

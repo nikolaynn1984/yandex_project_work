@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Intrinsics.Arm;
 using System.Text.Json;
 
 namespace EventInfrastructure.Middlewares;
@@ -54,9 +55,9 @@ public class GlobalExceptionHandlingMiddleware
         var error = MapStatusCode(ex);
 
         httpContext.Response.StatusCode = error.Status ?? 0;
-        httpContext.Response.ContentType = "application/json";
+        httpContext.Response.ContentType = "application/problem+json";
 
-        error.Detail = ex.Message;
+        //error.Detail = ex.Message;
         error.Instance = httpContext.Request.Path;
 
 
@@ -73,23 +74,28 @@ public class GlobalExceptionHandlingMiddleware
             case ValidationException ve:
                 result.Status = StatusCodes.Status400BadRequest;
                 result.Title = "Ошибка 400 (Неверный запрос)";
+                result.Detail = ve.Message;
                 break;
             case EventException eve:
                 result.Status = StatusCodes.Status404NotFound;
                 result.Title = "Ошибка 404 (Не найдено)";
+                result.Detail = eve.Message;
                 break;
             case OperationCanceledException canceledException:
                 result.Status = StatusCodes.Status400BadRequest;
                 result.Title = "Отмена операции";
+                result.Detail = canceledException.Message;
                 break;
             case NoAvailableSeatsException noAvailableSeatsException:
                 result.Status = StatusCodes.Status409Conflict;
                 result.Title = "Отмена операции";
+                result.Detail = noAvailableSeatsException.Message;
                 break;
 
             default:
                 result.Status = StatusCodes.Status500InternalServerError;
                 result.Title = "Ошибка  500  (Ошибки в сервере)";
+                result.Detail = "";
                 break;
 
         }
