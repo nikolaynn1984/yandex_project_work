@@ -1,5 +1,9 @@
 <Solution>
-  <Project Path="EventDomain/EventDomain.csproj" />
+  <Folder Name="/Core/">
+    <Project Path="Core/EventApplication/EventApplication.csproj" Id="0b384373-4b50-455f-b7b9-77541c5ab7c7" />
+    <Project Path="Core/EventDomain/EventDomain.csproj" Id="ca245515-4c22-4ada-bd43-bdfe94a7f413" />
+    <Project Path="Core/EventInfrastructure/EventInfrastructure.csproj" Id="93a6e0a6-6547-4ea8-851a-189859e352ca" />
+  </Folder>
   <Project Path="EventServer/EventServer.csproj" />
   <Project Path="EventServiceIntegrationTests/EventServiceIntegrationTests.csproj" Id="4041af43-8a09-4195-9251-b8e6d77595f5">
     <Build Solution="Debug|*" Project="false" />

@@ -1,9 +1,10 @@
-﻿using EventDomain.DataAccess;
-using EventDomain.Extentions;
-using EventDomain.Interfaces;
-using EventDomain.Models;
-using EventDomain.Repository;
-using EventDomain.Services;
+﻿using EventApplication;
+using EventApplication.Abstractions.Repositories;
+using EventApplication.Abstractions.Services;
+using EventApplication.Events.DTOs;
+using EventDomain.Exceptions;
+using EventInfrastructure.DataAccess;
+using EventInfrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;

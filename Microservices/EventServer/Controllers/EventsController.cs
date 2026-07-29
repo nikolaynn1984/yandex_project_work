@@ -1,5 +1,7 @@
-﻿using EventDomain.Interfaces;
-using EventDomain.Models;
+﻿using EventApplication.Abstractions.Services;
+using EventApplication.Bookings.DTOs;
+using EventApplication.Events.DTOs;
+using EventDomain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventServer.Controllers;
@@ -23,9 +25,8 @@ public class EventsController(IEventService eventService, IBookingService bookin
     /// <param name="pageSize">Количество элементов в странице, по умолчанию 10</param>
     /// <response code="200">Список событие</response>
     /// <response code="400">Ошибка запроса</response>
-    [ProducesResponseType(typeof(PaginatedResult), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    [Produces("application/json")]
+    [ProducesResponseType(typeof(PaginatedResult), StatusCodes.Status200OK, contentType: "application/json")]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, contentType: "application/problem+json")]
     [HttpGet] //("{title?}/{from?}/{to?}/{page?}/{pageSize?}")
     public async Task<ActionResult<PaginatedResult>> Get(string? title = null, DateTime? from = null, DateTime? to = null, int page = 1, int pageSize = 10)
     {
@@ -38,9 +39,8 @@ public class EventsController(IEventService eventService, IBookingService bookin
     /// <param name="id">Идентификатор события</param>
     /// <response code="200">Возвращается JSON-структура Event с деталями ответа</response>
     /// <response code="404">Событие не найдено</response>
-    [ProducesResponseType(typeof(Event), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    [Produces("application/json")]
+    [ProducesResponseType(typeof(Event), StatusCodes.Status200OK, contentType: "application/json")]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound, contentType: "application/problem+json")]
     [HttpGet("{id}")]
     public async Task<ActionResult<Event>> Get(Guid id)
     {
@@ -55,10 +55,9 @@ public class EventsController(IEventService eventService, IBookingService bookin
     /// <response code="202">Возвращается JSON-структура AddBookingResult с деталями ответа</response>
     /// <response code="404">Событие не найдено</response>
     /// <response code="409">Свободных мест на это мероприятие нет.</response>
-    [ProducesResponseType(typeof(AddBookingResult), StatusCodes.Status202Accepted)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
-    [Produces("application/json")]
+    [ProducesResponseType(typeof(AddBookingResult), StatusCodes.Status202Accepted, contentType: "application/json")]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound, contentType: "application/problem+json")]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict, contentType: "application/problem+json")]
     [HttpPost("{id}/book")]
     public async Task<ActionResult<AddBookingResult>> CreateBooking(Guid id)
     {
@@ -73,13 +72,14 @@ public class EventsController(IEventService eventService, IBookingService bookin
     /// <param name="model">Модель Event</param>
     /// <response code="201">Успешное добавление</response>
     /// <response code="400">Ошибка запроса</response>
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(AddResult), StatusCodes.Status201Created, contentType: "application/json")]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, contentType: "application/problem+json")]
     [HttpPost]
     public async Task<IActionResult> Post(EventRequest model)
     {
         Guid id =  await eventService.Add(model, HttpContext.RequestAborted);
         var result = new AddResult() { Id = id };
-        return Created(HttpContext.Request.Path, result);
+        return Created($"/events/{id}", result);
     }
 
     /// <summary>
@@ -90,28 +90,30 @@ public class EventsController(IEventService eventService, IBookingService bookin
     /// <response code="204">Успешное обновление</response>
     /// <response code="400">Ошибка запроса</response>
     /// <response code="404">Событие не найдено</response>
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, contentType: "application/problem+json")]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound, contentType: "application/problem+json")]
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(Guid id, EventRequest model)
     {
         await eventService.Update(id, model, HttpContext.RequestAborted);
 
-        return new OkResult();
+        return new NoContentResult();
     }
 
     /// <summary>
     /// Удаление события по идентификатору
     /// </summary>
     /// <param name="id">Идентификатор события</param>
-    /// <response code="200">Успешное удаление</response>
+    /// <response code="204">Успешное удаление</response>
     /// <response code="404">Событие не найдено</response>
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {
         await eventService.Delete(id, HttpContext.RequestAborted);
 
-        return new OkResult();
+        return new NoContentResult();
     }
 }
