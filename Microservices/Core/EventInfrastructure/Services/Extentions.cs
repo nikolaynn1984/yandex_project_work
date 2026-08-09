@@ -1,8 +1,13 @@
-﻿using EventApplication;
+﻿using Account.Application;
+using Account.Application.Abstractions.Repositories;
+using Account.Application.Abstractions.Services;
+using Account.Application.DTOs;
+using EventApplication;
 using EventApplication.Abstractions.Repositories;
 using EventApplication.Abstractions.Services;
 using EventDomain.Entities;
 using EventInfrastructure.Abstractions;
+using EventInfrastructure.DataAccess.Account;
 using EventInfrastructure.Middlewares;
 using EventInfrastructure.Services.Exceptions;
 using Microsoft.AspNetCore.Builder;
@@ -26,6 +31,15 @@ public static class Services
         services.AddScoped<IEventService, EventService>();
     }
 
+    public static void AddAccount(this IServiceCollection services)
+    {
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IUserValidator, UserValidator>();
+        services.AddScoped<ITokenGenerator, TokenGenerator>();
+        services.AddScoped<IPasswordHashing, PasswordHashing>();
+    }
+
     public static void AddExceptions(this IServiceCollection services)
     {
         services.AddSingleton<IExceptionStatus, CanceledExceptionStatus>();
@@ -33,7 +47,6 @@ public static class Services
         services.AddSingleton<IExceptionStatus, EventExceptionStatus>();
         services.AddSingleton<IExceptionStatus, NoAvailableSeatsExceptionStatus>();
         services.AddSingleton<IExceptionStatus, ValidateExceptionStatus>();
-        services.AddSingleton<IExceptionStatus, DefaultExceptionStatus>();
         services.AddSingleton<IExceptionMediator, ExceptionMediatorService>();
     }
 

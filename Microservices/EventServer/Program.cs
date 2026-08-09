@@ -1,3 +1,4 @@
+using Account.Application.DTOs;
 using EventInfrastructure.DataAccess;
 using EventInfrastructure.Services;
 using EventServer.Core;
@@ -11,11 +12,15 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddBaseConfiguration(builder);
 
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+
+builder.Services.AddAccount();
 
 builder.Services.AddEventService();
 builder.Services.AddBookingService();
 
 builder.Services.AddExceptions();
+
 
 var app = builder.Build();
 

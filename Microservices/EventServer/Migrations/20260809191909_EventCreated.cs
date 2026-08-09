@@ -68,6 +68,12 @@ namespace EventServer.Migrations
                 name: "IX_bookings_event_id",
                 table: "bookings",
                 column: "event_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_users_login",
+                table: "users",
+                column: "login",
+                unique: true);
         }
 
         /// <inheritdoc />

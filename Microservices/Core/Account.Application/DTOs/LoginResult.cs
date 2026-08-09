@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Account.Application.DTOs;
+﻿namespace Account.Application.DTOs;
 /// <summary>
 /// Результат ответа аутентификации
 /// </summary>

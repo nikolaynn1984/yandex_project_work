@@ -1,4 +1,4 @@
-﻿namespace Account.Domain;
+﻿namespace Account.Domain.Entities;
 
 /// <summary>Пользователь</summary>
 public class User

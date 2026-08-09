@@ -1,7 +1,7 @@
 ﻿using Account.Application.Abstractions.Repositories;
 using Account.Application.Abstractions.Services;
 using Account.Application.DTOs;
-using Account.Domain;
+using Account.Domain.Entities;
 
 namespace Account.Application;
 /// <summary>
@@ -12,17 +12,19 @@ public class UserService : IUserService
     private readonly IUserRepository repository;
     private readonly ITokenGenerator tokenGenerator;
     private readonly IPasswordHashing hashing;
+    private readonly IUserValidator userValidator;
     /// <summary>
     /// Конструктор
     /// </summary>
     /// <param name="repository">Репоззиторий</param>
     /// <param name="tokenGenerator">Генератор токена</param>
     /// <param name="hashing">Хэширование пароля</param>
-    public UserService(IUserRepository repository, ITokenGenerator tokenGenerator, IPasswordHashing hashing)
+    public UserService(IUserRepository repository, ITokenGenerator tokenGenerator, IPasswordHashing hashing, IUserValidator userValidator)
     {
         this.repository = repository;
         this.tokenGenerator = tokenGenerator;
         this.hashing = hashing;
+        this.userValidator = userValidator;
     }
 
     public async Task Register(string login, string password, RoleType role, CancellationToken cancellationToken = default)
@@ -30,9 +32,12 @@ public class UserService : IUserService
         if (cancellationToken.IsCancellationRequested)
             return;
 
+        await this.userValidator.IsUniqueLogin(login, cancellationToken);
+
+        var id = Guid.NewGuid();
         string hash = this.hashing.Execure(password);
 
-        await this.repository.Register(login, hash, role, cancellationToken);
+        await this.repository.Register(new User() { Id = id, Login = login, PasswordHash = hash,Role = role}, cancellationToken);
     }
 
     public async Task<LoginResult?> Login(string login, string password, CancellationToken cancellationToken)
@@ -44,12 +49,11 @@ public class UserService : IUserService
 
         var user = await this.repository.Login(login, hash, cancellationToken);
 
-        string token = string.Empty;
+        this.userValidator.ThrowIfNull(user);
 
-        if(user != null)
-        {
-            token = this.tokenGenerator.Generate(user.Id, user.Login, user.Role.ToString());
-        }
+#pragma warning disable CS8602 // Разыменование вероятной пустой ссылки.
+        string token = this.tokenGenerator.Generate(user.Id, user.Login, user.Role.ToString());
+#pragma warning restore CS8602 // Разыменование вероятной пустой ссылки.
 
 
         return new LoginResult(token);

@@ -1,4 +1,4 @@
-﻿using Account.Domain;
+﻿using Account.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -31,6 +31,9 @@ internal class UsersConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasConversion<string>()
             .HasMaxLength(20);
+
+        builder.HasIndex(s => s.Login)
+            .IsUnique();
 
 
     }

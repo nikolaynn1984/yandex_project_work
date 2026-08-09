@@ -1,4 +1,4 @@
-﻿namespace Account.Domain;
+﻿namespace Account.Domain.Entities;
 
 /// <summary>Тип роли</summary>
 public enum RoleType

@@ -1,4 +1,4 @@
-﻿using Account.Domain;
+﻿using Account.Domain.Entities;
 using EventDomain.Entities;
 using Microsoft.EntityFrameworkCore;
 

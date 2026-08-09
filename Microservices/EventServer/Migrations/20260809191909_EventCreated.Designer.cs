@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EventServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260809133714_EventCreated")]
+    [Migration("20260809191909_EventCreated")]
     partial class EventCreated
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace EventServer.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Account.Domain.User", b =>
+            modelBuilder.Entity("Account.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -48,6 +48,9 @@ namespace EventServer.Migrations
                         .HasColumnName("role");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Login")
+                        .IsUnique();
 
                     b.ToTable("users", (string)null);
                 });

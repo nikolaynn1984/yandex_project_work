@@ -18,12 +18,7 @@ public class ExceptionMediatorService : IExceptionMediator
     {
         IExceptionStatus? mapper = GetMapper<T>(ex);
         if (mapper == null)
-            return new ProblemDetails()
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Ошибка  500  (Ошибки в сервере)",
-                Detail = ""
-            };
+            return GetDefault(ex);
 
         return mapper.Map(ex);
 
@@ -34,12 +29,23 @@ public class ExceptionMediatorService : IExceptionMediator
     {
         foreach (var exception in exceptions)
         {
-            if (exception.Type == ex.GetType())
+            if (exception.Type == ex?.GetType())
             {
                 return exception;
             }
         }
 
         return null;
+    }
+
+
+    private ProblemDetails GetDefault(Exception ex)
+    {
+        return new ProblemDetails()
+        {
+            Status = StatusCodes.Status500InternalServerError,
+            Title = "Ошибка  500  (Ошибки в сервере)",
+            Detail = ""
+        };
     }
 }

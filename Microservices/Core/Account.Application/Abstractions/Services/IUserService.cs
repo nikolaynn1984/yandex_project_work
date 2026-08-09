@@ -1,11 +1,11 @@
 ﻿using Account.Application.DTOs;
-using Account.Domain;
+using Account.Domain.Entities;
 
 namespace Account.Application.Abstractions.Services;
 /// <summary>
 /// Сервси управления пользователями
 /// </summary>
-internal interface IUserService
+public interface IUserService
 {
     /// <summary>
     /// Регистрация

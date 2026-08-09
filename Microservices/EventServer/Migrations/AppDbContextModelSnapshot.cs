@@ -22,7 +22,7 @@ namespace EventServer.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Account.Domain.User", b =>
+            modelBuilder.Entity("Account.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -45,6 +45,9 @@ namespace EventServer.Migrations
                         .HasColumnName("role");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Login")
+                        .IsUnique();
 
                     b.ToTable("users", (string)null);
                 });
