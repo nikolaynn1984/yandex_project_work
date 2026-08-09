@@ -1,24 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace EventDomain;
 
-namespace EventDomain;
-
-/// <summary>
-/// Статусы брони
-/// </summary>
+/// <summary>Статусы брони</summary>
 public enum BookingStatus
 {
-    /// <summary>
-    /// Бронь создана, ожидает обработки
-    /// </summary>
+    /// <summary>Создана, ожидает обработки</summary>
     Pending = 1,
-    /// <summary>
-    /// Бронь подтверждена
-    /// </summary>
+    /// <summary>Подтверждена</summary>
     Confirmed = 2,
-    /// <summary>
-    /// Бронь отклонена
-    /// </summary>
-    Rejected = 3
+    /// <summary>Отклонена</summary>
+    Rejected = 3,
+    /// <summary>Отмена</summary>
+    Cancelled = 4,
 }
