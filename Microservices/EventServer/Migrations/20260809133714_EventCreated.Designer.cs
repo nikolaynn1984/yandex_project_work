@@ -12,20 +12,47 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EventServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260704191103_EventCreate")]
-    partial class EventCreate
+    [Migration("20260809133714_EventCreated")]
+    partial class EventCreated
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.9")
+                .HasAnnotation("ProductVersion", "10.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("EventDomain.Models.Booking", b =>
+            modelBuilder.Entity("Account.Domain.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("login");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("password_hash");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("role");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("users", (string)null);
+                });
+
+            modelBuilder.Entity("EventDomain.Entities.Booking", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -49,6 +76,10 @@ namespace EventServer.Migrations
                         .HasColumnType("character varying(20)")
                         .HasColumnName("status");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
                     b.HasKey("Id");
 
                     b.HasIndex("EventId");
@@ -56,7 +87,7 @@ namespace EventServer.Migrations
                     b.ToTable("bookings", (string)null);
                 });
 
-            modelBuilder.Entity("EventDomain.Models.Event", b =>
+            modelBuilder.Entity("EventDomain.Entities.Event", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -94,9 +125,9 @@ namespace EventServer.Migrations
                     b.ToTable("events", (string)null);
                 });
 
-            modelBuilder.Entity("EventDomain.Models.Booking", b =>
+            modelBuilder.Entity("EventDomain.Entities.Booking", b =>
                 {
-                    b.HasOne("EventDomain.Models.Event", "Event")
+                    b.HasOne("EventDomain.Entities.Event", "Event")
                         .WithMany("Bookings")
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -105,7 +136,7 @@ namespace EventServer.Migrations
                     b.Navigation("Event");
                 });
 
-            modelBuilder.Entity("EventDomain.Models.Event", b =>
+            modelBuilder.Entity("EventDomain.Entities.Event", b =>
                 {
                     b.Navigation("Bookings");
                 });

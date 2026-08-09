@@ -29,11 +29,12 @@ public static class Services
     public static void AddExceptions(this IServiceCollection services)
     {
         services.AddSingleton<IExceptionStatus, CanceledExceptionStatus>();
-        services.AddScoped<IExceptionStatus, DefaultExceptionStatus>();
-        services.AddScoped<IExceptionStatus, EventExceptionStatus>();
-        services.AddScoped<IExceptionStatus, NoAvailableSeatsExceptionStatus>();
-        services.AddScoped<IExceptionStatus, ValidateExceptionStatus>();
-        services.AddScoped<IExceptionMediator, ExceptionMediatorService>();
+        
+        services.AddSingleton<IExceptionStatus, EventExceptionStatus>();
+        services.AddSingleton<IExceptionStatus, NoAvailableSeatsExceptionStatus>();
+        services.AddSingleton<IExceptionStatus, ValidateExceptionStatus>();
+        services.AddSingleton<IExceptionStatus, DefaultExceptionStatus>();
+        services.AddSingleton<IExceptionMediator, ExceptionMediatorService>();
     }
 
     public static void AddBookingService(this IServiceCollection services)

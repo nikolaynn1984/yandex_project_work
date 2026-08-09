@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EventInfrastructure.Services.Exceptions;
 
-internal class ExceptionMediatorService : IExceptionMediator
+public class ExceptionMediatorService : IExceptionMediator
 {
     private readonly IEnumerable<IExceptionStatus> exceptions;
 
@@ -34,7 +34,7 @@ internal class ExceptionMediatorService : IExceptionMediator
     {
         foreach (var exception in exceptions)
         {
-            if (exception.Type == typeof(T))
+            if (exception.Type == ex.GetType())
             {
                 return exception;
             }

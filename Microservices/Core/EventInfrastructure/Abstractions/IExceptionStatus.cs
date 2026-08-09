@@ -6,7 +6,7 @@ namespace EventInfrastructure.Abstractions;
 /// <summary>
 /// Статус исключения
 /// </summary>
-internal interface IExceptionStatus
+public interface IExceptionStatus
 {
     /// <summary>
     /// Тип исключения
