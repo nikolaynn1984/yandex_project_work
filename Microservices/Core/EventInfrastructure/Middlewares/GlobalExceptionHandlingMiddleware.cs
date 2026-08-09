@@ -1,4 +1,5 @@
 ﻿using EventDomain.Exceptions;
+using EventInfrastructure.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -10,13 +11,15 @@ namespace EventInfrastructure.Middlewares;
 
 public class GlobalExceptionHandlingMiddleware
 {
-    private readonly RequestDelegate _next;
-    private readonly ILogger<GlobalExceptionHandlingMiddleware> _logger;
+    private readonly RequestDelegate next;
+    private readonly ILogger<GlobalExceptionHandlingMiddleware> logger;
+    private readonly IExceptionMediator exception;
 
-    public GlobalExceptionHandlingMiddleware(RequestDelegate next, ILogger<GlobalExceptionHandlingMiddleware> logger)
+    public GlobalExceptionHandlingMiddleware(RequestDelegate next, ILogger<GlobalExceptionHandlingMiddleware> logger, IExceptionMediator exception)
     {
-        _next = next;
-        _logger = logger;
+        this.next = next;
+        this.logger = logger;
+        this.exception = exception; 
     }
 
     public async Task InvokeAsync(HttpContext httpContext)
@@ -31,7 +34,7 @@ public class GlobalExceptionHandlingMiddleware
                 httpContext.Request.Headers.TryAdd("Correlation-Token", correlationToken.ToString());
             }
 
-            await _next(httpContext);
+            await this.next(httpContext);
         }
         catch (Exception ex)
         {
@@ -42,7 +45,7 @@ public class GlobalExceptionHandlingMiddleware
 
     private async Task HandleException(HttpContext httpContext, Exception ex)
     {
-        _logger.LogError(ex, "Необработанное исключение. Method={Method}, Path={Path}, Correlation-Token={RequestId}",
+        this.logger.LogError(ex, "Необработанное исключение. Method={Method}, Path={Path}, Correlation-Token={RequestId}",
         httpContext.Request.Method,
         httpContext.Request.Path,
         httpContext.Request.Headers["Correlation-Token"]);
@@ -52,7 +55,7 @@ public class GlobalExceptionHandlingMiddleware
             return;
         }
 
-        var error = MapStatusCode(ex);
+        var error = this.exception.Map(ex);
 
         httpContext.Response.StatusCode = error.Status ?? 0;
         httpContext.Response.ContentType = "application/problem+json";
@@ -64,43 +67,4 @@ public class GlobalExceptionHandlingMiddleware
         await httpContext.Response.WriteAsync(JsonSerializer.Serialize(error));
 
     }
-
-    private ProblemDetails MapStatusCode(Exception ex)
-    {
-        var result = new ProblemDetails();
-
-        switch (ex)
-        {
-            case ValidationException ve:
-                result.Status = StatusCodes.Status400BadRequest;
-                result.Title = "Ошибка 400 (Неверный запрос)";
-                result.Detail = ve.Message;
-                break;
-            case EventException eve:
-                result.Status = StatusCodes.Status404NotFound;
-                result.Title = "Ошибка 404 (Не найдено)";
-                result.Detail = eve.Message;
-                break;
-            case OperationCanceledException canceledException:
-                result.Status = StatusCodes.Status400BadRequest;
-                result.Title = "Отмена операции";
-                result.Detail = canceledException.Message;
-                break;
-            case NoAvailableSeatsException noAvailableSeatsException:
-                result.Status = StatusCodes.Status409Conflict;
-                result.Title = "Отмена операции";
-                result.Detail = noAvailableSeatsException.Message;
-                break;
-
-            default:
-                result.Status = StatusCodes.Status500InternalServerError;
-                result.Title = "Ошибка  500  (Ошибки в сервере)";
-                result.Detail = "";
-                break;
-
-        }
-
-        return result;
-    }
-
 }

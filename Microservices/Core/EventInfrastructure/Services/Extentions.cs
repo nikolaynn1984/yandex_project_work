@@ -2,7 +2,9 @@
 using EventApplication.Abstractions.Repositories;
 using EventApplication.Abstractions.Services;
 using EventDomain.Entities;
+using EventInfrastructure.Abstractions;
 using EventInfrastructure.Middlewares;
+using EventInfrastructure.Services.Exceptions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +24,16 @@ public static class Services
     public static void AddEventService(this IServiceCollection services)
     {
         services.AddScoped<IEventService, EventService>();
+    }
+
+    public static void AddExceptions(this IServiceCollection services)
+    {
+        services.AddSingleton<IExceptionStatus, CanceledExceptionStatus>();
+        services.AddScoped<IExceptionStatus, DefaultExceptionStatus>();
+        services.AddScoped<IExceptionStatus, EventExceptionStatus>();
+        services.AddScoped<IExceptionStatus, NoAvailableSeatsExceptionStatus>();
+        services.AddScoped<IExceptionStatus, ValidateExceptionStatus>();
+        services.AddScoped<IExceptionMediator, ExceptionMediatorService>();
     }
 
     public static void AddBookingService(this IServiceCollection services)
