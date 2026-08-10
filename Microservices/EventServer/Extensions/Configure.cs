@@ -1,7 +1,11 @@
-﻿using EventInfrastructure.DataAccess;
+﻿using Account.Application.DTOs;
+using EventInfrastructure.DataAccess;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using System.Reflection;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace EventServer.Core;
@@ -15,8 +19,12 @@ public static class Configure
     /// Базовая конфигурация приложения
     /// </summary>
     /// <param name="services"></param>
+    /// <param name="builder">Строитель приложения</param>
     public static void AddBaseConfiguration(this IServiceCollection services, WebApplicationBuilder builder)
     {
+
+        builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+
         services.AddControllers().AddJsonOptions(options =>
         {
             options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
@@ -24,7 +32,32 @@ public static class Configure
             options.JsonSerializerOptions.WriteIndented = true;
             options.JsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.Strict | JsonNumberHandling.WriteAsString;
         });
+        var optionsJwt = builder.Configuration.GetSection("Jwt").Get<JwtOptions>();
 
+
+        if (optionsJwt == null)
+            throw new InvalidOperationException("Не найдены настройки Jwt");
+
+        if(optionsJwt.Key.Length < 32)
+            throw new InvalidOperationException("Свойство Jwt:Key не может быть меньше 32 знаков");
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+#pragma warning disable CS8604 // Возможно, аргумент-ссылка, допускающий значение NULL.
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = optionsJwt?.Issuer,
+                    ValidateAudience = true,
+                    ValidAudience = optionsJwt?.Audience,
+                    ValidateLifetime = true,
+
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(optionsJwt?.Key))
+                };
+#pragma warning restore CS8604 // Возможно, аргумент-ссылка, допускающий значение NULL.
+            });
 
         services.AddSwaggerGen(options =>
         {
@@ -39,6 +72,16 @@ public static class Configure
                 Title = "Сервер событий",
                 Description = "CRUD запросы событий",
 
+            });
+
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Name = "Authorization", // Имя заголовка
+                In = ParameterLocation.Header, // Где находится параметр (заголовок)
+                Type = SecuritySchemeType.Http, // Тип схемы
+                Scheme = "Bearer", // Схема (Bearer)
+                BearerFormat = "JWT", // Формат токена
+                Description = "Введите JWT-токен для авторизации. Пример: Bearer <ваш_токен>" // Описание
             });
         });
 

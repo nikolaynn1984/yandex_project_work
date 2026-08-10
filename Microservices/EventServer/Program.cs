@@ -12,7 +12,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddBaseConfiguration(builder);
 
-builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+
 
 builder.Services.AddAccount();
 
@@ -22,10 +22,14 @@ builder.Services.AddBookingService();
 builder.Services.AddExceptions();
 
 
+
 var app = builder.Build();
 
 
 app.UseGlobalExceptionHandler();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
