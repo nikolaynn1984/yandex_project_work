@@ -27,27 +27,28 @@ public class UserService : IUserService
         this.userValidator = userValidator;
     }
 
-    public async Task Register(string login, string password, RoleType role, CancellationToken cancellationToken = default)
+    public async Task Register(RegisterRequest request, CancellationToken cancellationToken = default)
     {
         if (cancellationToken.IsCancellationRequested)
             return;
-
-        await this.userValidator.IsUniqueLogin(login, cancellationToken);
-
         var id = Guid.NewGuid();
-        string hash = this.hashing.Execure(password);
 
-        await this.repository.Register(new User() { Id = id, Login = login, PasswordHash = hash,Role = role}, cancellationToken);
+        await this.userValidator.IsUniqueLogin(request.Login, cancellationToken);
+
+
+        string hash = this.hashing.Execure(request.Password);
+
+        await this.repository.Register(new User() { Id = id, Login = request.Login, PasswordHash = hash,Role = request.Role }, cancellationToken);
     }
 
-    public async Task<LoginResult?> Login(string login, string password, CancellationToken cancellationToken)
+    public async Task<LoginResult?> Login(LoginRequest request, CancellationToken cancellationToken)
     {
         if (cancellationToken.IsCancellationRequested)
             return null;
 
-        string hash = this.hashing.Execure(password);
+        string hash = this.hashing.Execure(request.Password);
 
-        var user = await this.repository.Login(login, hash, cancellationToken);
+        var user = await this.repository.Login(request.Login, hash, cancellationToken);
 
         this.userValidator.ThrowIfNull(user);
 

@@ -17,10 +17,8 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
     /// </summary>
     /// <param name="Id">Идентифкатор</param>
     /// <returns>Объектная модель Booking</returns>
-    [ProducesResponseType(typeof(Booking), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-
-    [Produces("application/json")]
+    [ProducesResponseType(typeof(Booking), StatusCodes.Status200OK, contentType: "application/json")]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound, contentType: "application/problem+json")]
     [HttpGet("{Id}")]
     public async Task<ActionResult<Booking>> Get(Guid Id)
     {

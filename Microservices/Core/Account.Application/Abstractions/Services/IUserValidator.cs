@@ -12,6 +12,7 @@ public interface IUserValidator
     /// <param name="login">Логин</param>
     /// <param name="cancellationToken">Токен отмены</param>
     Task IsUniqueLogin(string login, CancellationToken cancellationToken = default);
+
     /// <summary>
     /// Если пользователь не пустой, выкинуть исключение валидации
     /// </summary>

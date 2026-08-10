@@ -27,7 +27,7 @@ public class EventsController(IEventService eventService, IBookingService bookin
     /// <response code="400">Ошибка запроса</response>
     [ProducesResponseType(typeof(PaginatedResult), StatusCodes.Status200OK, contentType: "application/json")]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, contentType: "application/problem+json")]
-    [HttpGet] //("{title?}/{from?}/{to?}/{page?}/{pageSize?}")
+    [HttpGet]
     public async Task<ActionResult<PaginatedResult>> Get(string? title = null, DateTime? from = null, DateTime? to = null, int page = 1, int pageSize = 10)
     {
         return await eventService.Get(title, from, to, page, pageSize, HttpContext.RequestAborted);

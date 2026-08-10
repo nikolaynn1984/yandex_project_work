@@ -3,7 +3,7 @@
 /// Результат ответа аутентификации
 /// </summary>
 /// <param name="token">Токен</param>
-public record LoginResult(string token)
+public class LoginResult(string token)
 {
     /// <summary>
     /// Токен
