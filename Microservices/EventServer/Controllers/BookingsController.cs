@@ -36,7 +36,6 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
     /// <param name="Id">Идентификатор брони</param>
     /// <response code="204">Успешное обновление</response>
     /// <response code="400">Ошибка запроса</response>
-    [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound, contentType: "application/problem+json")]
     [HttpDelete("Id")]

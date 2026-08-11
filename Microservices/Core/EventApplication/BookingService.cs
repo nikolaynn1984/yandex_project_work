@@ -3,7 +3,6 @@ using EventApplication.Abstractions.Services;
 using EventApplication.Bookings.DTOs;
 using EventApplication.Events.DTOs;
 using EventDomain.Entities;
-using EventDomain.Exceptions;
 
 namespace EventApplication;
 
@@ -13,14 +12,14 @@ namespace EventApplication;
 public class BookingService : IBookingService
 {
     private readonly IBookingQueueService bookingQueueService;
-    private readonly IEventRepository eventRepository;
     private readonly IBookingRepository bookingRepository;
+    private readonly IBookingValidator bookingValidator;
 
-    public BookingService(IBookingQueueService bookingQueueService, IEventRepository eventRepository, IBookingRepository bookingRepository)
+    public BookingService(IBookingQueueService bookingQueueService, IBookingRepository bookingRepository, IBookingValidator bookingValidator)
     {
         this.bookingQueueService = bookingQueueService;
-        this.eventRepository = eventRepository;
         this.bookingRepository = bookingRepository;
+        this.bookingValidator = bookingValidator;
     }
 
     /// <inheritdoc/>
@@ -30,19 +29,15 @@ public class BookingService : IBookingService
         {
             await Funcs.bookingLock.WaitAsync();
 
-            var eventItem = await this.eventRepository.GetById(eventId,  cancellationToken);
+            
 
             if (cancellationToken.IsCancellationRequested)
                 return null;
 
-            await Valid(eventId, user, cancellationToken);
+            var eventItem = await this.bookingValidator.EventHandler(eventId, cancellationToken);
 
-#pragma warning disable CS8602 // Разыменование вероятной пустой ссылки.
-            if (eventItem.TryReserveSeats(1) == false)
-                throw new NoAvailableSeatsException("Свободных мест на это мероприятие нет.");
-#pragma warning restore CS8602 // Разыменование вероятной пустой ссылки.
+            await this.bookingValidator.UserSeatsCount(eventId, user, cancellationToken);
 
-            await this.eventRepository.SaveChangesAsync(cancellationToken);
 
             var booking = await Add(eventId, user.Id, cancellationToken);
 
@@ -55,24 +50,6 @@ public class BookingService : IBookingService
         }
     }
 
-    private async Task<bool> Valid(Guid eventId, UserContext user, CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            var bookings = await this.bookingRepository.GetByEventId(eventId, cancellationToken);
-            
-            var userBookings = bookings.Where(s => s.UserId == user.Id).ToList();
-            if(bookings.Count  >= 10)
-                throw new NoAvailableSeatsException("Превышен лимит бронированй для пользователя");
-
-            return true;
-        }
-        catch
-        {
-            return true;
-        }
-        
-    }
 
     /// <summary>
     /// Добавление планирования
@@ -106,6 +83,9 @@ public class BookingService : IBookingService
     public async Task Cancel(Guid bookingId, UserContext user, CancellationToken cancellationToken = default)
     {
         var booking = await this.bookingRepository.GetById(bookingId, cancellationToken);
+
+
+        await this.bookingValidator.CanceledValild(booking, user, cancellationToken);
 
         if(booking != null)
         {

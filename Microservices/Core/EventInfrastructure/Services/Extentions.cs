@@ -51,6 +51,7 @@ public static class Services
         services.AddSingleton<IExceptionStatus, EventExceptionStatus>();
         services.AddSingleton<IExceptionStatus, NoAvailableSeatsExceptionStatus>();
         services.AddSingleton<IExceptionStatus, ValidateExceptionStatus>();
+        services.AddSingleton<IExceptionStatus, ForbiddenExeptionStatus>();
         services.AddSingleton<IExceptionMediator, ExceptionMediatorService>();
     }
 
@@ -59,6 +60,7 @@ public static class Services
         services.AddScoped<IBookingService, BookingService>();
         services.AddScoped<IEventRepository, EventRepository>();
         services.AddScoped<IBookingRepository, BookingRepository>();
+        services.AddScoped<IBookingValidator, BookingValidator>();
         services.AddSingleton<IBookingQueueService, BookingQueueService>();
         services.AddHostedService<BookingHostedService>();
     }
