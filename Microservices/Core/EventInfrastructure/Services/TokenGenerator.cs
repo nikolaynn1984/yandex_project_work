@@ -7,7 +7,7 @@ using System.Text;
 
 namespace EventInfrastructure.Services;
 
-internal class TokenGenerator : ITokenGenerator
+public class TokenGenerator : ITokenGenerator
 {
     private readonly JwtOptions options;
 
