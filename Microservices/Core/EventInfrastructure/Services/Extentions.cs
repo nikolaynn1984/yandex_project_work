@@ -5,15 +5,19 @@ using Account.Application.DTOs;
 using EventApplication;
 using EventApplication.Abstractions.Repositories;
 using EventApplication.Abstractions.Services;
+using EventApplication.Events.DTOs;
 using EventDomain.Entities;
 using EventInfrastructure.Abstractions;
 using EventInfrastructure.DataAccess.Account;
 using EventInfrastructure.Middlewares;
 using EventInfrastructure.Services.Exceptions;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using System.Security.Principal;
 
 namespace EventInfrastructure.Services;
 
@@ -101,6 +105,29 @@ public static class Services
 
 
         return result;
+    }
+
+    public static UserContext GetUser(this ClaimsPrincipal claimsIdentity)
+    {
+        var user = new UserContext();
+        var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if(Guid.TryParse(userId, out Guid result))
+        {
+            user.Id = result;
+        }
+
+        var role = claimsIdentity.FindFirst(ClaimTypes.Role)?.Value;
+
+        if(string.IsNullOrEmpty(role) == false)
+            user.Role = role;
+
+        var userLogin= claimsIdentity.FindFirst("preferred_username")?.Value;
+
+        if(string.IsNullOrEmpty( userLogin) == false)
+            user.Login = userLogin;
+
+        return user;
     }
 }
 

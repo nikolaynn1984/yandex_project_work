@@ -1,6 +1,7 @@
 ﻿using EventApplication.Abstractions.Repositories;
 using EventApplication.Abstractions.Services;
 using EventApplication.Bookings.DTOs;
+using EventApplication.Events.DTOs;
 using EventDomain.Entities;
 using EventDomain.Exceptions;
 
@@ -23,17 +24,18 @@ public class BookingService : IBookingService
     }
 
     /// <inheritdoc/>
-    public async Task<AddBookingResult?> CreateBookingAsync(Guid eventId, CancellationToken cancellationToken = default)
+    public async Task<AddBookingResult?> CreateBookingAsync(Guid eventId, UserContext user, CancellationToken cancellationToken = default)
     {
         try
         {
             await Funcs.bookingLock.WaitAsync();
 
-            var eventItem = await this.eventRepository.GetById(eventId, cancellationToken);
+            var eventItem = await this.eventRepository.GetById(eventId,  cancellationToken);
 
             if (cancellationToken.IsCancellationRequested)
                 return null;
 
+            await Valid(eventId, user, cancellationToken);
 
 #pragma warning disable CS8602 // Разыменование вероятной пустой ссылки.
             if (eventItem.TryReserveSeats(1) == false)
@@ -42,7 +44,7 @@ public class BookingService : IBookingService
 
             await this.eventRepository.SaveChangesAsync(cancellationToken);
 
-            var booking = await Add(eventId, cancellationToken);
+            var booking = await Add(eventId, user.Id, cancellationToken);
 
 
             return new AddBookingResult(booking.Id, eventId, booking.Status);
@@ -53,17 +55,37 @@ public class BookingService : IBookingService
         }
     }
 
+    private async Task<bool> Valid(Guid eventId, UserContext user, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var bookings = await this.bookingRepository.GetByEventId(eventId, cancellationToken);
+            
+            var userBookings = bookings.Where(s => s.UserId == user.Id).ToList();
+            if(bookings.Count  >= 10)
+                throw new NoAvailableSeatsException("Превышен лимит бронированй для пользователя");
+
+            return true;
+        }
+        catch
+        {
+            return true;
+        }
+        
+    }
+
     /// <summary>
     /// Добавление планирования
     /// </summary>
     /// <param name="eventId">Идентификатор события</param>
     /// <returns>Объектная модель бронирования</returns>
-    private async Task<Booking> Add(Guid eventId, CancellationToken cancellationToken = default)
+    private async Task<Booking> Add(Guid eventId, Guid userId, CancellationToken cancellationToken = default)
     {
 
         var id = Guid.NewGuid();
 
         var booking = new Booking(id, eventId);
+        booking.UserId = userId;
 
         await this.bookingRepository.Add(booking, cancellationToken);
 
@@ -73,10 +95,23 @@ public class BookingService : IBookingService
     }
 
     /// <inheritdoc/>
-    public async Task<Booking> GetBookingByIdAsync(Guid bookingId, CancellationToken cancellationToken = default)
+    public async Task<Booking> GetBookingByIdAsync(Guid bookingId, UserContext user, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
         return await this.bookingRepository.GetById(bookingId, cancellationToken);
+    }
+
+
+    public async Task Cancel(Guid bookingId, UserContext user, CancellationToken cancellationToken = default)
+    {
+        var booking = await this.bookingRepository.GetById(bookingId, cancellationToken);
+
+        if(booking != null)
+        {
+            booking.Cancelled();
+
+            await this.bookingRepository.SaveChangesAsync(cancellationToken);
+        }
     }
 }

@@ -22,7 +22,7 @@ public interface IEventRepository
     /// <param name="Id">Идентификатор события</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Event если найдено, в простивном случае null</returns>
-    Task<Event?> GetById(Guid Id, CancellationToken cancellationToken = default);
+    Task<Event?> GetById(Guid Id,  CancellationToken cancellationToken = default);
     /// <summary>
     /// Добавить событие 
     /// </summary>

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -41,18 +42,25 @@ public static class Configure
         if(optionsJwt.Key.Length < 32)
             throw new InvalidOperationException("Свойство Jwt:Key не может быть меньше 32 знаков");
 
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
+        services.AddAuthentication(option =>
+        {
+            option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,options =>
             {
 #pragma warning disable CS8604 // Возможно, аргумент-ссылка, допускающий значение NULL.
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidIssuer = optionsJwt?.Issuer,
+
                     ValidateAudience = true,
                     ValidAudience = optionsJwt?.Audience,
-                    ValidateLifetime = true,
 
+                    //RoleClaimType = ClaimTypes.Role,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.FromMinutes(3),
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(optionsJwt?.Key))
                 };
@@ -82,6 +90,12 @@ public static class Configure
                 Scheme = "Bearer", // Схема (Bearer)
                 BearerFormat = "JWT", // Формат токена
                 Description = "Введите JWT-токен для авторизации. Пример: Bearer <ваш_токен>" // Описание
+            });
+
+            options.AddSecurityRequirement(document => 
+            new OpenApiSecurityRequirement() 
+            { 
+                [new OpenApiSecuritySchemeReference("Bearer", document)] = [] 
             });
         });
 

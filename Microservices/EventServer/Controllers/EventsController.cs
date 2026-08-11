@@ -2,6 +2,8 @@
 using EventApplication.Bookings.DTOs;
 using EventApplication.Events.DTOs;
 using EventDomain.Entities;
+using EventInfrastructure.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventServer.Controllers;
@@ -11,6 +13,7 @@ namespace EventServer.Controllers;
 /// </summary>
 /// <param name="eventService">Сервис событий</param>
 /// <param name="bookingService">Сервис бронирований</param>
+[Authorize]
 [Route("events")]
 [ApiController]
 public class EventsController(IEventService eventService, IBookingService bookingService) : ControllerBase
@@ -25,6 +28,7 @@ public class EventsController(IEventService eventService, IBookingService bookin
     /// <param name="pageSize">Количество элементов в странице, по умолчанию 10</param>
     /// <response code="200">Список событие</response>
     /// <response code="400">Ошибка запроса</response>
+    [AllowAnonymous]
     [ProducesResponseType(typeof(PaginatedResult), StatusCodes.Status200OK, contentType: "application/json")]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, contentType: "application/problem+json")]
     [HttpGet]
@@ -61,7 +65,8 @@ public class EventsController(IEventService eventService, IBookingService bookin
     [HttpPost("{id}/book")]
     public async Task<ActionResult<AddBookingResult>> CreateBooking(Guid id)
     {
-        var result = await bookingService.CreateBookingAsync(id, HttpContext.RequestAborted);
+        var user = HttpContext.User.GetUser();
+        var result = await bookingService.CreateBookingAsync(id, user, HttpContext.RequestAborted);
 
         return Accepted($"/bookings/{result?.Id}", result);
     }
@@ -72,6 +77,7 @@ public class EventsController(IEventService eventService, IBookingService bookin
     /// <param name="model">Модель Event</param>
     /// <response code="201">Успешное добавление</response>
     /// <response code="400">Ошибка запроса</response>
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(AddResult), StatusCodes.Status201Created, contentType: "application/json")]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, contentType: "application/problem+json")]
     [HttpPost]
@@ -90,6 +96,7 @@ public class EventsController(IEventService eventService, IBookingService bookin
     /// <response code="204">Успешное обновление</response>
     /// <response code="400">Ошибка запроса</response>
     /// <response code="404">Событие не найдено</response>
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, contentType: "application/problem+json")]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound, contentType: "application/problem+json")]
@@ -107,6 +114,7 @@ public class EventsController(IEventService eventService, IBookingService bookin
     /// <param name="id">Идентификатор события</param>
     /// <response code="204">Успешное удаление</response>
     /// <response code="404">Событие не найдено</response>
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [HttpDelete("{id}")]
