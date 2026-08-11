@@ -24,20 +24,29 @@ public class BookingValidator : IBookingValidator
 
     public async Task<bool> UserSeatsCount(Guid eventId, UserContext user, CancellationToken cancellationToken = default)
     {
+
+        var bookings = await GetBookings(eventId, cancellationToken);
+        if (bookings == null)
+            return true;
+
+        var userBookings = bookings.Where(s => s.UserId == user.Id).ToList();
+        if (userBookings.Count >= 10)
+            throw new NoAvailableSeatsException("Превышен лимит бронированй для пользователя");
+
+
+        return true;
+    }
+
+    private async Task<List<Booking>?> GetBookings(Guid eventId, CancellationToken cancellationToken = default)
+    {
         try
         {
-            var bookings = await this.bookingRepository.GetByEventId(eventId, cancellationToken);
+            return await this.bookingRepository.GetByEventId(eventId, cancellationToken);
 
-            var userBookings = bookings.Where(s => s.UserId == user.Id).ToList();
-            if (bookings.Count >= 10)
-                throw new NoAvailableSeatsException("Превышен лимит бронированй для пользователя");
-
-
-            return true;
         }
         catch
         {
-            return true;
+            return null;
         }
     }
 
@@ -51,7 +60,7 @@ public class BookingValidator : IBookingValidator
             throw new NoAvailableSeatsException("Свободных мест на это мероприятие нет.");
 #pragma warning restore CS8602 // Разыменование вероятной пустой ссылки.
 
-        if (eventItem.EndAt >= DateTime.UtcNow)
+        if (eventItem.EndAt <= DateTime.UtcNow)
             throw new ValidationException("Событие уже началось");
 
 
