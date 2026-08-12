@@ -10,10 +10,9 @@ public interface IBookingValidator
     /// <summary>
     /// Выполнить проверку
     /// </summary>
-    /// <param name="eventId">Идентфиикатор события</param>
     /// <param name="user">Пользоваетль</param>
     /// <param name="cancellationToken">Токен отмены</param>
-    Task<bool> UserSeatsCount(Guid eventId, UserContext user, CancellationToken cancellationToken = default);
+    Task<bool> UserSeatsCount(UserContext user, CancellationToken cancellationToken = default);
     /// <summary>
     /// Валидация события
     /// </summary>

@@ -1,4 +1,5 @@
-﻿using EventApplication;
+﻿using Account.Domain.Entities;
+using EventApplication;
 using EventApplication.Abstractions.Repositories;
 using EventApplication.Abstractions.Services;
 using EventApplication.Events.DTOs;
@@ -9,6 +10,7 @@ using EventInfrastructure.DataAccess;
 using EventInfrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations;
 
 namespace EventServiceTests
 {
@@ -43,7 +45,8 @@ namespace EventServiceTests
         [Fact]
         public async Task Booking_Add_Pending()
         {
-            var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add Pending", Description = "Описание 1", TotalSeats = 1, StartAt = DateTime.UtcNow, EndAt = DateTime.UtcNow.AddDays(2) }, CancellationToken.None);
+            var eventItem = new EventRequest() { Title = "Test Add Pending", Description = "Описание 1", TotalSeats = 1, StartAt = DateTime.UtcNow.AddDays(-1), EndAt = DateTime.UtcNow.AddDays(2) };
+            var eventId = await this.eventService.Add(eventItem, CancellationToken.None);
             var user = new UserContext() { Id = Guid.NewGuid(), Login = "testloginadd", Role = "User" };
             
             var booking = await this.bookingService.CreateBookingAsync(eventId, user, CancellationToken.None);
@@ -55,7 +58,7 @@ namespace EventServiceTests
         [Fact]
         public async Task Booking_Add_Id()
         {
-            var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add Id", Description = "Описание 1", TotalSeats = 2, StartAt = DateTime.UtcNow, EndAt = DateTime.UtcNow.AddDays(2) }, CancellationToken.None);
+            var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add Id", Description = "Описание 1", TotalSeats = 2, StartAt = DateTime.UtcNow.AddDays(-1), EndAt = DateTime.UtcNow.AddDays(2) }, CancellationToken.None);
             var user = new UserContext() { Id = Guid.NewGuid(), Login = "testloginaddid", Role = "User" };
 
             var booking1 = await this.bookingService.CreateBookingAsync(eventId, user, CancellationToken.None);
@@ -68,7 +71,7 @@ namespace EventServiceTests
         [Fact]
         public async Task Booking_Llmit_Exception()
         {
-            var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add Id", Description = "Описание 1", TotalSeats = 15, StartAt = DateTime.UtcNow, EndAt = DateTime.UtcNow.AddDays(2) }, CancellationToken.None);
+            var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add Id", Description = "Описание 1", TotalSeats = 15, StartAt = DateTime.UtcNow.AddDays(-1), EndAt = DateTime.UtcNow.AddDays(2) }, CancellationToken.None);
             var user = new UserContext() { Id = Guid.NewGuid(), Login = "testloginlimit", Role = "User" };
 
             var booking1 = await this.bookingService.CreateBookingAsync(eventId, user, CancellationToken.None);
@@ -87,9 +90,50 @@ namespace EventServiceTests
         }
 
         [Fact]
+        public async Task Booking_Starded_Exception()
+        {
+            var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add Id", Description = "Описание 1", TotalSeats = 15, StartAt = DateTime.UtcNow.AddMinutes(15), EndAt = DateTime.UtcNow.AddDays(2) }, CancellationToken.None);
+            var user = new UserContext() { Id = Guid.NewGuid(), Login = "testloginlimit", Role = "User" };
+
+            var exception = await Assert.ThrowsAsync<ValidationException>(() => this.bookingService.CreateBookingAsync(eventId, user, CancellationToken.None));
+            Assert.Equal($"Событие уже началось", exception.Message);
+        }
+
+        [Fact]
+        public async Task Booking_CanceledNotMine_Exception()
+        {
+            var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add Id", Description = "Описание 1", TotalSeats = 15, StartAt = DateTime.UtcNow.AddDays(-1), EndAt = DateTime.UtcNow.AddDays(2) }, CancellationToken.None);
+            var user1 = new UserContext() { Id = Guid.NewGuid(), Login = "testloginmy", Role = "User" };
+            var user2 = new UserContext() { Id = Guid.NewGuid(), Login = "testloginmy", Role = "User" };
+
+           var bookingResult = await this.bookingService.CreateBookingAsync(eventId, user1, CancellationToken.None);
+
+            var exception = await Assert.ThrowsAsync<ForbiddenExeption>(() => this.bookingService.Cancel(bookingResult.Id, user2, CancellationToken.None));
+            Assert.Equal($"Не достаточно прав", exception.Message);
+        }
+
+        [Fact]
+        public async Task Booking_CanceledAdmin_Exception()
+        {
+            var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add Id", Description = "Описание 1", TotalSeats = 15, StartAt = DateTime.UtcNow.AddDays(-1), EndAt = DateTime.UtcNow.AddDays(2) }, CancellationToken.None);
+            var user1 = new UserContext() { Id = Guid.NewGuid(), Login = "testloginmy", Role = "User" };
+            var user2 = new UserContext() { Id = Guid.NewGuid(), Login = "testloginmy", Role = "Admin" };
+
+            var bookingResult = await this.bookingService.CreateBookingAsync(eventId, user1, CancellationToken.None);
+
+            await this.bookingService.Cancel(bookingResult.Id, user2, CancellationToken.None);
+
+
+            var booking = await this.bookingService.GetBookingByIdAsync(bookingResult.Id, user1, CancellationToken.None);
+
+            Assert.True(booking.Status == BookingStatus.Cancelled);
+        }
+
+
+        [Fact]
         public async Task Bookink_GetById_Model()
         {
-            var eventId = await this.eventService.Add(new EventRequest() { Title = "Test GetById", Description = "Описание 1", TotalSeats = 1, StartAt = DateTime.UtcNow, EndAt = DateTime.UtcNow.AddDays(2) }, CancellationToken.None);
+            var eventId = await this.eventService.Add(new EventRequest() { Title = "Test GetById", Description = "Описание 1", TotalSeats = 1, StartAt = DateTime.UtcNow.AddDays(-1), EndAt = DateTime.UtcNow.AddDays(2) }, CancellationToken.None);
 
             var user = new UserContext() { Id = Guid.NewGuid(), Login = "testloginbyid", Role = "User" };
 
@@ -106,7 +150,7 @@ namespace EventServiceTests
         [Fact]
         public async Task Booking_Add_NoAvailableSeats()
         {
-            var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add NoAvailableSeats", Description = "Описание 1", TotalSeats = 2, StartAt = DateTime.UtcNow, EndAt = DateTime.UtcNow.AddDays(2) }, CancellationToken.None);
+            var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add NoAvailableSeats", Description = "Описание 1", TotalSeats = 2, StartAt = DateTime.UtcNow.AddDays(-1), EndAt = DateTime.UtcNow.AddDays(2) }, CancellationToken.None);
             var user = new UserContext() { Id = Guid.NewGuid(), Login = "testloginseats", Role = "User" };
 
             var booking1 = await this.bookingService.CreateBookingAsync(eventId, user, CancellationToken.None);
@@ -142,7 +186,7 @@ namespace EventServiceTests
         [Fact]
         public async Task Booking_Add_Confirm()
         {
-            var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add NoAvailableSeats", Description = "Описание 1", TotalSeats = 2, StartAt = DateTime.UtcNow, EndAt = DateTime.UtcNow.AddDays(2) }, CancellationToken.None);
+            var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add NoAvailableSeats", Description = "Описание 1", TotalSeats = 2, StartAt = DateTime.UtcNow.AddDays(-1), EndAt = DateTime.UtcNow.AddDays(2) }, CancellationToken.None);
             var user = new UserContext() { Id = Guid.NewGuid(), Login = "testloginconfirm", Role = "User" };
 
             var result = await this.bookingService.CreateBookingAsync(eventId, user, CancellationToken.None);
@@ -159,7 +203,7 @@ namespace EventServiceTests
         [Fact]
         public async Task Booking_Add_Reject()
         {
-            var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add NoAvailableSeats", Description = "Описание 1", TotalSeats = 1, StartAt = DateTime.UtcNow, EndAt = DateTime.UtcNow.AddDays(2) }, CancellationToken.None);
+            var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add NoAvailableSeats", Description = "Описание 1", TotalSeats = 1, StartAt = DateTime.UtcNow.AddDays(-1), EndAt = DateTime.UtcNow.AddDays(2) }, CancellationToken.None);
             var user = new UserContext() { Id = Guid.NewGuid(), Login = "testlogin", Role = "User" };
 
             var result = await this.bookingService.CreateBookingAsync(eventId, user, CancellationToken.None);
@@ -184,7 +228,7 @@ namespace EventServiceTests
         [Fact]
         public async Task Booking_Add_Сompetition()
         {
-            var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add NoAvailableSeats", Description = "Описание 1", TotalSeats = 5, StartAt = DateTime.UtcNow, EndAt = DateTime.UtcNow.AddDays(2) }, CancellationToken.None);
+            var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add NoAvailableSeats", Description = "Описание 1", TotalSeats = 5, StartAt = DateTime.UtcNow.AddDays(-1), EndAt = DateTime.UtcNow.AddDays(2) }, CancellationToken.None);
             var eventItem = await this.eventService.GetAsync(eventId, CancellationToken.None);
 
             var tasks = new Task<bool>[20];         

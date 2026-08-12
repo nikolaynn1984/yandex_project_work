@@ -1,8 +1,10 @@
 ﻿using EventApplication.Abstractions.Repositories;
+using EventDomain;
 using EventDomain.Entities;
 using EventDomain.Exceptions;
 using EventInfrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace EventInfrastructure.Services;
 
@@ -31,11 +33,23 @@ public class BookingRepository : IBookingRepository
         var books = await this.context.Bookings.Where(s => s.EventId == EventId).ToListAsync(cancellationToken);
         if (books == null)
         {
-            throw new EventException($"Бронированиz с идентификатором собяти {EventId} не найден");
+            throw new EventException($"Бронирования с идентификатором события {EventId} не найдены");
         }
 
         return books;
     }
+
+    public async Task<List<Booking>> GetByUser(Guid UserId, CancellationToken cancellationToken = default)
+    {
+        var books = await this.context.Bookings.Where(s => s.UserId == UserId && s.Status != BookingStatus.Cancelled).ToListAsync(cancellationToken);
+        if (books == null)
+        {
+            throw new EventException($"Бронирования с идентификатором пользователя {UserId} не найдены");
+        }
+
+        return books;
+    }
+
     public async Task Add(Booking booking, CancellationToken cancellationToken = default)
     {
         await this.context.AddAsync(booking, cancellationToken);
@@ -47,4 +61,6 @@ public class BookingRepository : IBookingRepository
     {
         await this.context.SaveChangesAsync(cancellationToken);
     }
+
+    
 }

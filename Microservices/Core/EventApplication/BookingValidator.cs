@@ -22,26 +22,25 @@ public class BookingValidator : IBookingValidator
         this.bookingRepository = bookingRepository;
     }
 
-    public async Task<bool> UserSeatsCount(Guid eventId, UserContext user, CancellationToken cancellationToken = default)
+    public async Task<bool> UserSeatsCount( UserContext user, CancellationToken cancellationToken = default)
     {
 
-        var bookings = await GetBookings(eventId, cancellationToken);
+        var bookings = await GetBookings(user.Id, cancellationToken);
         if (bookings == null)
             return true;
 
-        var userBookings = bookings.Where(s => s.UserId == user.Id).ToList();
-        if (userBookings.Count >= 10)
-            throw new NoAvailableSeatsException("Превышен лимит бронированй для пользователя");
+        if (bookings.Count >= 10)
+            throw new NoAvailableSeatsException("Превышен лимит (10) бронированй для пользователя");
 
 
         return true;
     }
 
-    private async Task<List<Booking>?> GetBookings(Guid eventId, CancellationToken cancellationToken = default)
+    private async Task<List<Booking>?> GetBookings(Guid userId, CancellationToken cancellationToken = default)
     {
         try
         {
-            return await this.bookingRepository.GetByEventId(eventId, cancellationToken);
+            return await this.bookingRepository.GetByUser(userId, cancellationToken);
 
         }
         catch
@@ -60,7 +59,7 @@ public class BookingValidator : IBookingValidator
             throw new NoAvailableSeatsException("Свободных мест на это мероприятие нет.");
 #pragma warning restore CS8602 // Разыменование вероятной пустой ссылки.
 
-        if (eventItem.EndAt <= DateTime.UtcNow)
+        if (eventItem.StartAt >= DateTime.UtcNow)
             throw new ValidationException("Событие уже началось");
 
 
@@ -75,7 +74,7 @@ public class BookingValidator : IBookingValidator
             throw new ValidationException("Бронирование уже отменено");
 
         if (user.Id != booking.UserId && user.Role != "Admin")
-            throw new ForbiddenExeption();
+            throw new ForbiddenExeption("Не достаточно прав");
 
 
         var eventItem = await this.eventRepository.GetById(booking.EventId, cancellationToken);

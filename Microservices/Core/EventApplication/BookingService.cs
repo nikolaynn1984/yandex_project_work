@@ -36,7 +36,7 @@ public class BookingService : IBookingService
 
             var eventItem = await this.bookingValidator.EventHandler(eventId, cancellationToken);
 
-            await this.bookingValidator.UserSeatsCount(eventId, user, cancellationToken);
+            await this.bookingValidator.UserSeatsCount(user, cancellationToken);
 
 
             var booking = await Add(eventId, user.Id, cancellationToken);

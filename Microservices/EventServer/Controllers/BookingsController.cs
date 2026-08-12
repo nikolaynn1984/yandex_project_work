@@ -3,13 +3,13 @@ using EventDomain.Entities;
 using EventInfrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace EventServer.Controllers;
 
 /// <summary>
 /// Эндпоинт бронирования
 /// </summary>
+[Authorize]
 [Route("bookings")]
 [ApiController]
 public class BookingsController(IBookingService bookingService) : ControllerBase
@@ -20,7 +20,6 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
     /// </summary>
     /// <param name="Id">Идентифкатор</param>
     /// <returns>Объектная модель Booking</returns>
-    [Authorize]
     [ProducesResponseType(typeof(Booking), StatusCodes.Status200OK, contentType: "application/json")]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound, contentType: "application/problem+json")]
     [HttpGet("{Id}")]
@@ -38,7 +37,7 @@ public class BookingsController(IBookingService bookingService) : ControllerBase
     /// <response code="400">Ошибка запроса</response>
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound, contentType: "application/problem+json")]
-    [HttpDelete("Id")]
+    [HttpDelete("{Id}")]
     public async Task<IActionResult> Cancel(Guid Id)
     {
         var user = HttpContext.User.GetUser();

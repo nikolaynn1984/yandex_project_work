@@ -12,6 +12,13 @@ public interface IBookingRepository
     /// <returns>Booking модель или null</returns>
     Task<Booking> GetById(Guid Id, CancellationToken cancellationToken = default);
     /// <summary>
+    /// Список броней по польззователю
+    /// </summary>
+    /// <param name="UserId">Идентификатор польззователя</param>
+    /// <param name="cancellationToken">Токен отмены</param>
+    /// <returns>Список</returns>
+    Task<List<Booking>> GetByUser(Guid UserId, CancellationToken cancellationToken = default);
+    /// <summary>
     /// Список бронирования по идентификатору события
     /// </summary>
     /// <param name="EventId">Иденнтификатор события</param>
