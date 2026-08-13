@@ -28,6 +28,7 @@ namespace EventServiceTests
             services.AddScoped<IBookingRepository, BookingRepository>();
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<IBookingService, BookingService>();
+            services.AddScoped<IBookingValidator, BookingValidator>();
             services.AddSingleton<IBookingQueueService, BookingQueueService>();
 
             this.serviceProvider = services.BuildServiceProvider();
@@ -178,9 +179,10 @@ namespace EventServiceTests
                 {
                     using var scope = this.serviceProvider.CreateScope();
                     var bookingService = scope.ServiceProvider.GetRequiredService<IBookingService>();
+                    var user = new UserContext() { Id = Guid.NewGuid(), Login = "testloginadd", Role = "User" };
                     try
                     {
-                        await bookingService.CreateBookingAsync(eventId);
+                        await bookingService.CreateBookingAsync(eventId, user);
                         return true;
                     }
                     catch (NoAvailableSeatsException)
@@ -208,8 +210,9 @@ namespace EventServiceTests
                 .Select(_ => Task.Run(async () =>
                 {
                     using var scope = this.serviceProvider.CreateScope();
+                    var user = new UserContext() { Id = Guid.NewGuid(), Login = "testloginadd", Role = "User" };
                     var bookingService = scope.ServiceProvider.GetRequiredService<IBookingService>();
-                    var booking = await bookingService.CreateBookingAsync(eventId);
+                    var booking = await bookingService.CreateBookingAsync(eventId, user);
                     if(booking != null)
                        bookingIds.Add(booking.Id);
                 }));
@@ -219,14 +222,14 @@ namespace EventServiceTests
             Assert.Equal(totalSeats, bookingIds.Distinct().Count());
         }
 
-        private async Task<Guid> CreateTestEventAsync(int totalSeats = 10)
+        private async Task<Guid> CreateTestEventAsync(int totalSeats = 15)
         {
             var futureDate = DateTime.UtcNow.AddDays(1);
             var created = await this.service.Add(new EventRequest
             {
                 Title = "Test Event",
                 StartAt = futureDate,
-                EndAt = futureDate.AddHours(2),
+                EndAt = futureDate.AddDays(2),
                 TotalSeats = totalSeats
             });
             return created;

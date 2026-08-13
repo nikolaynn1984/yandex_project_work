@@ -1,5 +1,7 @@
 <Solution>
   <Folder Name="/Core/">
+    <Project Path="Core/Account.Application/Account.Application.csproj" Id="986f8a61-ec2c-481c-8b77-f5f7d6224728" />
+    <Project Path="Core/Account.Domain/Account.Domain.csproj" Id="47bfd17f-50ea-40ba-817f-5801ce17a08d" />
     <Project Path="Core/EventApplication/EventApplication.csproj" Id="0b384373-4b50-455f-b7b9-77541c5ab7c7" />
     <Project Path="Core/EventDomain/EventDomain.csproj" Id="ca245515-4c22-4ada-bd43-bdfe94a7f413" />
     <Project Path="Core/EventInfrastructure/EventInfrastructure.csproj" Id="93a6e0a6-6547-4ea8-851a-189859e352ca" />

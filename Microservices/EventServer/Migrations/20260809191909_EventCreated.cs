@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EventServer.Migrations
 {
     /// <inheritdoc />
-    public partial class EventCreate : Migration
+    public partial class EventCreated : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -29,6 +29,20 @@ namespace EventServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "users",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    login = table.Column<string>(type: "text", nullable: false),
+                    password_hash = table.Column<string>(type: "text", nullable: false),
+                    role = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_users", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "bookings",
                 columns: table => new
                 {
@@ -36,7 +50,8 @@ namespace EventServer.Migrations
                     event_id = table.Column<Guid>(type: "uuid", nullable: false),
                     status = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    processed_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    processed_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    user_id = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -53,6 +68,12 @@ namespace EventServer.Migrations
                 name: "IX_bookings_event_id",
                 table: "bookings",
                 column: "event_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_users_login",
+                table: "users",
+                column: "login",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -60,6 +81,9 @@ namespace EventServer.Migrations
         {
             migrationBuilder.DropTable(
                 name: "bookings");
+
+            migrationBuilder.DropTable(
+                name: "users");
 
             migrationBuilder.DropTable(
                 name: "events");

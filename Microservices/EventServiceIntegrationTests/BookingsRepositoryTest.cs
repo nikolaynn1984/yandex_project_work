@@ -8,38 +8,10 @@ using Testcontainers.PostgreSql;
 namespace EventServiceIntegrationTests
 {
     [Collection("Database")]
-    public class BookingsRepositoryTest : IAsyncLifetime
+    public class BookingsRepositoryTest : DataContainer
     {
-        private readonly PostgreSqlContainer container = new PostgreSqlBuilder("postgres:16-alpine")
-        .Build();
 
-        public async Task DisposeAsync()
-        {
-            await container.DisposeAsync();
-        }
-
-        public async Task InitializeAsync()
-        {
-            await container.StartAsync();
-        }
-
-        private AppDbContext CreateContext()
-        {
-            var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseNpgsql(container.GetConnectionString(), s => s.MigrationsAssembly("EventServer"))
-                .Options;
-
-            var context = new AppDbContext(options);
-            context.Database.Migrate();
-            return context;
-        }
-
-        private async Task ResetDatabaseAsync()
-        {
-            await using var context = CreateContext();
-            await context.Database.ExecuteSqlRawAsync(
-                "TRUNCATE TABLE bookings, events RESTART IDENTITY CASCADE");
-        }
+        
 
         [Fact]
         public async Task Booking_AddAndGetById_Item()
