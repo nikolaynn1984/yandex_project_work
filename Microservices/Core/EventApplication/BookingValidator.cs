@@ -59,7 +59,7 @@ public class BookingValidator : IBookingValidator
             throw new NoAvailableSeatsException("Свободных мест на это мероприятие нет.");
 #pragma warning restore CS8602 // Разыменование вероятной пустой ссылки.
 
-        if (eventItem.StartAt >= DateTime.UtcNow)
+        if (eventItem.StartAt <= DateTime.UtcNow)
             throw new ValidationException("Событие уже началось");
 
 
