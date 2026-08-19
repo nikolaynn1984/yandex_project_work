@@ -1,22 +1,19 @@
-﻿using EventApplication.Abstractions.Services;
-using EventApplication.Bookings.DTOs;
-using EventApplication.Events.DTOs;
-using EventDomain.Entities;
-using EventInfrastructure.Services;
+﻿using Events.Application.Abstractions.Services;
+using Events.Application.Events.DTOs;
+using Events.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EventServer.Controllers;
+namespace Events.Server.Controllers;
 
 /// <summary>
 /// Эендпоинт событий
 /// </summary>
 /// <param name="eventService">Сервис событий</param>
-/// <param name="bookingService">Сервис бронирований</param>
 [Authorize]
 [Route("events")]
 [ApiController]
-public class EventsController(IEventService eventService, IBookingService bookingService) : ControllerBase
+public class EventsController(IEventService eventService) : ControllerBase
 {
     /// <summary>
     /// Получить список событий
@@ -52,24 +49,7 @@ public class EventsController(IEventService eventService, IBookingService bookin
     }
 
 
-    /// <summary>
-    /// Добавления планирования события
-    /// </summary>
-    /// <param name="id">Идентификатор события</param>
-    /// <response code="202">Возвращается JSON-структура AddBookingResult с деталями ответа</response>
-    /// <response code="404">Событие не найдено</response>
-    /// <response code="409">Свободных мест на это мероприятие нет.</response>
-    [ProducesResponseType(typeof(AddBookingResult), StatusCodes.Status202Accepted, contentType: "application/json")]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound, contentType: "application/problem+json")]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict, contentType: "application/problem+json")]
-    [HttpPost("{id}/book")]
-    public async Task<ActionResult<AddBookingResult>> CreateBooking(Guid id)
-    {
-        var user = HttpContext.User.GetUser();
-        var result = await bookingService.CreateBookingAsync(id, user, HttpContext.RequestAborted);
-
-        return Accepted($"/bookings/{result?.Id}", result);
-    }
+    
 
     /// <summary>
     /// Добавить событие

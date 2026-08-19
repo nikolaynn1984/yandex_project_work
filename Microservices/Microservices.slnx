@@ -19,9 +19,10 @@
   </Folder>
   <Folder Name="/Servers/">
     <Project Path="Servers/Account.Server/Account.Server.csproj" Id="11069e22-a5d7-4cf1-90c9-93a6e6cca9a6" />
+    <Project Path="Servers/Bookings.Server/Bookings.Server.csproj" Id="b4b9fbef-8651-4d48-af16-e41ed024914b" />
+    <Project Path="Servers/Events.Server/Events.Server.csproj" />
   </Folder>
   <Folder Name="/Tests/" />
-  <Project Path="EventServer/EventServer.csproj" />
   <Project Path="EventServiceIntegrationTests/EventServiceIntegrationTests.csproj" Id="4041af43-8a09-4195-9251-b8e6d77595f5">
     <Build Solution="Debug|*" Project="false" />
   </Project>

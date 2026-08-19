@@ -1,15 +1,13 @@
-﻿using Account.Application.DTOs;
-using EventInfrastructure.DataAccess;
+﻿using Account.Infrastructure.DataAccess;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using System.Reflection;
-using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace EventServer.Core;
+namespace Account.Server.Extensions;
 
 /// <summary>
 /// Конфигурация приложения
@@ -24,7 +22,7 @@ public static class Configure
     public static void AddBaseConfiguration(this IServiceCollection services, WebApplicationBuilder builder)
     {
 
-        builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+        services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 
         services.AddControllers().AddJsonOptions(options =>
         {
@@ -103,7 +101,7 @@ public static class Configure
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
            ?? throw new InvalidOperationException("Connection string 'Default' not found.");
 
-        services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString, b => b.MigrationsAssembly("EventServer")));
+        services.AddDbContext<UserDbContext>(options => options.UseNpgsql(connectionString, b => b.MigrationsAssembly("EventServer")));
 
 
     }

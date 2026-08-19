@@ -2,7 +2,7 @@
 using Account.Application.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EventServer.Controllers;
+namespace Account.Server.Controllers;
 
 /// <summary>
 /// Управление пользователями
