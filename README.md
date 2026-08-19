@@ -52,20 +52,9 @@ dotnet test EventServiceTests.csproj
  Для запуска итеграционных тесттов 
   * потребуется установленный и запущен Docker Desktop (Windows/macOS) или Docker Engine (Linux) на вашей машине
     Для того чтоб убедиться что docker работает требуется запустить docker-compose.yml
- ```bash
-services:
-  postgres:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_DB: bookstore_test
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: secret123
-    ports:
-      - "5432:5432"
- ```
 
  запустить команду 
- ```bash
+```bash
 docker compose up -d 
 ```
 Если контейнер PostgreSQL запустился — Docker работает корректно. Остановите его 
@@ -143,14 +132,14 @@ docker compose down
   5. скопируйте Id свойство и встравьте в  GET /bookings/{Id}
   6. через пять секунд после добавления статус по текущему идентификатору поменятся на 2
 
-## Формат ошибки 400, 404, 409, 500
-   Problem Details (RFC 7807)
+
 
 ## Формат ошибки авторизации
   - 401 ошибка аутентификации
   - 403 не достаточно прав
 
-
+## Формат ошибки 400, 404, 409, 500
+   Problem Details (RFC 7807)
 - title — краткое человеческое описание типа проблемы;
 - status — HTTP-код состояния;
 - detail — подробное описание для человека;
