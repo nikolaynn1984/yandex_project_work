@@ -22,11 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core\EventApplication\EventApplication.csproj" />
-    <ProjectReference Include="..\Core\EventInfrastructure\EventInfrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
 

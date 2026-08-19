@@ -1,11 +1,26 @@
 <Solution>
   <Folder Name="/Core/">
-    <Project Path="Core/Account.Application/Account.Application.csproj" Id="986f8a61-ec2c-481c-8b77-f5f7d6224728" />
-    <Project Path="Core/Account.Domain/Account.Domain.csproj" Id="47bfd17f-50ea-40ba-817f-5801ce17a08d" />
-    <Project Path="Core/EventApplication/EventApplication.csproj" Id="0b384373-4b50-455f-b7b9-77541c5ab7c7" />
-    <Project Path="Core/EventDomain/EventDomain.csproj" Id="ca245515-4c22-4ada-bd43-bdfe94a7f413" />
-    <Project Path="Core/EventInfrastructure/EventInfrastructure.csproj" Id="93a6e0a6-6547-4ea8-851a-189859e352ca" />
+    <Project Path="Core/Exceptions.Handling/Exceptions.Handling.csproj" Id="e74fc5d1-5c2e-40ae-8b29-34f5d239bb63" />
   </Folder>
+  <Folder Name="/Core/Account/">
+    <Project Path="Core/Account/Account.Application/Account.Application.csproj" Id="0baecd4c-eec4-4a63-a03b-930c6492b195" />
+    <Project Path="Core/Account/Account.Domain/Account.Domain.csproj" Id="4cb65b19-71bb-403c-8980-dfe1999b7efd" />
+    <Project Path="Core/Account/Account.Infrastructure/Account.Infrastructure.csproj" Id="36cbb5c8-6a4d-464c-a779-40127cec53a8" />
+  </Folder>
+  <Folder Name="/Core/Bookings/">
+    <Project Path="Core/Bookings/Bookings.Application/Bookings.Application.csproj" Id="b865e158-524d-4f8a-9a81-de05b093663c" />
+    <Project Path="Core/Bookings/Bookings.Domain/Bookings.Domain.csproj" Id="6e9d9f57-d66f-4849-bea3-75703bce5a5c" />
+    <Project Path="Core/Bookings/Bookings.Infrastructure/Bookings.Infrastructure.csproj" Id="8bc96432-75e1-4c1b-866d-43cbfe67f2c6" />
+  </Folder>
+  <Folder Name="/Core/Events/">
+    <Project Path="Core/Events/Events.Application/Events.Application.csproj" Id="fe684fb0-c0bf-4320-b4ab-b7f9ef3d00bd" />
+    <Project Path="Core/Events/Events.Domain/Events.Domain.csproj" Id="85691db2-bfde-4eeb-b88d-af7c56d07aca" />
+    <Project Path="Core/Events/Events.Infrastructure/Events.Infrastructure.csproj" Id="47469fa9-bb8f-47cb-8796-71a436602b4a" />
+  </Folder>
+  <Folder Name="/Servers/">
+    <Project Path="Servers/Account.Server/Account.Server.csproj" Id="11069e22-a5d7-4cf1-90c9-93a6e6cca9a6" />
+  </Folder>
+  <Folder Name="/Tests/" />
   <Project Path="EventServer/EventServer.csproj" />
   <Project Path="EventServiceIntegrationTests/EventServiceIntegrationTests.csproj" Id="4041af43-8a09-4195-9251-b8e6d77595f5">
     <Build Solution="Debug|*" Project="false" />
