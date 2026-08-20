@@ -24,15 +24,15 @@
   </Folder>
   <Folder Name="/Tests/" />
   <Folder Name="/Tests/Account/">
+    <Project Path="Tests/Account/Account.Integration.Test/Account.Integration.Test.csproj" />
     <Project Path="Tests/Account/Account.Unit.Test/Account.Unit.Test.csproj" Id="2ef1152b-9bfe-42ad-87c1-5e4084fa1fd0" />
   </Folder>
   <Folder Name="/Tests/Bookings/">
+    <Project Path="Tests/Bookings/Bookings.Integration.Test/Bookings.Integration.Test.csproj" />
     <Project Path="Tests/Bookings/Bookings.Unit.Test/Bookings.Unit.Test.csproj" />
   </Folder>
   <Folder Name="/Tests/Events/">
+    <Project Path="Tests/Events/Events.Integration.Test/Events.Integration.Test.csproj" Id="13c3a50c-c4f9-413b-8338-6333e5371f06" />
     <Project Path="Tests/Events/Events.Unit.Test/Events.Unit.Test.csproj" />
   </Folder>
-  <Project Path="EventServiceIntegrationTests/EventServiceIntegrationTests.csproj" Id="4041af43-8a09-4195-9251-b8e6d77595f5">
-    <Build Solution="Debug|*" Project="false" />
-  </Project>
 </Solution>

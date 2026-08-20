@@ -1,13 +1,7 @@
-﻿using Account.Domain.Entities;
-using EventInfrastructure.DataAccess;
-using EventInfrastructure.DataAccess.Account;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Testcontainers.PostgreSql;
+﻿using Account.Domain;
+using Account.Infrastructure.DataAccess;
 
-namespace EventServiceIntegrationTests
+namespace Account.Integration.Test
 {
     [Collection("Database")]
     public class AccountRepositoryTest : DataContainer

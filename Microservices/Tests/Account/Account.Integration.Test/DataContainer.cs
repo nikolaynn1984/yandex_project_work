@@ -1,8 +1,8 @@
-﻿using EventInfrastructure.DataAccess;
+﻿using Account.Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Testcontainers.PostgreSql;
 
-namespace EventServiceIntegrationTests
+namespace Account.Integration.Test
 {
     public class DataContainer : IAsyncLifetime
     {
@@ -19,13 +19,13 @@ namespace EventServiceIntegrationTests
             await container.StartAsync();
         }
 
-        protected AppDbContext CreateContext()
+        protected UserDbContext CreateContext()
         {
-            var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseNpgsql(container.GetConnectionString(), s => s.MigrationsAssembly("EventServer"))
+            var options = new DbContextOptionsBuilder<UserDbContext>()
+                .UseNpgsql(container.GetConnectionString(), s => s.MigrationsAssembly("Account.Server"))
                 .Options;
 
-            var context = new AppDbContext(options);
+            var context = new UserDbContext(options);
             context.Database.Migrate();
             return context;
         }
@@ -34,7 +34,7 @@ namespace EventServiceIntegrationTests
         {
             await using var context = CreateContext();
             await context.Database.ExecuteSqlRawAsync(
-                "TRUNCATE TABLE bookings, events RESTART IDENTITY CASCADE");
+                "TRUNCATE TABLE users RESTART IDENTITY CASCADE");
         }
     }
 }

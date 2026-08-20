@@ -1,12 +1,10 @@
-﻿using EventDomain.Entities;
-using EventDomain.Exceptions;
-using EventInfrastructure.DataAccess;
-using EventInfrastructure.Services;
+﻿using Events.Domain.Entities;
+using Events.Domain.Exceptions;
+using Events.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
-using Testcontainers.PostgreSql;
 
-namespace EventServiceIntegrationTests;
+namespace Events.Integration.Test;
 
 [Collection("Database")]
 public class EventRepositoryTests : DataContainer

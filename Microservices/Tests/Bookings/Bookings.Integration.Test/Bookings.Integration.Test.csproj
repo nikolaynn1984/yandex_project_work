@@ -22,6 +22,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\Bookings\Bookings.Application\Bookings.Application.csproj" />
+    <ProjectReference Include="..\..\..\Core\Bookings\Bookings.Infrastructure\Bookings.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\Servers\Bookings.Server\Bookings.Server.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
 
