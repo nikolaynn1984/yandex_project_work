@@ -7,7 +7,6 @@ using Events.Infrastructure.DataAccess;
 using Events.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 
 namespace Events.Unit.Test

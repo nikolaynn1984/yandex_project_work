@@ -9,7 +9,6 @@ using Bookings.Infrastructure.DataAccess;
 using Bookings.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel.DataAnnotations;
 
 namespace EventServiceTests
 {
@@ -18,8 +17,6 @@ namespace EventServiceTests
         private readonly ServiceProvider serviceProvider;
         private readonly IServiceScope scope;
         private readonly IBookingService bookingService;
-        private readonly DateTime StartAt = DateTime.UtcNow.AddDays(1);
-        private readonly DateTime EndAt = DateTime.UtcNow.AddDays(3);
 
         public BookingslTest()
         {
@@ -42,8 +39,6 @@ namespace EventServiceTests
         [Fact]
         public async Task Booking_Add_Pending()
         {
-            //var eventItem = new EventRequest() { Title = "Test Add Pending", Description = "Описание 1", TotalSeats = 1, StartAt = StartAt, EndAt = EndAt };
-            //var eventId = await this.eventService.Add(eventItem, CancellationToken.None);
             var eventId = Guid.NewGuid();
             var user = new UserContext() { Id = Guid.NewGuid(), Login = "testloginadd", Role = "User" };
             
@@ -56,7 +51,6 @@ namespace EventServiceTests
         [Fact]
         public async Task Booking_Add_Id()
         {
-            //var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add Id", Description = "Описание 1", TotalSeats = 2, StartAt = StartAt, EndAt = EndAt }, CancellationToken.None);
             var eventId = Guid.NewGuid();
             var user = new UserContext() { Id = Guid.NewGuid(), Login = "testloginaddid", Role = "User" };
 
@@ -70,7 +64,6 @@ namespace EventServiceTests
         [Fact]
         public async Task Booking_Llmit_Exception()
         {
-            //var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add Id", Description = "Описание 1", TotalSeats = 15, StartAt = StartAt, EndAt = EndAt }, CancellationToken.None);
             var eventId = Guid.NewGuid();
             var user = new UserContext() { Id = Guid.NewGuid(), Login = "testloginlimit", Role = "User" };
 
@@ -94,7 +87,6 @@ namespace EventServiceTests
         [Fact]
         public async Task Booking_CanceledNotMine_Exception()
         {
-            //var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add Id", Description = "Описание 1", TotalSeats = 15, StartAt = StartAt, EndAt = EndAt }, CancellationToken.None);
             var eventId = Guid.NewGuid();
             var user1 = new UserContext() { Id = Guid.NewGuid(), Login = "testloginmy", Role = "User" };
             var user2 = new UserContext() { Id = Guid.NewGuid(), Login = "testloginmy", Role = "User" };
@@ -108,7 +100,6 @@ namespace EventServiceTests
         [Fact]
         public async Task Booking_CanceledAdmin_Exception()
         {
-            //var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add Id", Description = "Описание 1", TotalSeats = 15, StartAt = StartAt, EndAt = EndAt }, CancellationToken.None);
             var eventId = Guid.NewGuid();
             var user1 = new UserContext() { Id = Guid.NewGuid(), Login = "testloginmy", Role = "User" };
             var user2 = new UserContext() { Id = Guid.NewGuid(), Login = "testloginmy", Role = "Admin" };
@@ -127,7 +118,6 @@ namespace EventServiceTests
         [Fact]
         public async Task Bookink_GetById_Model()
         {
-            //var eventId = await this.eventService.Add(new EventRequest() { Title = "Test GetById", Description = "Описание 1", TotalSeats = 1, StartAt = StartAt, EndAt = EndAt }, CancellationToken.None);
             var eventId = Guid.NewGuid();
             var user = new UserContext() { Id = Guid.NewGuid(), Login = "testloginbyid", Role = "User" };
 
@@ -158,7 +148,6 @@ namespace EventServiceTests
         [Fact]
         public async Task Booking_Add_Confirm()
         {
-            //var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add NoAvailableSeats", Description = "Описание 1", TotalSeats = 2, StartAt = StartAt, EndAt = EndAt }, CancellationToken.None);
             var eventId = Guid.NewGuid();
             var user = new UserContext() { Id = Guid.NewGuid(), Login = "testloginconfirm", Role = "User" };
 
@@ -176,7 +165,6 @@ namespace EventServiceTests
         [Fact]
         public async Task Booking_Add_Reject()
         {
-            //var eventId = await this.eventService.Add(new EventRequest() { Title = "Test Add NoAvailableSeats", Description = "Описание 1", TotalSeats = 1, StartAt = StartAt, EndAt = EndAt }, CancellationToken.None);
             var eventId = Guid.NewGuid();
             var user = new UserContext() { Id = Guid.NewGuid(), Login = "testlogin", Role = "User" };
 
@@ -187,9 +175,6 @@ namespace EventServiceTests
                 booking = await this.bookingService.GetBookingByIdAsync(result.Id, user, CancellationToken.None);
                 booking?.Reject();
             }
-
-
-            //await this.eventService.ReleaseSeats(eventId);
 
 
 
