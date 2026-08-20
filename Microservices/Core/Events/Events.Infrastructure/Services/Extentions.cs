@@ -4,6 +4,7 @@ using Events.Application.Abstractions.Services;
 using Events.Application.Events.DTOs;
 using Events.Domain.Entities;
 using Events.Infrastructure.Services.Exceptions;
+using Exceptions.Handling;
 using Exceptions.Handling.Abstractions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +32,7 @@ public static class Services
 
     public static void AddExceptions(this IServiceCollection services)
     {
-
+        services.AddGlobalExceptions();
         services.AddSingleton<IExceptionStatus, EventExceptionStatus>();
         services.AddSingleton<IExceptionStatus, NoAvailableSeatsExceptionStatus>();
 

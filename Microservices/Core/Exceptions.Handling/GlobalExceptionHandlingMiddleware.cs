@@ -5,13 +5,13 @@ using System.Text.Json;
 
 namespace Exceptions.Handling;
 
-internal class GlobalExceptionHandlingMiddleware
+public class GlobalExceptionHandlingMiddleware
 {
     private readonly RequestDelegate next;
     private readonly ILogger<GlobalExceptionHandlingMiddleware> logger;
     private readonly IExceptionMediator exception;
 
-    internal GlobalExceptionHandlingMiddleware(RequestDelegate next, ILogger<GlobalExceptionHandlingMiddleware> logger, IExceptionMediator exception)
+    public GlobalExceptionHandlingMiddleware(RequestDelegate next, ILogger<GlobalExceptionHandlingMiddleware> logger, IExceptionMediator exception)
     {
         this.next = next;
         this.logger = logger;

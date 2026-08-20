@@ -6,21 +6,15 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-
-
-
 builder.Services.AddBaseConfiguration(builder);
 
 builder.Services.AddOpenApi();
 
 builder.Services.AddAccount();
+
 builder.Services.AddExceptions();
 
 var app = builder.Build();
-
-app.Run();
-
 
 app.UseGlobalExceptionHandler();
 

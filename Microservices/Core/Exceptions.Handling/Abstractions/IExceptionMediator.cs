@@ -2,7 +2,7 @@
 
 namespace Exceptions.Handling.Abstractions;
 
-internal interface IExceptionMediator
+public interface IExceptionMediator
 {
     ProblemDetails Map<T>(T ex) where T : Exception;
 }

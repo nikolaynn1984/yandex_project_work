@@ -1,4 +1,5 @@
-﻿using Account.Infrastructure.DataAccess;
+﻿using Account.Application.DTOs;
+using Account.Infrastructure.DataAccess;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
