@@ -69,8 +69,21 @@ public class Event
             if (AvailableSeats == 0 || AvailableSeats < count)
                 return false;
 
+
+            
+
             AvailableSeats -= count;
         }
+        return true;
+    }
+
+    public bool ValivadeStartAt()
+    {
+
+        if (StartAt <= DateTime.UtcNow)
+            return false;
+       
+
         return true;
     }
 

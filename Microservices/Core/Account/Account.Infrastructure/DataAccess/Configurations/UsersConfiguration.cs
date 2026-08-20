@@ -1,8 +1,8 @@
-﻿using Account.Domain.Entities;
+﻿using Account.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace EventInfrastructure.DataAccess.Configurations;
+namespace Account.Infrastructure.DataAccess.Configurations;
 /// <summary>
 /// Конфигурация пользователей
 /// </summary>

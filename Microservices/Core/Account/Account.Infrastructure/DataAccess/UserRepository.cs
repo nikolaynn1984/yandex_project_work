@@ -1,14 +1,14 @@
 ﻿using Account.Application.Abstractions.Repositories;
-using Account.Domain.Entities;
+using Account.Domain;
 using Microsoft.EntityFrameworkCore;
 
-namespace EventInfrastructure.DataAccess.Account;
+namespace Account.Infrastructure.DataAccess;
 
 public class UserRepository : IUserRepository
 {
-    private readonly AppDbContext context;
+    private readonly UserDbContext context;
 
-    public UserRepository(AppDbContext context)
+    public UserRepository(UserDbContext context)
     {
         this.context = context;
     }

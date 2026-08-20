@@ -5,7 +5,7 @@
   <Folder Name="/Core/Account/">
     <Project Path="Core/Account/Account.Application/Account.Application.csproj" Id="0baecd4c-eec4-4a63-a03b-930c6492b195" />
     <Project Path="Core/Account/Account.Domain/Account.Domain.csproj" Id="4cb65b19-71bb-403c-8980-dfe1999b7efd" />
-    <Project Path="Core/Account/Account.Infrastructure/Account.Infrastructure.csproj" Id="36cbb5c8-6a4d-464c-a779-40127cec53a8" />
+    <Project Path="Core/Account/Account.Infrastructure/Account.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/Core/Bookings/">
     <Project Path="Core/Bookings/Bookings.Application/Bookings.Application.csproj" Id="b865e158-524d-4f8a-9a81-de05b093663c" />
@@ -23,8 +23,16 @@
     <Project Path="Servers/Events.Server/Events.Server.csproj" />
   </Folder>
   <Folder Name="/Tests/" />
+  <Folder Name="/Tests/Account/">
+    <Project Path="Tests/Account/Account.Unit.Test/Account.Unit.Test.csproj" Id="2ef1152b-9bfe-42ad-87c1-5e4084fa1fd0" />
+  </Folder>
+  <Folder Name="/Tests/Bookings/">
+    <Project Path="Tests/Bookings/Bookings.Unit.Test/Bookings.Unit.Test.csproj" />
+  </Folder>
+  <Folder Name="/Tests/Events/">
+    <Project Path="Tests/Events/Events.Unit.Test/Events.Unit.Test.csproj" />
+  </Folder>
   <Project Path="EventServiceIntegrationTests/EventServiceIntegrationTests.csproj" Id="4041af43-8a09-4195-9251-b8e6d77595f5">
     <Build Solution="Debug|*" Project="false" />
   </Project>
-  <Project Path="EventServiceTests/EventServiceTests.csproj" Id="d46e3f9f-936b-4d22-ad2e-5b7e9fb3cbfd" />
 </Solution>

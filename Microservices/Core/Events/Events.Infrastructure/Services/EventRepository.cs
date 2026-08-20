@@ -9,9 +9,9 @@ namespace Events.Infrastructure.Services;
 
 public class EventRepository : IEventRepository
 {
-    private readonly AppDbContext context;
+    private readonly EventDbContext context;
 
-    public EventRepository(AppDbContext context)
+    public EventRepository(EventDbContext context)
     {
         this.context = context;
     }

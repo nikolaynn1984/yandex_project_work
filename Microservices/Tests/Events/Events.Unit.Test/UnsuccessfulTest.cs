@@ -1,14 +1,14 @@
-﻿using EventApplication;
-using EventApplication.Abstractions.Repositories;
-using EventApplication.Abstractions.Services;
-using EventApplication.Events.DTOs;
-using EventDomain.Exceptions;
-using EventInfrastructure.DataAccess;
-using EventInfrastructure.Services;
+﻿using Events.Application;
+using Events.Application.Abstractions.Repositories;
+using Events.Application.Abstractions.Services;
+using Events.Application.Events.DTOs;
+using Events.Domain.Exceptions;
+using Events.Infrastructure.DataAccess;
+using Events.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EventServiceTests
+namespace Events.Unit.Test
 {
     public class UnsuccessfulTest
     {
@@ -20,15 +20,12 @@ namespace EventServiceTests
         {
             var dbName = Guid.NewGuid().ToString();
             var services = new ServiceCollection();
-            services.AddDbContext<AppDbContext>(options =>
+            services.AddDbContext<EventDbContext>(options =>
                 options.UseInMemoryDatabase(dbName));
 
             services.AddScoped<IEventRepository, EventRepository>();
-            services.AddScoped<IBookingRepository, BookingRepository>();
             services.AddScoped<IEventService, EventService>();
-            services.AddScoped<IBookingService, BookingService>();
-            services.AddScoped<IBookingValidator, BookingValidator>();
-            services.AddSingleton<IBookingQueueService, BookingQueueService>();
+
 
             this.serviceProvider = services.BuildServiceProvider();
             this.scope = this.serviceProvider.CreateScope();

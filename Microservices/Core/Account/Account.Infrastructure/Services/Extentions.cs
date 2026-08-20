@@ -1,8 +1,7 @@
 ﻿using Account.Application;
 using Account.Application.Abstractions.Repositories;
 using Account.Application.Abstractions.Services;
-using EventInfrastructure.DataAccess.Account;
-using EventInfrastructure.Services;
+using Account.Infrastructure.DataAccess;
 using Exceptions.Handling;
 using Exceptions.Handling.Abstractions;
 using Microsoft.Extensions.DependencyInjection;

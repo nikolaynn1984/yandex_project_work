@@ -101,7 +101,7 @@ public static class Configure
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
            ?? throw new InvalidOperationException("Connection string 'Default' not found.");
 
-        services.AddDbContext<EventDbContext>(options => options.UseNpgsql(connectionString, b => b.MigrationsAssembly("EventServer")));
+        services.AddDbContext<EventDbContext>(options => options.UseNpgsql(connectionString, b => b.MigrationsAssembly("Events.Server")));
 
 
     }

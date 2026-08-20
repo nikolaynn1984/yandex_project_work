@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace EventInfrastructure.Services;
+namespace Account.Infrastructure.Services;
 
 public class TokenGenerator : ITokenGenerator
 {

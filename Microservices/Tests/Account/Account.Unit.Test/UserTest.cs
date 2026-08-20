@@ -2,22 +2,14 @@
 using Account.Application.Abstractions.Repositories;
 using Account.Application.Abstractions.Services;
 using Account.Application.DTOs;
-using Account.Domain.Entities;
-using EventApplication.Abstractions.Services;
-using EventApplication.Events.DTOs;
-using EventDomain.Exceptions;
-using EventInfrastructure.DataAccess;
-using EventInfrastructure.DataAccess.Account;
-using EventInfrastructure.Services;
+using Account.Domain;
+using Account.Infrastructure.DataAccess;
+using Account.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
-namespace EventServiceTests
+namespace Account.Unit.Test
 {
     public class UserTest
     {
@@ -30,7 +22,7 @@ namespace EventServiceTests
         {
             var dbName = Guid.NewGuid().ToString();
             var services = new ServiceCollection();
-            services.AddDbContext<AppDbContext>(options =>
+            services.AddDbContext<UserDbContext>(options =>
                 options.UseInMemoryDatabase(dbName));
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
