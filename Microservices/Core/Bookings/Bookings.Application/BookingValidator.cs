@@ -47,24 +47,6 @@ public class BookingValidator : IBookingValidator
         }
     }
 
-//    public async Task<Event?> EventHandler(Guid eventId, CancellationToken cancellationToken = default)
-//    {
-//        var eventItem = await this.eventRepository.GetById(eventId, cancellationToken);
-
-
-//#pragma warning disable CS8602 // Разыменование вероятной пустой ссылки.
-//        if (eventItem.TryReserveSeats(1) == false)
-//            throw new NoAvailableSeatsException("Свободных мест на это мероприятие нет.");
-//#pragma warning restore CS8602 // Разыменование вероятной пустой ссылки.
-
-//        if (eventItem.StartAt <= DateTime.UtcNow)
-//            throw new ValidationException("Событие уже началось");
-
-
-//        await eventRepository.SaveChangesAsync(cancellationToken);
-
-//        return eventItem;
-//    }
 
     public async Task CanceledValild(Booking booking, UserContext user, CancellationToken cancellationToken = default)
     {

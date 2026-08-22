@@ -77,7 +77,7 @@ public class Event
         return true;
     }
 
-    public bool ValivadeStartAt()
+    public bool TryValivadeStartAt()
     {
 
         if (StartAt <= DateTime.UtcNow)

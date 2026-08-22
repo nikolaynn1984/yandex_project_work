@@ -26,7 +26,13 @@ public static class Services
     public static void AddEventService(this IServiceCollection services)
     {
         services.AddScoped<IEventService, EventService>();
+        services.AddScoped<IInboxRepository, InboxRepository>();
+        services.AddScoped<IOutboxRepository, OutboxRepository>();
+        services.AddScoped<IReservedService, ReservedService>();
         services.AddScoped<IEventRepository, EventRepository>();
+        services.AddSingleton<IMessageBroker, MessageBroker>();
+        services.AddHostedService<ConsumeReservedHostedService>();
+        services.AddHostedService<OutboxHostedService>();
     }
 
 

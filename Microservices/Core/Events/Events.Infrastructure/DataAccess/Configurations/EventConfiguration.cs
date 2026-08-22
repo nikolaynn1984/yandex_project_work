@@ -13,6 +13,8 @@ internal class EventConfiguration : IEntityTypeConfiguration<Event>
     {
         builder.ToTable("events");
 
+        builder.HasKey(b => b.Id);
+
         builder.Property(e => e.Id)
         .HasColumnName("id")
         .ValueGeneratedNever();

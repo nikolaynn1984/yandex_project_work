@@ -2,14 +2,14 @@
 /// <summary>
 /// Входящее сообщение
 /// </summary>
-public class InboxMessage
+public record InboxMessage(Guid Id, DateTime ReceivedOn)
 {
     /// <summary>
     /// Идентифкатор
     /// </summary>
-    public Guid Id { get; set; }
+    public Guid Id { get; init; } = Id;
     /// <summary>
     /// Дата получения
     /// </summary>
-    public DateTime ReceivedOn { get; set; }
+    public DateTime ReceivedOn { get; init; } = ReceivedOn;
 }

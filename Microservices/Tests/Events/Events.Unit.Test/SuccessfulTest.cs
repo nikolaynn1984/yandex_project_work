@@ -108,7 +108,7 @@ namespace Events.Unit.Test
 
             var eventItem = await this.service.GetAsync(eventId);
 
-            bool valid = eventItem.ValivadeStartAt();
+            bool valid = eventItem.TryValivadeStartAt();
 
             Assert.False(valid);
         }

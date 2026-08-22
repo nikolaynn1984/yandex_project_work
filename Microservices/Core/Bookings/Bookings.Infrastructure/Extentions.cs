@@ -6,7 +6,9 @@ using Bookings.Infrastructure.Services;
 using EventInfrastructure.Services.Exceptions;
 using Exceptions.Handling;
 using Exceptions.Handling.Abstractions;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
+using System.Security.AccessControl;
 using System.Security.Claims;
 
 namespace Bookings.Infrastructure;

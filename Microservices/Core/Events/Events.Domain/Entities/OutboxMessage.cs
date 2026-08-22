@@ -2,22 +2,17 @@
 /// <summary>
 /// Исходящее сообщение
 /// </summary>
-public class OutboxMessage
+/// <param name="Id">Идентификатор</param>
+/// <param name="OccurredOn">Дата события</param>
+/// <param name="Type">Тип</param>
+/// <param name="Body">Сообщение</param>
+/// <param name="IsProcessed">Обработано</param>
+public record OutboxMessage(Guid Id, DateTime OccurredOn, string Type, string Body, bool IsProcessed = false)
 {
-    /// <summary>
-    /// Идентифкатор брони
-    /// </summary>
-    public Guid BookingId { get; set; }
-    /// <summary>
-    /// Идентификатор события
-    /// </summary>
-    public Guid EventId { get; set; }
-    /// <summary>
-    /// Момент подтверждения
-    /// </summary>
-    public DateTime ConfirmedAt { get; set; }
-    /// <summary>
-    /// Статус
-    /// </summary>
-    public OutboxStatus Status { get; set; }
+    public Guid Id { get; init; } = Id;
+    public DateTime OccurredOn { get; init; } = OccurredOn;
+    public string Type { get; init; } = Type;
+    public string Body { get; init; } = Body;
+    public bool IsProcessed { get; set; } = IsProcessed;
+
 }
