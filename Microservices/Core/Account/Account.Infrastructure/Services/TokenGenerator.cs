@@ -18,7 +18,6 @@ public class TokenGenerator : ITokenGenerator
 
     public string Generate(Guid userId, string login, string role)
     {
-        string result = string.Empty;
         SigningCredentials creds = GetCredentionals();
         Dictionary<string, object> claims = GetClaims(userId, login, role);
         SecurityTokenDescriptor descriptor = GetDescriptor(creds, claims);

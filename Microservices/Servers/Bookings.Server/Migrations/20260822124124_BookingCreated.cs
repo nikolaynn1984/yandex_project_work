@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Bookings.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class BookingCreare : Migration
+    public partial class BookingCreated : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -26,6 +26,21 @@ namespace Bookings.Server.Migrations
                 {
                     table.PrimaryKey("PK_bookings", x => x.id);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "outbox",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    occured_on = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    type = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    body = table.Column<string>(type: "text", nullable: false),
+                    is_progress = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_outbox", x => x.id);
+                });
         }
 
         /// <inheritdoc />
@@ -33,6 +48,9 @@ namespace Bookings.Server.Migrations
         {
             migrationBuilder.DropTable(
                 name: "bookings");
+
+            migrationBuilder.DropTable(
+                name: "outbox");
         }
     }
 }

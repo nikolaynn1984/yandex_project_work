@@ -9,6 +9,8 @@ public class EventDbContext : DbContext
 
     public DbSet<Event> Events => Set<Event>();
 
+    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(EventDbContext).Assembly);

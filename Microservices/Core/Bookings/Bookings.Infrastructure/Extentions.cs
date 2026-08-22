@@ -17,10 +17,11 @@ public static class Extentions
     {
         services.AddScoped<IBookingService, BookingService>();
         services.AddScoped<IBookingRepository, BookingRepository>();
-
+        services.AddScoped<IOutboxRepository, OutboxRepository>();
         services.AddScoped<IBookingValidator, BookingValidator>();
-        services.AddSingleton<IBookingQueueService, BookingQueueService>();
+        services.AddSingleton<IMessageBroker, MessageBroker>();
         services.AddHostedService<BookingHostedService>();
+        services.AddHostedService<ConsumeEventHostedService>();
     }
 
     public static void AddExceptions(this IServiceCollection services)

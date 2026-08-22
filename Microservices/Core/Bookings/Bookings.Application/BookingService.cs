@@ -2,6 +2,7 @@
 using Bookings.Application.Abstractions.Services;
 using Bookings.Application.DTOs;
 using Bookings.Domain.Entities;
+using System.Text.Json;
 
 namespace Bookings.Application;
 
@@ -10,15 +11,15 @@ namespace Bookings.Application;
 /// </summary>
 public class BookingService : IBookingService
 {
-    private readonly IBookingQueueService bookingQueueService;
     private readonly IBookingRepository bookingRepository;
     private readonly IBookingValidator bookingValidator;
+    private readonly IOutboxRepository outboxRepository;
 
-    public BookingService(IBookingQueueService bookingQueueService, IBookingRepository bookingRepository, IBookingValidator bookingValidator)
+    public BookingService(IBookingRepository bookingRepository, IBookingValidator bookingValidator, IOutboxRepository outboxRepository)
     {
-        this.bookingQueueService = bookingQueueService;
         this.bookingRepository = bookingRepository;
         this.bookingValidator = bookingValidator;
+        this.outboxRepository = outboxRepository;
     }
 
     /// <inheritdoc/>
@@ -60,12 +61,14 @@ public class BookingService : IBookingService
 
         var id = Guid.NewGuid();
 
-        var booking = new Booking(id, eventId);
-        booking.UserId = userId;
+        var booking = new Booking(id, eventId)
+        {
+            UserId = userId
+        };
+
+        await this.outboxRepository.Add(new OutboxMessage(id, booking.CreatedAt, "BookingCreated", new BookingBody(id, eventId, 1).ToString()));
 
         await this.bookingRepository.Add(booking, cancellationToken);
-
-        this.bookingQueueService.Add(booking);
 
         return booking;
     }
