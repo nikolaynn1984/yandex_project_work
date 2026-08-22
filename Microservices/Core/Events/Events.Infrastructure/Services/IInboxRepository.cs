@@ -4,11 +4,11 @@ using Events.Infrastructure.DataAccess;
 
 namespace Events.Infrastructure.Services;
 
-internal class InboxRepository : IInboxRepository
+public class InboxRepository : IInboxRepository
 {
     private readonly EventDbContext context;
 
-    internal InboxRepository(EventDbContext context)
+    public InboxRepository(EventDbContext context)
     {
         this.context = context;
     }

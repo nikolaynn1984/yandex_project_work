@@ -36,4 +36,7 @@
     <Project Path="Tests/Events/Events.Integration.Test/Events.Integration.Test.csproj" Id="13c3a50c-c4f9-413b-8338-6333e5371f06" />
     <Project Path="Tests/Events/Events.Unit.Test/Events.Unit.Test.csproj" />
   </Folder>
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
 </Solution>

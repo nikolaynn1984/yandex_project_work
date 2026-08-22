@@ -1,0 +1,20 @@
+services:
+  account.server:
+    image: ${DOCKER_REGISTRY-}accountserver
+    build:
+      context: .
+      dockerfile: Servers/Account.Server/Dockerfile
+
+  bookings.server:
+    image: ${DOCKER_REGISTRY-}bookingsserver
+    build:
+      context: .
+      dockerfile: Servers/Bookings.Server/Dockerfile
+
+
+  events.server:
+    image: ${DOCKER_REGISTRY-}eventsserver
+    build:
+      context: .
+      dockerfile: Servers/Events.Server/Dockerfile
+

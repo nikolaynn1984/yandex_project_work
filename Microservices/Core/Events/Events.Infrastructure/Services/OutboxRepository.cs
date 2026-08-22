@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Events.Infrastructure.Services;
 
-internal class OutboxRepository : IOutboxRepository
+public class OutboxRepository : IOutboxRepository
 {
     private readonly EventDbContext context;
 
-    internal OutboxRepository(EventDbContext context)
+    public OutboxRepository(EventDbContext context)
     {
         this.context = context;
     }
