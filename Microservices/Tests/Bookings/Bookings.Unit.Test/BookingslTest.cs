@@ -28,7 +28,7 @@ namespace EventServiceTests
             services.AddScoped<IBookingRepository, BookingRepository>();
             services.AddScoped<IBookingService, BookingService>();
             services.AddScoped<IBookingValidator, BookingValidator>();
-            services.AddSingleton<IBookingQueueService, BookingQueueService>();
+            services.AddScoped<IOutboxRepository, OutboxRepository>();
 
             this.serviceProvider = services.BuildServiceProvider();
             this.scope = this.serviceProvider.CreateScope();
