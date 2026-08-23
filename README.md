@@ -38,7 +38,7 @@ docker compose up -d
 > Работа с брокером сообщений
 
  При запуске docker-compose скачивается и запускаются kafka, zookeeper и kafka-ui
- Настройка Kafka__BootstrapServers находятся в окружающей среде приложенийъ
+ Настройка Kafka__BootstrapServers находятся в окружающей среде приложений
  - events-server
  - bookings-server
 
