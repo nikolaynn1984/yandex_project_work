@@ -55,15 +55,6 @@ public class BookingValidator : IBookingValidator
 
         if (user.Id != booking.UserId && user.Role != "Admin")
             throw new ForbiddenExeption("Не достаточно прав");
-
-
-        //var eventItem = await this.eventRepository.GetById(booking.EventId, cancellationToken);
-        //if(eventItem != null)
-        //{
-        //    eventItem.ReleaseSeats(1);
-        //}
-
-        //await eventRepository.SaveChangesAsync(cancellationToken);
      
     }
 }

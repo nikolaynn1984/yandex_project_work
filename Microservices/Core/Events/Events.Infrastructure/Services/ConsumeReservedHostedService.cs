@@ -140,7 +140,7 @@ public class ConsumeReservedHostedService : BackgroundService
             {
                 var topic = new TopicSpecification()
                 {
-                    Name = Topic.Event,
+                    Name = Topic.Booking,
                     Configs = new Dictionary<string, string> { { "retention.ms", "86400000" } }
                 };
 
