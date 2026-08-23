@@ -85,8 +85,8 @@ public static class Configure
             options.SwaggerDoc("v1", new OpenApiInfo
             {
                 Version = "v1",
-                Title = "Сервер событий",
-                Description = "CRUD запросы событий",
+                Title = "Сервер авторизации",
+                Description = "Регистрация и аутентификация",
 
             });
 
