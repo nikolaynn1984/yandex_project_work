@@ -28,32 +28,43 @@ public class ReservedService : IReservedService
 
          await this.inboxRepository.Add(new InboxMessage(BookingId, OccurredOn), cancellationToken);
 
+        try
+        {
+            var eventItem = await this.eventRepository.GetById(EventId, cancellationToken);
+            if (eventItem != null)
+            {
+                if (eventItem.TryValivadeStartAt() == false)
+                {
+                    await AddOutbox(EventId, BookingId, OccurredOn, OutboxStatus.Rejected, cancellationToken);
+                    throw new ValidationException("Событие уже началось");
 
-         var eventItem = await this.eventRepository.GetById(EventId, cancellationToken); 
-         if(eventItem != null)
-         {
-             if (eventItem.TryValivadeStartAt() == false)
-             {
-                 await AddOutbox(EventId, BookingId, OccurredOn, OutboxStatus.Rejected, cancellationToken);
-                 throw new ValidationException("Событие уже началось");
+                }
 
-             }
-                 
 
-             if (eventItem.TryReserveSeats(SeatCount) == false)
-             {
-                 await AddOutbox(EventId, BookingId, OccurredOn, OutboxStatus.Rejected, cancellationToken);
-                 throw new NoAvailableSeatsException("Свободных мест на это мероприятие нет.");
-             }
-                 
+                if (eventItem.TryReserveSeats(SeatCount) == false)
+                {
+                    await AddOutbox(EventId, BookingId, OccurredOn, OutboxStatus.Rejected, cancellationToken);
+                    throw new NoAvailableSeatsException("Свободных мест на это мероприятие нет.");
+                }
 
-             
-         }
 
-         await this.eventRepository.SaveChangesAsync(cancellationToken);
 
-         await AddOutbox(EventId, BookingId, OccurredOn, OutboxStatus.Confirmed, cancellationToken);
+            }
+
+            await this.eventRepository.SaveChangesAsync(cancellationToken);
+
+            await AddOutbox(EventId, BookingId, OccurredOn, OutboxStatus.Confirmed, cancellationToken);
+        }
+        catch(EventException)
+        {
+            await AddOutbox(EventId, BookingId, OccurredOn, OutboxStatus.Rejected, cancellationToken);
+
+            throw;
+        }
+         
     }
+
+    
 
     private async Task AddOutbox(Guid EventId, Guid BookingId, DateTime OccurredOn, OutboxStatus Status,CancellationToken cancellationToken)
     {

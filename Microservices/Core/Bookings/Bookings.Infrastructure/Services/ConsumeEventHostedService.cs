@@ -75,7 +75,7 @@ public class ConsumeEventHostedService : BackgroundService
                         }
 
                         await repository.SaveChangesAsync(stoppingToken);
-
+                        consumer.Commit(consume);
                         consumer.StoreOffset(consume);
                     }
                     

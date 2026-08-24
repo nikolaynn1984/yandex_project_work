@@ -72,6 +72,8 @@ namespace Events.Server.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Id").IsUnique();
+
                     b.ToTable("inbox", (string)null);
                 });
 

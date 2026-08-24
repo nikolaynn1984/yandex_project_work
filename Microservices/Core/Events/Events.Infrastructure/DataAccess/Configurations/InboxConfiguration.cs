@@ -12,6 +12,9 @@ internal class InboxConfiguration : IEntityTypeConfiguration<InboxMessage>
 
         builder.HasKey(b => b.Id);
 
+        builder.HasIndex(d => d.Id)
+            .IsUnique();
+
         builder.Property(e => e.Id)
         .HasColumnName("id")
         .ValueGeneratedNever();

@@ -10,4 +10,9 @@ public interface IInboxRepository
     /// <param name="message">Сообщение</param>
     /// <param name="cancellationToken">Токен отмены</param>
     Task Add(InboxMessage message, CancellationToken cancellationToken = default);
+    /// <summary>
+    /// Сохранить изменения
+    /// </summary>
+    /// <param name="cancellationToken">Токен отмены</param>
+    Task SaveChangesAsync(CancellationToken cancellationToken = default);
 }

@@ -9,6 +9,8 @@ namespace Events.Integration.Test
         protected readonly PostgreSqlContainer container = new PostgreSqlBuilder("postgres:16-alpine")
         .Build();
 
+        internal DbContextOptions<EventDbContext> options;
+
         public async Task DisposeAsync()
         {
             await container.DisposeAsync();
@@ -21,7 +23,7 @@ namespace Events.Integration.Test
 
         protected EventDbContext CreateContext()
         {
-            var options = new DbContextOptionsBuilder<EventDbContext>()
+            options = new DbContextOptionsBuilder<EventDbContext>()
                 .UseNpgsql(container.GetConnectionString(), s => s.MigrationsAssembly("Events.Server"))
                 .Options;
 

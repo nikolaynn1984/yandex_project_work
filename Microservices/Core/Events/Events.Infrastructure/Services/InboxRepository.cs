@@ -18,4 +18,9 @@ public class InboxRepository : IInboxRepository
     {
         await this.context.InboxMessages.AddAsync(message, cancellationToken);
     }
+
+    public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        await this.context.SaveChangesAsync(cancellationToken);
+    }
 }

@@ -74,28 +74,32 @@ public class ConsumeReservedHostedService : BackgroundService
                         {
                             await reserverdService.Execute(message.EventId, message.BookingId, message.SeatCount, stoppingToken);
 
-
+                            consumer.Commit(consume);
                             consumer.StoreOffset(consume);
 
                             
                         }
                         catch(EventException eex)
                         {
+                            consumer.Commit(consume);
                             consumer.StoreOffset(consume);
                             this.logger.LogError(eex.Message);
                         }
                         catch(NoAvailableSeatsException nex)
                         {
+                            consumer.Commit(consume);
                             consumer.StoreOffset(consume);
                             this.logger.LogError(nex.Message);
                         }
                         catch (ValidationException vex)
                         {
+                            consumer.Commit(consume);
                             consumer.StoreOffset(consume);
                             this.logger.LogError(vex.Message);
                         }
                         catch(DbUpdateException dbex) when (dbex.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation })
                         {
+                            consumer.Commit(consume);
                             consumer.StoreOffset(consume);
                         }catch(Exception ex)
                         {
