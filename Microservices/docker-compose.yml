@@ -128,7 +128,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=5002
-      - ConnectionStrings__DefaultConnection= Host=events-db;Port=5432;Database=evebts;Username=postgres;Password=postgres
+      - ConnectionStrings__DefaultConnection= Host=bookings-db;Port=5432;Database=bookings;Username=postgres;Password=postgres
       - Kafka__BootstrapServers=kafka:29092
     ports:
       - "5002:5002"
@@ -148,7 +148,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=5003
-      - ConnectionStrings__DefaultConnection= Host=bookings-db;Port=5432;Database=bookings;Username=postgres;Password=postgres  
+      - ConnectionStrings__DefaultConnection= Host=events-db;Port=5432;Database=events;Username=postgres;Password=postgres  
       - Kafka__BootstrapServers=kafka:29092
     ports:
       - "5003:5003"

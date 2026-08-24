@@ -1,7 +1,7 @@
 # Названия приложений
-Сервер событий - [Account.Server](#authServer) <br/>
+Сервер авторизации - [Account.Server](#authServer) <br/>
 Сервер бронирований - [Bookings.Server](#bookingsServer) <br/>
-Сервер авторизации - [Events.Server](#eventsServer) <br/>
+Сервер событий - [Events.Server](#eventsServer) <br/>
 
 
 

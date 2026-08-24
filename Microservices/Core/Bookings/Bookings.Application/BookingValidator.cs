@@ -41,7 +41,7 @@ public class BookingValidator : IBookingValidator
             return await this.bookingRepository.GetByUser(userId, cancellationToken);
 
         }
-        catch
+        catch(BookingException ex)
         {
             return null;
         }
