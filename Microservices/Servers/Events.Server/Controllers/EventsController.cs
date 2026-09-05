@@ -35,6 +35,20 @@ public class EventsController(IEventService eventService) : ControllerBase
     }
 
     /// <summary>
+    /// Получить список топ 10 событий
+    /// </summary>
+    /// <response code="200">Список событие</response>
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(List<Event>), StatusCodes.Status200OK, contentType: "application/json")]
+    [HttpGet("top")]
+    public async Task<ActionResult<IReadOnlyList<Event>>> GetTop()
+    {
+        var list = await eventService.GetTop(HttpContext.RequestAborted);
+
+        return Ok(list);
+    }
+
+    /// <summary>
     /// Получить событие по идентификатору
     /// </summary>
     /// <param name="id">Идентификатор события</param>
@@ -43,7 +57,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     [ProducesResponseType(typeof(Event), StatusCodes.Status200OK, contentType: "application/json")]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound, contentType: "application/problem+json")]
     [HttpGet("{id}")]
-    public async Task<ActionResult<Event>> Get(Guid id)
+    public async Task<ActionResult<Event?>> Get(Guid id)
     {
         return await eventService.Get(id, HttpContext.RequestAborted);
     }
