@@ -6,7 +6,7 @@ namespace Events.Infrastructure.Services;
 
 internal class CacheService : ICacheService
 {
-    private readonly IDatabase cacheDb;
+    private readonly IDatabase? cacheDb;
     private readonly ILogger<CacheService> logger;
          
     public CacheService(IConnectionMultiplexer connection, ILogger<CacheService> logger)
@@ -19,7 +19,8 @@ internal class CacheService : ICacheService
     {
         try
         {
-            await this.cacheDb.KeyDeleteAsync(key);
+            if(this.cacheDb != null)
+               await this.cacheDb.KeyDeleteAsync(key);
         }
         catch (Exception ex)
         {
@@ -31,6 +32,8 @@ internal class CacheService : ICacheService
     {
         try
         {
+            if (this.cacheDb == null) return null;
+
             var res = await this.cacheDb.StringGetAsync(key);
             if(res.HasValue == true)
             {
@@ -48,6 +51,8 @@ internal class CacheService : ICacheService
     {
         try
         {
+            if( this.cacheDb == null) return;
+
             await this.cacheDb.StringSetAsync(key, value, ttl);
         }catch (Exception ex)
         {

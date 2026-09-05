@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddBaseConfiguration(builder);
+builder.Services.AddRedis(builder);
 
 builder.Services.AddOpenApi();
 
