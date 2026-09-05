@@ -45,7 +45,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<Event>> Get(Guid id)
     {
-        return await eventService.GetAsync(id, HttpContext.RequestAborted);
+        return await eventService.Get(id, HttpContext.RequestAborted);
     }
 
 

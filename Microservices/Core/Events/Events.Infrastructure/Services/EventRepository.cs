@@ -34,6 +34,19 @@ public class EventRepository : IEventRepository
         return result;
     }
 
+    public async Task<IReadOnlyList<Event>> GetTop(int count, CancellationToken cancellationToken = default)
+    {
+        return await this.context.Events.AsNoTracking()
+            .Select(e => new
+            {
+                Event = e,
+                OccupancyRate = (e.TotalSeats - e.AvailableSeats) / (double)e.TotalSeats
+            })
+            .OrderByDescending( x=> x.OccupancyRate )
+            .Take(count)
+            .Select(x => x.Event).ToListAsync(cancellationToken);
+    }
+
     public async Task Add(Event item, CancellationToken cancellationToken = default)
     {
         await this.context.Events.AddAsync(item, cancellationToken);
@@ -54,11 +67,11 @@ public class EventRepository : IEventRepository
     {
         var model = await this.GetById(id, cancellationToken);
 
-        model.Title = item.Title;
-        model.Description = item.Description;
+        model?.Title = item.Title;
+        model?.Description = item.Description;
 #pragma warning disable CS8629 // Тип значения, допускающего NULL, может быть NULL.
-        model.StartAt = (DateTime)item.StartAt;
-        model.EndAt = (DateTime)item.EndAt;
+        model?.StartAt = (DateTime)item.StartAt;
+        model?.EndAt = (DateTime)item.EndAt;
 #pragma warning restore CS8629 // Тип значения, допускающего NULL, может быть NULL.
 
         await this.context.SaveChangesAsync(cancellationToken);
@@ -68,4 +81,6 @@ public class EventRepository : IEventRepository
     {
         await this.context.SaveChangesAsync(cancellationToken);
     }
+
+    
 }

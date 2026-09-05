@@ -3,6 +3,7 @@ using Events.Application.Abstractions.Services;
 using Events.Application.Events.DTOs;
 using Events.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 namespace Events.Application;
 
@@ -12,10 +13,14 @@ namespace Events.Application;
 public class EventService : IEventService
 {
     private readonly IEventRepository eventRepository;
+    private readonly ICacheService cacheService;
+    private readonly string topKey;
 
-    public EventService(IEventRepository eventRepository)
+    public EventService(IEventRepository eventRepository, ICacheService cacheService)
     {
         this.eventRepository = eventRepository;
+        this.cacheService = cacheService;
+        this.topKey = "events:top10";
     }
 
     /// <inheritdoc/>
@@ -41,11 +46,51 @@ public class EventService : IEventService
 
         return res;
     }
+    /// <inheritdoc/>
+    public async Task<IReadOnlyList<Event>> GetTop(CancellationToken token = default)
+    {
+        //Смотрим в кэш
+        var topEvents = await this.cacheService.Get(topKey);
+        if(string.IsNullOrEmpty(topEvents) == false)
+        {
+#pragma warning disable CS8603 // Возможно, возврат ссылки, допускающей значение NULL.
+            return JsonSerializer.Deserialize<List<Event>>(topEvents);
+#pragma warning restore CS8603 // Возможно, возврат ссылки, допускающей значение NULL.
+        }
+
+        //Получаем с базы
+        var topList = await this.eventRepository.GetTop(10,token);
+        if(topList.Count > 0)
+        {
+            //Кладем в кэш если записей больше 0
+            await this.cacheService.Set(topKey, JsonSerializer.Serialize(topList), TimeSpan.FromMinutes(10));
+        }
+
+        return topList;
+    }
 
     /// <inheritdoc/>
-    public async Task<Event?> GetAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Event?> Get(Guid id, CancellationToken cancellationToken = default)
     {
-        return await this.eventRepository.GetById(id, cancellationToken);
+        string cacheKey = $"event:{id}";
+
+        //Проверяем в кэш, есть есть возвращаем
+        var value = await this.cacheService.Get(cacheKey);
+        if(string.IsNullOrEmpty(value) == false)
+        {
+            return JsonSerializer.Deserialize<Event>(value);
+        }
+
+        //Получаем с базы
+        var @event = await this.eventRepository.GetById(id, cancellationToken);
+        if (@event == null) return null;
+
+        //Кладем в кэш
+        await this.cacheService.Set(cacheKey, JsonSerializer.Serialize( @event), TimeSpan.FromMinutes(5));
+
+
+
+        return @event;
 
     }
 
@@ -65,6 +110,8 @@ public class EventService : IEventService
 
         await this.eventRepository.Add(item, cancellationToken);
 
+        await this.cacheService.Set($"event:{id}", JsonSerializer.Serialize(item), TimeSpan.FromMinutes(5));
+
         return id;
     }
 
@@ -80,6 +127,9 @@ public class EventService : IEventService
 #pragma warning disable CS8604 // Возможно, аргумент-ссылка, допускающий значение NULL.
         await this.eventRepository.Delete(model, cancellationToken);
 #pragma warning restore CS8604 // Возможно, аргумент-ссылка, допускающий значение NULL.
+
+        await this.cacheService.Delete($"event:{id}");
+        await this.cacheService.Delete(topKey);
 
     }
 
@@ -109,6 +159,9 @@ public class EventService : IEventService
 
 
         await this.eventRepository.SaveChangesAsync(cancellationToken);
+
+
+        await this.cacheService.Set($"event:{id}", JsonSerializer.Serialize( model), TimeSpan.FromMinutes(5));
     }
 
     public async Task ReleaseSeats(Guid eventId, int count = 1)
@@ -122,5 +175,5 @@ public class EventService : IEventService
         await this.eventRepository.SaveChangesAsync();
     }
 
-
+    
 }

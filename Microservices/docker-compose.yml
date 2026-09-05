@@ -49,6 +49,17 @@ services:
      depends_on:
        - kafka
        - zookeeper
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: eventapi-redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+
   
   users-db:
     image: postgres:16
