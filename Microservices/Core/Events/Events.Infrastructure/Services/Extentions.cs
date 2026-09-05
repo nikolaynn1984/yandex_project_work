@@ -6,7 +6,6 @@ using Events.Domain.Entities;
 using Events.Infrastructure.Services.Exceptions;
 using Exceptions.Handling;
 using Exceptions.Handling.Abstractions;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations;
@@ -30,6 +29,7 @@ public static class Services
         services.AddScoped<IOutboxRepository, OutboxRepository>();
         services.AddScoped<IReservedService, ReservedService>();
         services.AddScoped<IEventRepository, EventRepository>();
+        services.AddScoped<ICacheService, CacheService>();
         services.AddSingleton<IMessageBroker, MessageBroker>();
         services.AddHostedService<ConsumeReservedHostedService>();
         services.AddHostedService<OutboxHostedService>();

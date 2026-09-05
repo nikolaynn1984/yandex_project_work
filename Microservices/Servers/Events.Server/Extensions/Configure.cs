@@ -1,8 +1,11 @@
 ﻿using Events.Infrastructure.DataAccess;
+using Events.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using StackExchange.Redis;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -113,5 +116,51 @@ public static class Configure
         services.AddDbContext<EventDbContext>(options => options.UseNpgsql(connectionString, b => b.MigrationsAssembly("Events.Server")));
 
 
+        
+
+
+        
+
+        //try
+        //{
+        //    services.AddSingleton<IConnectionMultiplexer>(
+        //     ConnectionMultiplexer.Connect(redisConnection)
+        //    );
+        //}
+        //catch (Exception)
+        //{
+        //    services.AddSingleton<IConnectionMultiplexer>(
+        //     ConnectionMultiplexer.Connect("")
+        //);
+        //}
+
+
+    }
+
+    public static void AddRedis(this IServiceCollection services, WebApplicationBuilder builder)
+    {
+
+        var redisConnection = builder.Configuration["Redis:ConnectionString"]
+            ?? throw new InvalidOperationException("Connection string 'Redis" +
+            "' not found.");
+
+        try
+        {
+            var redis = ConnectionMultiplexer.Connect(redisConnection);
+            var db = redis.GetDatabase();
+            db.Ping();
+            Console.WriteLine("Redis доступен");
+
+
+            services.AddSingleton<IConnectionMultiplexer>(
+             ConnectionMultiplexer.Connect(redisConnection)
+            );
+        }
+        catch (RedisConnectionException ex)
+        {
+            Console.WriteLine($"Не удалось подключиться к Redis: {ex.Message}");
+
+            services.AddSingleton<IConnectionMultiplexer, ConnectionMultiplexerEmpty>();
+        }
     }
 }

@@ -28,6 +28,7 @@ namespace Events.Unit.Test
 
             services.AddScoped<IEventRepository, EventRepository>();
             services.AddScoped<IEventService, EventService>();
+            services.AddScoped<ICacheService, CacheServiceTest>();
 
             this.serviceProvider = services.BuildServiceProvider();
             this.scope = this.serviceProvider.CreateScope();
@@ -60,7 +61,7 @@ namespace Events.Unit.Test
             var request = new EventRequest() { Title = "AddTestById", Description = "Тестовое добаление", TotalSeats = 1, StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
             var id = await this.service.Add(request);
 
-            var item = await this.service.GetAsync(id);
+            var item = await this.service.Get(id);
 
             Assert.NotNull(item);
         }
@@ -72,7 +73,7 @@ namespace Events.Unit.Test
             var request = new EventRequest() { Title = "AddTest", Description = "Тестовое добаление", TotalSeats = 1, StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
             var id = await this.service.Add(request);
 
-            var item = await this.service.GetAsync(id);
+            var item = await this.service.Get(id);
 
             Assert.Equal(id, item.Id);
         }
@@ -88,7 +89,7 @@ namespace Events.Unit.Test
                 var requestEdit = new EventRequest() { Title = "UpdateTest", Description = "Тестовое изменение", TotalSeats = 1, StartAt = new DateTime(2025, 05, 16), EndAt = new DateTime(2025, 05, 17) };
                 await this.service.Update(id, requestEdit, CancellationToken.None);
 
-                var item = await this.service.GetAsync(id);
+                var item = await this.service.Get(id);
 
                 Assert.Equal(requestEdit.Title, item.Title);
 
@@ -106,7 +107,7 @@ namespace Events.Unit.Test
         {
             var eventId = await this.service.Add(new EventRequest() { Title = "Test Add Id", Description = "Описание 1", TotalSeats = 15, StartAt = DateTime.UtcNow.AddMinutes(-15), EndAt = EndAt }, CancellationToken.None);
 
-            var eventItem = await this.service.GetAsync(eventId);
+            var eventItem = await this.service.Get(eventId);
 
             bool valid = eventItem.TryValivadeStartAt();
 
@@ -119,7 +120,7 @@ namespace Events.Unit.Test
             var eventId = await this.service.Add(new EventRequest() { Title = "Test Add NoAvailableSeats", Description = "Описание 1", TotalSeats = 2, StartAt = StartAt, EndAt = EndAt }, CancellationToken.None);
             var user = new UserContext() { Id = Guid.NewGuid(), Login = "testloginseats", Role = "User" };
 
-            var eventItem = await this.service.GetAsync(eventId);
+            var eventItem = await this.service.Get(eventId);
 
             eventItem.TryReserveSeats(1);
             eventItem.TryReserveSeats(1);
@@ -138,7 +139,7 @@ namespace Events.Unit.Test
             await this.service.Delete(id);
 
 
-            var exception = await Assert.ThrowsAsync<EventException>(() =>  this.service.GetAsync(id));
+            var exception = await Assert.ThrowsAsync<EventException>(() =>  this.service.Get(id));
 
             string message = $"Событие с идентификатором {id} не найден";
             Assert.True(!string.IsNullOrEmpty(exception.Message));
@@ -192,7 +193,7 @@ namespace Events.Unit.Test
         public async Task Reserve_Seats_Сompetition()
         {
             var eventId = await this.service.Add(new EventRequest() { Title = "Test Add NoAvailableSeats", Description = "Описание 1", TotalSeats = 5, StartAt = StartAt, EndAt = EndAt }, CancellationToken.None);
-            var eventItem = await this.service.GetAsync(eventId, CancellationToken.None);
+            var eventItem = await this.service.Get(eventId, CancellationToken.None);
 
             var tasks = new Task<bool>[20];
 

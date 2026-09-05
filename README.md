@@ -37,11 +37,15 @@ docker compose up -d
 
 > Работа с брокером сообщений
 
- При запуске docker-compose скачивается и запускаются kafka, zookeeper и kafka-ui
+ При запуске docker-compose  скачивается и запускаются kafka, zookeeper и kafka-ui
  Настройка Kafka__BootstrapServers находятся в окружающей среде приложений
  - events-server
  - bookings-server
 
+> Работа с распределенным кэшированием
+  При запуске docker-compose  скачивается и запускаются redis
+ Настройка Redis__ConnectionString находятся в окружающей среде приложений
+ - events-server
 
 ## Использование
 > Первые шаги
@@ -199,6 +203,21 @@ docker compose down
 ## Сервер событие
 <a id="eventsServer"></a>
 
+> Redis
+Ключи:
+ 1. event:{id}  - хранит значение события в кэш 
+ 2. events:top10  - хранит топ 10 событий
+
+  Для получения события по идентификатор и список топ 10 реализована стратегия cache-aside (GET /events/{id})
+  1. Проверка в кэш, если успех то возвращаем
+  2. Если кэш мимо, берем с БД
+  3. Кладем в кэш
+
+ Для методов POST /events, PUT /events/{id} реализована стратегия Update-on-Write с ttl  5 минут, для того чтоб данные были сразу прогреты 
+
+ Для метода DELETE /events/{id} реализована стратегия Delete-on-Write для консистентности данных, так-же удаляется events:top10
+  
+
 > Аутентификация/Авторизация пользователей
  1. Перейти в папку yandex_project_work\Microservices\Servers\Events.Server
  2. Откройте файл appsettings.json
@@ -211,6 +230,7 @@ docker compose down
 - events
   - GET /events?title=value1&from=value2&to=value3&page=value4&pageSize=value5 — получить список всех событий с пагинацией (Ответ 200) - Формат передачи даты для парметров from, to = 2026-05-11T11:41:33.182Z
   - GET /events/{id} — получить событие по id
+  - GET /events/top - получить топ 10 событий
   - POST /events — создать событие (Доступно только для роли Admin)
   - PUT /events/{id} — обновить событие целиком (Доступно только для роли Admin)
   - DELETE /events/{id} — удалить событие (Доступно только для роли Admin)

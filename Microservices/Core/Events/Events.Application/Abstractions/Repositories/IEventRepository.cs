@@ -17,6 +17,13 @@ public interface IEventRepository
     /// <returns>Результат запроса или null</returns>
     Task<IEnumerable<Event>> Get(string? title = null, DateTime? from = null, DateTime? to = null, CancellationToken cancellationToken = default);
     /// <summary>
+    /// Получить список активных событий
+    /// </summary>
+    /// <param name="count">Количество записей</param>
+    /// <param name="cancellationToken">Токен отмены</param>
+    /// <returns>Список события</returns>
+    Task<IReadOnlyList<Event>> GetTop(int count, CancellationToken cancellationToken = default);
+    /// <summary>
     /// Получить по идентификатору
     /// </summary>
     /// <param name="Id">Идентификатор события</param>
