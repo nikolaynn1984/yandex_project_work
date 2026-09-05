@@ -1,8 +1,10 @@
 ﻿using Events.Infrastructure.DataAccess;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using StackExchange.Redis;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -113,5 +115,12 @@ public static class Configure
         services.AddDbContext<EventDbContext>(options => options.UseNpgsql(connectionString, b => b.MigrationsAssembly("Events.Server")));
 
 
+        var redisConnection = builder.Configuration["Redis:ConnectionString"]
+            ?? throw new InvalidOperationException("Connection string 'Redis" +
+            "' not found.");
+
+        services.AddSingleton<IConnectionMultiplexer>(
+             ConnectionMultiplexer.Connect(redisConnection)
+        );
     }
 }

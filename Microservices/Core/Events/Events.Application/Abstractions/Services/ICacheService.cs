@@ -1,9 +1,4 @@
-﻿using Events.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Events.Application.Abstractions.Services;
+﻿namespace Events.Application.Abstractions.Services;
 /// <summary>
 /// Сервси кэширования
 /// </summary>
@@ -14,7 +9,7 @@ public interface ICacheService
     /// </summary>
     /// <param name="key">Ключ</param>
     /// <returns>Значение</returns>
-    Task<string>  Get(string key);
+    Task<string?>  Get(string key);
     /// <summary>
     /// Записать данные
     /// </summary>

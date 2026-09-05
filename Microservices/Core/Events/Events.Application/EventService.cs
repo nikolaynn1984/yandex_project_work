@@ -164,16 +164,6 @@ public class EventService : IEventService
         await this.cacheService.Set($"event:{id}", JsonSerializer.Serialize( model), TimeSpan.FromMinutes(5));
     }
 
-    public async Task ReleaseSeats(Guid eventId, int count = 1)
-    {
-        var model = await this.eventRepository.GetById(eventId);
-        if (model == null)
-            return;
-
-        model.ReleaseSeats(count);
-
-        await this.eventRepository.SaveChangesAsync();
-    }
 
     
 }

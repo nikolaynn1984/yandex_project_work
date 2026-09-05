@@ -161,6 +161,7 @@ services:
       - ASPNETCORE_HTTP_PORTS=5003
       - ConnectionStrings__DefaultConnection= Host=events-db;Port=5432;Database=events;Username=postgres;Password=postgres  
       - Kafka__BootstrapServers=kafka:29092
+      - Redis__ConnectionString=redis:6379 
     ports:
       - "5003:5003"
       - "80"

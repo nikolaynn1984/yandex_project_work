@@ -53,10 +53,4 @@ public interface IEventService
     /// <param name="id">Идентификатор</param>
     /// <param name="token">Токен отмены</param>
     Task Delete(Guid id, CancellationToken token = default);
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="eventId"></param>
-    /// <param name="count"></param>
-    Task ReleaseSeats(Guid eventId, int count = 1);
 }
