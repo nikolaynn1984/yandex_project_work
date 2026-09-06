@@ -217,6 +217,9 @@ docker compose down
 
  Для метода DELETE /events/{id} реализована стратегия Delete-on-Write для консистентности данных, так-же удаляется events:top10
   
+  В переменное окружение вынесены параметры TTL
+ - Redis__Top10TTL= 10
+ - Redis__EventIdTTL= 5
 
 > Аутентификация/Авторизация пользователей
  1. Перейти в папку yandex_project_work\Microservices\Servers\Events.Server

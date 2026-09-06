@@ -30,6 +30,7 @@ public static class Services
         services.AddScoped<IReservedService, ReservedService>();
         services.AddScoped<IEventRepository, EventRepository>();
         services.AddScoped<ICacheService, CacheService>();
+        services.AddSingleton<ICacheOptions, CacheOption>();
         services.AddSingleton<IMessageBroker, MessageBroker>();
         services.AddHostedService<ConsumeReservedHostedService>();
         services.AddHostedService<OutboxHostedService>();

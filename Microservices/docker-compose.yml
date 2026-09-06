@@ -162,6 +162,8 @@ services:
       - ConnectionStrings__DefaultConnection= Host=events-db;Port=5432;Database=events;Username=postgres;Password=postgres  
       - Kafka__BootstrapServers=kafka:29092
       - Redis__ConnectionString=redis:6379 
+      - Redis__Top10TTL=10
+      - Redis__EventIdTTL=5
     ports:
       - "5003:5003"
       - "80"

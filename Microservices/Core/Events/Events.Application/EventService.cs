@@ -14,12 +14,14 @@ public class EventService : IEventService
 {
     private readonly IEventRepository eventRepository;
     private readonly ICacheService cacheService;
+    private readonly ICacheOptions cacheOptions;
     private readonly string topKey;
 
-    public EventService(IEventRepository eventRepository, ICacheService cacheService)
+    public EventService(IEventRepository eventRepository, ICacheService cacheService, ICacheOptions cacheOptions)
     {
         this.eventRepository = eventRepository;
         this.cacheService = cacheService;
+        this.cacheOptions = cacheOptions;
         this.topKey = "events:top10";
     }
 
@@ -63,7 +65,7 @@ public class EventService : IEventService
         if(topList.Count > 0)
         {
             //Кладем в кэш если записей больше 0
-            await this.cacheService.Set(topKey, JsonSerializer.Serialize(topList), TimeSpan.FromMinutes(10));
+            await this.cacheService.Set(topKey, JsonSerializer.Serialize(topList), TimeSpan.FromMinutes(this.cacheOptions.Top10TTL));
         }
 
         return topList;
@@ -86,7 +88,7 @@ public class EventService : IEventService
         if (@event == null) return null;
 
         //Кладем в кэш
-        await this.cacheService.Set(cacheKey, JsonSerializer.Serialize( @event), TimeSpan.FromMinutes(5));
+        await this.cacheService.Set(cacheKey, JsonSerializer.Serialize( @event), TimeSpan.FromMinutes(this.cacheOptions.EventIdTTL));
 
 
 
@@ -110,7 +112,7 @@ public class EventService : IEventService
 
         await this.eventRepository.Add(item, cancellationToken);
 
-        await this.cacheService.Set($"event:{id}", JsonSerializer.Serialize(item), TimeSpan.FromMinutes(5));
+        await this.cacheService.Set($"event:{id}", JsonSerializer.Serialize(item), TimeSpan.FromMinutes(this.cacheOptions.EventIdTTL));
 
         return id;
     }
@@ -161,7 +163,7 @@ public class EventService : IEventService
         await this.eventRepository.SaveChangesAsync(cancellationToken);
 
 
-        await this.cacheService.Set($"event:{id}", JsonSerializer.Serialize( model), TimeSpan.FromMinutes(5));
+        await this.cacheService.Set($"event:{id}", JsonSerializer.Serialize( model), TimeSpan.FromMinutes(this.cacheOptions.EventIdTTL));
     }
 
 

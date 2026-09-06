@@ -37,6 +37,7 @@ public class ReservedTest
         services.AddScoped<IReservedService, ReservedService>();
         services.AddScoped<IEventService, EventService>();
         services.AddScoped<ICacheService, CacheServiceTest>();
+        services.AddSingleton<ICacheOptions, CachOptionTest>();
 
         this.serviceProvider = services.BuildServiceProvider();
         this.scope = this.serviceProvider.CreateScope();
