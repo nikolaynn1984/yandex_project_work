@@ -45,6 +45,54 @@ public class CacheTest
         this.cacheService = this.scope.ServiceProvider.GetRequiredService<ICacheService>();
     }
     [Fact]
+    public async Task Event_GetById_ReturnFromCache()
+    {
+        var eventId = Guid.NewGuid();
+        var eventItem = new Event(eventId, "Test 1", "Описание", 5, new DateTime(2025, 05, 11), new DateTime(2025, 05, 12)) { Title = "Test 1" };
+        var json = JsonSerializer.Serialize(eventItem);
+
+        await this.cacheService.Set($"event:{eventId}", json, TimeSpan.FromMinutes(5));
+
+        var result = await this.serviceEvents.Get(eventId);
+
+
+        Assert.NotNull(result);
+    }
+
+    [Fact]
+    public async Task Event_GetById_ReturnFromBD()
+    {
+        var eventId = Guid.NewGuid();
+        var eventItem = new Event(eventId, "Test 1", "Описание", 5, new DateTime(2025, 05, 11), new DateTime(2025, 05, 12)) { Title = "Test 1" };
+
+        await this.eventRepository.Add(eventItem);
+
+        var result = await this.serviceEvents.Get(eventId);
+
+
+        Assert.NotNull(result);
+    }
+
+
+    [Fact]
+    public async Task Event_GetTop_ReturnFromCache()
+    {
+        var list = new List<Event>()
+        {
+            new Event(Guid.NewGuid(), "Test 1", "Описание", 5, new DateTime(2025, 05, 11), new DateTime(2025, 05, 12)) { Title = "Test 1" },
+            new Event(Guid.NewGuid(), "Test 2", "Описание", 5, new DateTime(2025, 05, 11), new DateTime(2025, 05, 12)) { Title = "Test 2" }
+        };
+        var json = JsonSerializer.Serialize(list);
+
+        await this.cacheService.Set($"events:top10", json, TimeSpan.FromMinutes(5));
+
+        var result = await this.serviceEvents.GetTop();
+
+
+        Assert.NotNull(result);
+    }
+
+    [Fact]
     public async Task Event_Get_Cache()
     {
         var eventId = await this.serviceEvents.Add(new EventRequest() { Title = "Test 1", Description = "Описание 1", TotalSeats = 1, StartAt = new DateTime(2025, 05, 11), EndAt = new DateTime(2025, 05, 12) });
