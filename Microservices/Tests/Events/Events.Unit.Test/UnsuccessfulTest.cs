@@ -25,7 +25,8 @@ namespace Events.Unit.Test
 
             services.AddScoped<IEventRepository, EventRepository>();
             services.AddScoped<IEventService, EventService>();
-
+            services.AddScoped<ICacheService, CacheServiceTest>();
+            services.AddSingleton<ICacheOptions, CachOptionTest>();
 
             this.serviceProvider = services.BuildServiceProvider();
             this.scope = this.serviceProvider.CreateScope();
@@ -45,7 +46,7 @@ namespace Events.Unit.Test
         public async Task Event_GetById_Throw()
         {
             var id = Guid.NewGuid();
-            var exception = await Assert.ThrowsAsync<EventException>(() => this.service.GetAsync(id));
+            var exception = await Assert.ThrowsAsync<EventException>(() => this.service.Get(id));
 
             Assert.Equal($"Событие с идентификатором {id} не найден", exception.Message);
         }

@@ -3,6 +3,7 @@ using Events.Application.Abstractions.Services;
 using Events.Domain.Entities;
 using Events.Domain.Exceptions;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 namespace Events.Application;
 /// <summary>
@@ -13,12 +14,16 @@ public class ReservedService : IReservedService
     private readonly IInboxRepository inboxRepository;
     private readonly IEventRepository eventRepository;
     private readonly IOutboxRepository outboxRepository;
+    private readonly ICacheService cacheService;
+    private readonly ICacheOptions cacheOptions;
 
-    public ReservedService(IInboxRepository inboxRepository, IEventRepository eventRepository, IOutboxRepository outboxRepository)
+    public ReservedService(IInboxRepository inboxRepository, IEventRepository eventRepository, IOutboxRepository outboxRepository, ICacheService cacheService, ICacheOptions cacheOptions)
     {
         this.inboxRepository = inboxRepository;
         this.eventRepository = eventRepository;
         this.outboxRepository =   outboxRepository;
+        this.cacheService = cacheService;
+        this.cacheOptions = cacheOptions;
     }
 
     public async Task Execute(Guid EventId, Guid BookingId, int SeatCount, CancellationToken cancellationToken = default)
@@ -47,11 +52,13 @@ public class ReservedService : IReservedService
                     throw new NoAvailableSeatsException("Свободных мест на это мероприятие нет.");
                 }
 
+                await this.eventRepository.SaveChangesAsync(cancellationToken);
 
+                await this.cacheService.Set($"event:{eventItem?.Id}", JsonSerializer.Serialize(eventItem), TimeSpan.FromMinutes(this.cacheOptions.EventIdTTL));
 
             }
 
-            await this.eventRepository.SaveChangesAsync(cancellationToken);
+            
 
             await AddOutbox(EventId, BookingId, OccurredOn, OutboxStatus.Confirmed, cancellationToken);
         }
