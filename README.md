@@ -38,12 +38,15 @@ docker compose up -d
 > Работа с брокером сообщений
 
  При запуске docker-compose  скачивается и запускаются kafka, zookeeper и kafka-ui
+
  Настройка Kafka__BootstrapServers находятся в окружающей среде приложений
  - events-server
  - bookings-server
 
 > Работа с распределенным кэшированием
-  При запуске docker-compose  скачивается и запускаются redis
+
+ При запуске docker-compose  скачивается и запускаются redis
+
  Настройка Redis__ConnectionString находятся в окружающей среде приложений
  - events-server
 
