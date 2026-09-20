@@ -85,7 +85,7 @@ public class ConsumeEventHostedService : BackgroundService
             }
             catch(ConsumeException ex)
             {
-                this.logger.LogError($"Ошибка при получении сообщения: {ex.Error.Reason}");
+                this.logger.LogError(ex, "Ошибка при получении сообщения ex.Error.Reason = {Reason}", ex.Error.Reason);
             }
         }
     }

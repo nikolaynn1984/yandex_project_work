@@ -122,6 +122,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=5001
       - ConnectionStrings__DefaultConnection= Host=users-db;Port=5432;Database=users;Username=postgres;Password=postgres
+      - Otlp__Endpoint= http://jaeger:4317
     ports:
       - "5001:5001"
       - "80"
@@ -141,6 +142,7 @@ services:
       - ASPNETCORE_HTTP_PORTS=5002
       - ConnectionStrings__DefaultConnection= Host=bookings-db;Port=5432;Database=bookings;Username=postgres;Password=postgres
       - Kafka__BootstrapServers=kafka:29092
+      - Otlp__Endpoint= http://jaeger:4317
     ports:
       - "5002:5002"
       - "80" 
@@ -164,6 +166,7 @@ services:
       - Redis__ConnectionString=redis:6379 
       - Redis__Top10TTL=10
       - Redis__EventIdTTL=5
+      - Otlp__Endpoint= http://jaeger:4317  
     ports:
       - "5003:5003"
       - "80"
@@ -171,6 +174,36 @@ services:
      - kafka
      - zookeeper
      - events-db
+
+
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    container_name: eventapi-prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.56
+    container_name: eventapi-jaeger
+    ports:
+      - "16686:16686"   # UI
+      - "4317:4317"     # OTLP gRPC
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+
+
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: eventapi-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafana-data:/var/lib/grafana
      
 
 
@@ -178,3 +211,4 @@ volumes:
   users-db-data:
   events-db-data:
   bookings-db-data:
+  grafana-data:

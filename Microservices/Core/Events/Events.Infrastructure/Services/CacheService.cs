@@ -24,7 +24,7 @@ internal class CacheService : ICacheService
         }
         catch (Exception ex)
         {
-            this.logger.LogError($"Ошибка удаления кэша [Ключ]: {key}, [Сообщение]: {ex.Message}");
+            this.logger.LogError(ex, "Ошибка удаления кэша, ключ = {key}", key);
         }
     }
 
@@ -41,7 +41,7 @@ internal class CacheService : ICacheService
             }
         }catch (Exception ex)
         {
-            this.logger.LogError($"Ошибка получения кэша [Ключ]: {key}, [Сообщение]: {ex.Message}");
+            this.logger.LogError(ex,"Ошибка получения кэша, ключ = {key}", key);
         }
 
         return null;
@@ -56,7 +56,7 @@ internal class CacheService : ICacheService
             await this.cacheDb.StringSetAsync(key, value, ttl);
         }catch (Exception ex)
         {
-            this.logger.LogError($"Ошибка записи кэша [Ключ]: {key}, [Сообщение]: {ex.Message}");
+            this.logger.LogError(ex, "Ошибка записи кэша, ключ = {key}", key);
         }
     }
 }
