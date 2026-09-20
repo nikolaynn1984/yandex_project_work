@@ -42,7 +42,7 @@ public static class Configure
            .AddAspNetCoreInstrumentation()
            .AddRuntimeInstrumentation()
            .AddPrometheusExporter())
-           .ConfigureResource(r => r.AddService(serviceName: "event-service"));
+           .ConfigureResource(r => r.AddService(serviceName: "events-service"));
 
 
         builder.Host.UseSerilog((ctx, cfg) =>

@@ -40,7 +40,7 @@ public static class Configure
            .AddAspNetCoreInstrumentation()
            .AddRuntimeInstrumentation()
            .AddPrometheusExporter())
-           .ConfigureResource(r => r.AddService(serviceName: "booking-service"));
+           .ConfigureResource(r => r.AddService(serviceName: "bookings-service"));
 
 
         builder.Host.UseSerilog((ctx, cfg) =>
