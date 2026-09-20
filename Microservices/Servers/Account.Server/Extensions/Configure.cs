@@ -4,6 +4,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using Serilog;
+using Serilog.Formatting.Compact;
 using System.Reflection;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -25,13 +30,23 @@ public static class Configure
     public static void AddBaseConfiguration(this IServiceCollection services, WebApplicationBuilder builder)
     {
 
-        builder.Logging.AddJsonConsole(option =>
+        services.AddOpenTelemetry().
+            WithTracing(tracing => tracing
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddEntityFrameworkCoreInstrumentation()
+            .AddOtlpExporter(o => o.Endpoint = new Uri(builder.Configuration["Otlp:Endpoint"]!)))
+            .WithMetrics(metrics => metrics
+            .AddAspNetCoreInstrumentation()
+            .AddRuntimeInstrumentation()
+            .AddPrometheusExporter())
+            .ConfigureResource(r => r.AddService(serviceName:"account-service"));
+
+
+        builder.Host.UseSerilog((ctx, cfg) =>
         {
-            option.JsonWriterOptions = new JsonWriterOptions
-            {
-                Indented = false,
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            };
+            cfg.ReadFrom.Configuration(ctx.Configuration)
+             .WriteTo.Console(new CompactJsonFormatter());
         });
 
         services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));

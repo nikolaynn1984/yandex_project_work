@@ -1,8 +1,14 @@
 ﻿using Bookings.Infrastructure.DataAccess;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using Serilog;
+using Serilog.Formatting.Compact;
 using System.Reflection;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -24,6 +30,25 @@ public static class Configure
     public static void AddBaseConfiguration(this IServiceCollection services, WebApplicationBuilder builder)
     {
 
+        services.AddOpenTelemetry().
+           WithTracing(tracing => tracing
+           .AddAspNetCoreInstrumentation()
+           .AddHttpClientInstrumentation()
+           .AddEntityFrameworkCoreInstrumentation()
+           .AddOtlpExporter(o => o.Endpoint = new Uri(builder.Configuration["Otlp:Endpoint"]!)))
+           .WithMetrics(metrics => metrics
+           .AddAspNetCoreInstrumentation()
+           .AddRuntimeInstrumentation()
+           .AddPrometheusExporter())
+           .ConfigureResource(r => r.AddService(serviceName: "booking-service"));
+
+
+        builder.Host.UseSerilog((ctx, cfg) =>
+        {
+            cfg.ReadFrom.Configuration(ctx.Configuration)
+             .WriteTo.Console(new CompactJsonFormatter());
+        });
+
         services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 
         services.AddControllers().AddJsonOptions(options =>
@@ -35,14 +60,7 @@ public static class Configure
         });
         var optionsJwt = builder.Configuration.GetSection("Jwt").Get<JwtOptions>();
 
-        builder.Logging.AddJsonConsole(option =>
-        {
-            option.JsonWriterOptions = new JsonWriterOptions
-            {
-                Indented = false,
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            };
-        });
+
 
 
         if (optionsJwt == null)
