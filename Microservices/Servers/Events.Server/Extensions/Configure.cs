@@ -8,6 +8,8 @@ using Microsoft.OpenApi;
 using StackExchange.Redis;
 using System.Reflection;
 using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Events.Server.Extensions;
@@ -36,14 +38,13 @@ public static class Configure
         });
         var optionsJwt = builder.Configuration.GetSection("Jwt").Get<JwtOptions>();
 
-        services.AddLogging(logging =>
+        builder.Logging.AddJsonConsole(option =>
         {
-            logging.AddSimpleConsole(option =>
+            option.JsonWriterOptions = new JsonWriterOptions
             {
-                option.TimestampFormat = "dd.MM.yyyy HH:mm:ss.fff ";
-                option.SingleLine = true;
-                option.IncludeScopes = false;
-            });
+                Indented = false,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            };
         });
 
         if (optionsJwt == null)

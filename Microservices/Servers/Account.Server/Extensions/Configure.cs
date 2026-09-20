@@ -6,6 +6,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using System.Reflection;
 using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Account.Server.Extensions;
@@ -23,6 +25,15 @@ public static class Configure
     public static void AddBaseConfiguration(this IServiceCollection services, WebApplicationBuilder builder)
     {
 
+        builder.Logging.AddJsonConsole(option =>
+        {
+            option.JsonWriterOptions = new JsonWriterOptions
+            {
+                Indented = false,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            };
+        });
+
         services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 
         services.AddControllers().AddJsonOptions(options =>
@@ -34,15 +45,6 @@ public static class Configure
         });
         var optionsJwt = builder.Configuration.GetSection("Jwt").Get<JwtOptions>();
 
-        services.AddLogging(logging =>
-        {
-            logging.AddSimpleConsole(option =>
-            {
-                option.TimestampFormat = "dd.MM.yyyy HH:mm:ss.fff ";
-                option.SingleLine = true;
-                option.IncludeScopes = false;
-            }); 
-        });
 
         if (optionsJwt == null)
             throw new InvalidOperationException("Не найдены настройки Jwt");
