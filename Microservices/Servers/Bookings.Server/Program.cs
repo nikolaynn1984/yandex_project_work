@@ -18,6 +18,8 @@ var app = builder.Build();
 
 app.UseGlobalExceptionHandler();
 
+app.MapPrometheusScrapingEndpoint();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

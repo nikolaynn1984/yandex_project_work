@@ -103,7 +103,7 @@ public class ConsumeReservedHostedService : BackgroundService
                             consumer.StoreOffset(consume);
                         }catch(Exception ex)
                         {
-                            this.logger.LogError($"Ошибка обработки сообщения: {ex.Message}");
+                            this.logger.LogError(ex, "Ошибка обработки сообщения, топик = {Booking}", Topic.Booking);
                         }
 
                         
@@ -115,7 +115,7 @@ public class ConsumeReservedHostedService : BackgroundService
             }
             catch (ConsumeException ex)
             {
-                this.logger.LogError($"Ошибка при получении сообщения: {ex.Error.Reason}");
+                this.logger.LogError(ex, "Ошибка при получении сообщения: {Reason}", ex.Error.Reason);
             }
         }
     }

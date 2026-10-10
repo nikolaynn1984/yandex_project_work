@@ -88,7 +88,36 @@ docker compose up -d
 - title — краткое человеческое описание типа проблемы;
 - status — HTTP-код состояния;
 - detail — подробное описание для человека;
-- instance — URI конкретного экземпляра ошибки 
+- instance — URI конкретного экземпляра ошибки
+
+## Система наблюдаемости и дашборд
+
+ При запуске docker-compose  скачивается и запускаются prometheus, jaeger и grafana
+
+ prometheus доступен по
+```bash
+http://localhost:9090
+ ```
+ Настройка prometheus в папке Microservices/prometheus.yml
+ 
+jaeger доступен по 
+```bash
+http://localhost:16686
+ ```
+ В переменное окружение сервисов добавлена настройка
+ - Otlp__Endpoint= http://jaeger:4317
+ 
+ Просмотр метрик доступен GET /metrics
+
+ Grafana доступна 
+```bash
+http://localhost:3000
+ ```
+логин admin, пароль admin
+ 
+В файле Microservices/EventApiDashboard-1789911476192.json  настройка дашборда для Grafana
+ 
+
 
 
 ## Сервер авториззации

@@ -43,7 +43,7 @@ public class MessageBroker : IMessageBroker
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, $"Ошибка при отправке сообщения в топик {Topic.Booking}. Ключ: {key}");
+            this.logger.LogError(ex, "Ошибка при отправке сообщения в топик = {Topic}. Ключ = {key}", Topic.Booking, key);
             return false;
         }
         
